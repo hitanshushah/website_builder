@@ -2,15 +2,22 @@
 import tailwindcss from "@tailwindcss/vite";
 import Aura from '@primeuix/themes/aura';
 
+const allowedHosts = process.env.VITE_ALLOWED_HOSTS
+  ? process.env.VITE_ALLOWED_HOSTS.split(',').map((h) => h.trim())
+  : []
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  modules: ['@nuxt/eslint', '@nuxt/ui','@primevue/nuxt-module'],
+  modules: ['@pinia/nuxt','@nuxt/eslint', '@nuxt/ui', '@primevue/nuxt-module'],
   css: ['~/assets/css/main.css'],
   vite: {
     plugins: [
       tailwindcss(),
     ],
+    server: {
+      allowedHosts
+    }
   },
   primevue: {
         options: {
@@ -18,5 +25,17 @@ export default defineNuxtConfig({
                 preset: Aura
             }
         }
+    },
+  runtimeConfig: {
+    dbUsername: process.env.DB_USERNAME,
+    dbHost: process.env.DB_HOST,
+    dbDatabase: process.env.DB_DATABASE,
+    dbPassword: process.env.DB_PASSWORD,
+    dbPort: process.env.DB_PORT,
+    authentikLogoutUrl: process.env.AUTHENTIK_LOGOUT_URL,
+    
+    public: {
+      authentikLogoutUrl: process.env.AUTHENTIK_LOGOUT_URL
     }
+  }
 })
