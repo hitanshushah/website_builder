@@ -1,9 +1,13 @@
-import { UserModel, ProfileModel } from '../../server/db/models'
 import { useUserStore } from '../../stores/user'
 import type { User } from '../../types'
 
 export default defineNuxtRouteMiddleware(async (to) => {
   if (to.path === '/logout') {
+    return;
+  }
+  
+  // Only run on server side to avoid bundling database code for client
+  if (!process.server) {
     return;
   }
   
@@ -23,6 +27,9 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   try {
+    // Import database models only on server side
+    const { UserModel, ProfileModel } = await import('../../server/db/models')
+    
     const userDb = await UserModel.firstOrCreate(username, email)
     let profile = await ProfileModel.findByUserId(userDb.id)
     if (!profile) {

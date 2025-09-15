@@ -28,6 +28,13 @@ export class UserModel {
     );
     return users.length > 0 ? users[0] : null;
   }
+
+  static async getAllUsers(): Promise<User[]> {
+    const users = await query<User>(
+      'SELECT * FROM users ORDER BY created_at DESC'
+    );
+    return users;
+  }
 }
 
 export class ProfileModel {

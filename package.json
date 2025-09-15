@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@primevue/nuxt-module": "^4.3.9",
+    "dbmate": "^2.21.0",
     "@types/node": "^24.3.3",
     "@types/pg": "^8.15.5"
   }

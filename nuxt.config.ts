@@ -17,7 +17,17 @@ export default defineNuxtConfig({
     ],
     server: {
       allowedHosts
+    },
+    ssr: {
+      noExternal: ['@primevue/nuxt-module']
+    },
+    optimizeDeps: {
+      exclude: ['pg']
     }
+  },
+  devServer: {
+    host: '0.0.0.0',
+    port: 3000
   },
   primevue: {
         options: {

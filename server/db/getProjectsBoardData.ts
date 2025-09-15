@@ -1,0 +1,194 @@
+import { query } from './db'
+import type { ProjectsBoardData } from '../../types'
+
+export async function getProjectsBoardData(userId: number): Promise<ProjectsBoardData> {
+  const sql = `
+    WITH user_profile AS (
+        SELECT 
+            u.id AS user_id,
+            u.username,
+            u.email,
+            p.id AS profile_id,
+            p.name,
+            p.designation,
+            p.bio,
+            p.city,
+            p.province,
+            p.country,
+            p.public_url,
+            p.share_profile,
+            -- Profile Photo
+            (
+                SELECT a.filename
+                FROM assets a
+                JOIN asset_types at ON a.asset_type_id = at.id
+                WHERE a.assetable_id = p.id
+                  AND a.assetable_type = 'App\\Models\\Profile'
+                  AND a.display_name = 'Profile Photo'
+                  AND at.key = 'images'
+                  AND a.deleted_at IS NULL
+                LIMIT 1
+            ) AS profile_photo_url,
+            -- Profile Links
+            (
+                SELECT COALESCE(jsonb_agg(
+                    jsonb_build_object(
+                        'title', l.name,
+                        'url', l.url,
+                        'type', lt.key
+                    )
+                ), '[]'::jsonb)
+                FROM links l
+                JOIN link_types lt ON l.link_type_id = lt.id
+                WHERE l.linkable_id = p.id
+                  AND l.linkable_type = 'App\\Models\\Profile'
+                  AND l.deleted_at IS NULL
+            ) AS links,
+            -- Profile Documents
+            (
+                SELECT COALESCE(jsonb_agg(
+                    jsonb_build_object(
+                        'id', a.id,
+                        'name', a.display_name,
+                        'display_name', a.display_name,
+                        'filename', a.filename,
+                        'url', a.filename,
+                        'type', at.key
+                    )
+                ), '[]'::jsonb)
+                FROM assets a
+                JOIN asset_types at ON a.asset_type_id = at.id
+                WHERE a.assetable_id = p.id
+                  AND a.assetable_type = 'App\\Models\\Profile'
+                  AND a.display_name <> 'Profile Photo'
+                  AND at.key = 'documents'
+                  AND a.deleted_at IS NULL
+            ) AS documents
+        FROM users u
+        LEFT JOIN profiles p ON p.user_id = u.id
+        WHERE u.id = $1
+    )
+
+    SELECT jsonb_build_object(
+        'userProfile', (SELECT row_to_json(up) FROM user_profile up),
+
+        'projects', (
+            SELECT COALESCE(jsonb_agg(
+                jsonb_build_object(
+                    'id', pr.id,
+                    'key', pr.key,
+                    'name', pr.name,
+                    'description', pr.description,
+                    'start_date', pr.start_date,
+                    'end_date', pr.end_date,
+                    'is_public', pr.is_public,
+                    'sorting_order', pr.sorting_order,
+                    'created_at', pr.created_at,
+                    'updated_at', pr.updated_at,
+                    'category', c.key,
+                    'status', s.key,
+                    -- Project Settings
+                    'settings', (
+                        SELECT row_to_json(ps)
+                        FROM project_settings ps
+                        WHERE ps.project_id = pr.id
+                          AND ps.user_id = $1
+                    ),
+                    -- Project Links
+                    'links', (
+                        SELECT COALESCE(jsonb_agg(
+                            jsonb_build_object(
+                                'title', l.name,
+                                'url', l.url,
+                                'type', lt.key
+                            )
+                        ), '[]'::jsonb)
+                        FROM links l
+                        JOIN link_types lt ON l.link_type_id = lt.id
+                        WHERE l.linkable_id = pr.id
+                          AND l.linkable_type = 'App\\Models\\Project'
+                          AND l.deleted_at IS NULL
+                    ),
+                    -- Project Assets
+                    'assets', (
+                        SELECT COALESCE(jsonb_agg(
+                            jsonb_build_object(
+                                'id', a.id,
+                                'display_name', a.display_name,
+                                'filename', a.filename,
+                                'path', a.filename,
+                                'url', a.filename,
+                                'type', at.key,
+                                'asset_type', jsonb_build_object(
+                                    'key', at.key,
+                                    'name', at.name
+                                )
+                            )
+                        ), '[]'::jsonb)
+                        FROM assets a
+                        JOIN asset_types at ON a.asset_type_id = at.id
+                        WHERE a.assetable_id = pr.id
+                          AND a.assetable_type = 'App\\Models\\Project'
+                          AND a.deleted_at IS NULL
+                    ),
+                    -- Project Tags (Technologies only)
+                    'technologies', (
+                        SELECT COALESCE(
+                            to_jsonb(array_agg(DISTINCT value)), '[]'::jsonb
+                        )
+                        FROM tags t,
+                             LATERAL jsonb_array_elements_text(t.name::jsonb) AS value
+                        WHERE t.project_id = pr.id
+                          AND t.type = 'technology'
+                          AND t.user_id = $1
+                    )
+                )
+                ORDER BY pr.sorting_order ASC, pr.created_at DESC
+            ), '[]'::jsonb)
+            FROM projects pr
+            LEFT JOIN categories c ON pr.category_id = c.id
+            LEFT JOIN status s ON pr.status_id = s.id
+            WHERE pr.user_id = $1
+              AND pr.is_public = TRUE
+              AND pr.deleted_at IS NULL
+        ),
+
+        'categories', (
+            SELECT COALESCE(jsonb_agg(row_to_json(cats)), '[]'::jsonb)
+            FROM (
+                SELECT id, name, key
+                FROM categories
+                WHERE user_id = $1 OR user_id IS NULL
+            ) cats
+        ),
+
+        'statuses', (
+            SELECT COALESCE(jsonb_agg(row_to_json(sts)), '[]'::jsonb)
+            FROM (
+                SELECT id, name, key
+                FROM status
+                WHERE is_active = TRUE
+            ) sts
+        ),
+
+        'technologies', (
+            SELECT COALESCE(
+                to_jsonb(array_agg(DISTINCT value)), '[]'::jsonb
+            )
+            FROM tags t,
+                 LATERAL jsonb_array_elements_text(t.name::jsonb) AS value
+            WHERE t.type = 'technology'
+              AND t.user_id = $1
+              AND t.project_id IS NOT NULL
+        )
+    ) AS result;
+  `
+
+  const result = await query<{ result: ProjectsBoardData }>(sql, [userId])
+  
+  if (result.length === 0) {
+    throw new Error('No data found for user')
+  }
+
+  return result[0].result
+}

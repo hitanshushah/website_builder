@@ -13,4 +13,5 @@ services:
       - .env
     environment:
       - NODE_ENV=development
-    command: npm run dev
+    command: >
+      sh -c "npm install && node tools/migrate.cjs status && node tools/migrate.cjs up && npm run dev -- --host 0.0.0.0"
