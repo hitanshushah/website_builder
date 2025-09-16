@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
   try {
     // Get userId from query param
     const userId = Number(getQuery(event).userId)
-    console.log(userId, 'adsdasd')
+    
     if (!userId) {
       throw createError({
         statusCode: 401,
@@ -13,6 +13,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const projectsBoardData = await getProjectsBoardData(userId)
+    
     return projectsBoardData
   } catch (err) {
     console.error('Error fetching projects board data:', err)

@@ -153,6 +153,71 @@ export async function getProjectsBoardData(userId: number): Promise<ProjectsBoar
               AND pr.deleted_at IS NULL
         ),
 
+        'certifications', (
+            SELECT COALESCE(jsonb_agg(
+                jsonb_build_object(
+                    'id', c.id,
+                    'name', c.name,
+                    'description', c.description,
+                    'start_date', c.start_date,
+                    'end_date', c.end_date,
+                    'institute_name', c.institute_name,
+                    'certificate_pdf', c.certificate_pdf
+                )
+            ), '[]'::jsonb)
+            FROM certifications c
+            JOIN profiles p ON c.profile_id = p.id
+            WHERE p.user_id = $1
+        ),
+
+        'achievements', (
+            SELECT COALESCE(jsonb_agg(
+                jsonb_build_object(
+                    'id', a.id,
+                    'description', a.description
+                )
+            ), '[]'::jsonb)
+            FROM achievements a
+            JOIN profiles p ON a.profile_id = p.id
+            WHERE p.user_id = $1
+        ),
+
+        'experiences', (
+            SELECT COALESCE(jsonb_agg(
+                jsonb_build_object(
+                    'id', e.id,
+                    'company_name', e.company_name,
+                    'role', e.role,
+                    'start_date', e.start_date,
+                    'end_date', e.end_date,
+                    'description', e.description,
+                    'skills', e.skills,
+                    'company_logo', e.company_logo,
+                    'location', e.location
+                )
+            ), '[]'::jsonb)
+            FROM experiences e
+            JOIN profiles p ON e.profile_id = p.id
+            WHERE p.user_id = $1
+        ),
+
+        'publications', (
+            SELECT COALESCE(jsonb_agg(
+                jsonb_build_object(
+                    'id', pub.id,
+                    'paper_name', pub.paper_name,
+                    'conference_name', pub.conference_name,
+                    'description', pub.description,
+                    'published_date', pub.published_date,
+                    'paper_pdf', pub.paper_pdf,
+                    'paper_link', pub.paper_link
+                )
+            ), '[]'::jsonb)
+            FROM publications pub
+            JOIN profiles p ON pub.profile_id = p.id
+            WHERE p.user_id = $1
+        ),
+
         'categories', (
             SELECT COALESCE(jsonb_agg(row_to_json(cats)), '[]'::jsonb)
             FROM (
@@ -160,15 +225,6 @@ export async function getProjectsBoardData(userId: number): Promise<ProjectsBoar
                 FROM categories
                 WHERE user_id = $1 OR user_id IS NULL
             ) cats
-        ),
-
-        'statuses', (
-            SELECT COALESCE(jsonb_agg(row_to_json(sts)), '[]'::jsonb)
-            FROM (
-                SELECT id, name, key
-                FROM status
-                WHERE is_active = TRUE
-            ) sts
         ),
 
         'technologies', (
@@ -190,5 +246,6 @@ export async function getProjectsBoardData(userId: number): Promise<ProjectsBoar
     throw new Error('No data found for user')
   }
 
+  // The query returns a single row with a 'result' column containing the JSON data
   return result[0].result
 }

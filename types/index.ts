@@ -90,10 +90,50 @@ export interface Status {
   key: string;
 }
 
+export interface Certification {
+  id: number;
+  name: string;
+  description?: string;
+  start_date?: string;
+  end_date?: string;
+  institute_name?: string;
+  certificate_pdf?: string;
+}
+
+export interface Achievement {
+  id: number;
+  description: string;
+}
+
+export interface Experience {
+  id: number;
+  company_name: string;
+  role: string;
+  start_date?: string;
+  end_date?: string;
+  description?: string;
+  skills?: string[];
+  company_logo?: string;
+  location?: string;
+}
+
+export interface Publication {
+  id: number;
+  paper_name: string;
+  conference_name?: string;
+  description?: string;
+  published_date?: string;
+  paper_pdf?: string;
+  paper_link?: string;
+}
+
 export interface ProjectsBoardData {
   userProfile: UserProfile;
   projects: Project[];
+  certifications: Certification[];
+  achievements: Achievement[];
+  experiences: Experience[];
+  publications: Publication[];
   categories: Category[];
-  statuses: Status[];
   technologies: string[];
 }
