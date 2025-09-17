@@ -142,6 +142,16 @@ export interface Skill {
   description?: string;
 }
 
+export interface Education {
+  id: number;
+  university_name: string;
+  degree: string;
+  from_date?: string;
+  end_date?: string;
+  location?: string;
+  cgpa?: number;
+}
+
 export interface ProjectsBoardData {
   userProfile: UserProfile;
   projects: Project[];
@@ -152,4 +162,5 @@ export interface ProjectsBoardData {
   skills: Skill[];
   categories: Category[];
   technologies: string[];
+  education: Education[];
 }

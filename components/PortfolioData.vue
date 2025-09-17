@@ -92,6 +92,29 @@
           <ProjectsSection :projects="projectsBoardData.projects" />
         </AccordionTab>
 
+        <!-- Education Section -->
+        <AccordionTab>
+          <template #header>
+            <div class="flex items-center gap-2 w-full">
+              <i class="pi pi-graduation-cap text-primary"></i>
+              <span class="font-semibold">Education</span>
+              <Badge v-if="projectsBoardData.education.length > 0" :value="projectsBoardData.education.length" severity="info" />
+              <Button
+                variant="outlined"  
+                label="Add Education" 
+                size="small"
+                class="ml-4"
+                @click.stop="showEducationForm = true"
+              />
+            </div>
+          </template>
+          <EducationSection 
+            :education="projectsBoardData.education" 
+            :user-id="Number(userStore.user?.id) || 0"
+            @refresh="fetchProjectsBoardData"
+          />
+        </AccordionTab>
+
         <!-- Technologies Section -->
         <AccordionTab>
           <template #header>
@@ -234,6 +257,12 @@
         :user-id="Number(userStore.user?.id) || 0"
         @saved="handleFormSaved"
       />
+      
+      <AddEducationForm 
+        v-model="showEducationForm"
+        :user-id="Number(userStore.user?.id) || 0"
+        @saved="handleFormSaved"
+      />
 
       <!-- Redirect Modal -->
       <Dialog 
@@ -277,11 +306,13 @@ import CertificationsSection from './CertificationsSection.vue'
 import AchievementsSection from './AchievementsSection.vue'
 import ExperiencesSection from './ExperiencesSection.vue'
 import PublicationsSection from './PublicationsSection.vue'
+import EducationSection from './EducationSection.vue'
 import AddExperienceForm from './AddExperienceForm.vue'
 import AddAchievementForm from './AddAchievementForm.vue'
 import AddCertificationForm from './AddCertificationForm.vue'
 import AddPublicationForm from './AddPublicationForm.vue'
 import AddSkillForm from './AddSkillForm.vue'
+import AddEducationForm from './AddEducationForm.vue'
 import ProgressSpinner from 'primevue/progressspinner'
 import Message from 'primevue/message'
 import Accordion from 'primevue/accordion'
@@ -307,6 +338,7 @@ const showAchievementForm = ref(false)
 const showCertificationForm = ref(false)
 const showPublicationForm = ref(false)
 const showSkillForm = ref(false)
+const showEducationForm = ref(false)
 
 // Redirect modal state
 const showRedirectModal = ref(false)

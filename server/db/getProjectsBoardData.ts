@@ -243,6 +243,24 @@ export async function getProjectsBoardData(userId: number): Promise<ProjectsBoar
             WHERE p.user_id = $1
         ),
 
+        'education', (
+            SELECT COALESCE(jsonb_agg(
+                jsonb_build_object(
+                    'id', e.id,
+                    'university_name', e.university_name,
+                    'degree', e.degree,
+                    'from_date', e.from_date,
+                    'end_date', e.end_date,
+                    'location', e.location,
+                    'cgpa', e.cgpa
+                )
+            ), '[]'::jsonb)
+            FROM education e
+            JOIN profiles p ON e.profile_id = p.id
+            WHERE p.user_id = $1
+              AND e.deleted_at IS NULL
+        ),
+
         'categories', (
             SELECT COALESCE(jsonb_agg(row_to_json(cats)), '[]'::jsonb)
             FROM (

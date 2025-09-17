@@ -1,6 +1,6 @@
 // server/db/models.ts
 import { query } from './db';
-import type { User, Profile } from '../../types';
+import type { User, Profile, Education } from '../../types';
 
 export class UserModel {
   static async firstOrCreate(username: string, email: string): Promise<User> {
@@ -52,5 +52,54 @@ export class ProfileModel {
       [userId, name]
     );
     return profiles[0];
+  }
+}
+
+export class EducationModel {
+  static async findByProfileId(profileId: number): Promise<Education[]> {
+    const education = await query<Education>(
+      'SELECT * FROM education WHERE profile_id = $1 AND deleted_at IS NULL ORDER BY end_date DESC NULLS LAST, from_date DESC',
+      [profileId]
+    );
+    return education;
+  }
+
+  static async create(
+    profileId: number,
+    universityName: string,
+    degree: string,
+    fromDate?: string,
+    endDate?: string,
+    location?: string,
+    cgpa?: number
+  ): Promise<Education> {
+    const education = await query<Education>(
+      'INSERT INTO education (profile_id, university_name, degree, from_date, end_date, location, cgpa, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW()) RETURNING *',
+      [profileId, universityName, degree, fromDate, endDate, location, cgpa]
+    );
+    return education[0];
+  }
+
+  static async update(
+    id: number,
+    universityName: string,
+    degree: string,
+    fromDate?: string,
+    endDate?: string,
+    location?: string,
+    cgpa?: number
+  ): Promise<Education> {
+    const education = await query<Education>(
+      'UPDATE education SET university_name = $2, degree = $3, from_date = $4, end_date = $5, location = $6, cgpa = $7, updated_at = NOW() WHERE id = $1 RETURNING *',
+      [id, universityName, degree, fromDate, endDate, location, cgpa]
+    );
+    return education[0];
+  }
+
+  static async delete(id: number): Promise<void> {
+    await query(
+      'UPDATE education SET deleted_at = NOW() WHERE id = $1',
+      [id]
+    );
   }
 }
