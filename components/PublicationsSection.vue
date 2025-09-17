@@ -31,7 +31,7 @@
               </div>
               
               <!-- Action buttons on the right -->
-              <div v-if="publication.paper_pdf || publication.paper_link" class="flex flex-wrap gap-2 ml-4 h-fit flex-row" style="height: fit-content;">
+              <div class="flex flex-wrap gap-2 ml-4 h-fit flex-row" style="height: fit-content;">
                 <div v-if="publication.paper_pdf" class="flex items-center gap-2 p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
                   <i :class="getFileIcon(publication.paper_pdf)" style="color: green"></i>
                   <span class="text-sm text-black" style="color: black">Paper Available</span>
@@ -54,6 +54,16 @@
                   @click="openLink(publication.paper_link)"
                   class="whitespace-nowrap"
                 />
+                <Button
+                  icon="pi pi-trash"
+                  size="small"
+                  severity="danger"
+                  text
+                  rounded
+                  @click="deletePublication(publication.id)"
+                  :title="`Delete ${publication.paper_name}`"
+                  class="opacity-60 hover:opacity-100 transition-opacity"
+                />
               </div>
             </div>
           </div>
@@ -68,18 +78,59 @@
         </div>
       </div>
     </div>
+
+    <!-- Confirmation Modal -->
+    <Dialog 
+      v-model:visible="showConfirmModal" 
+      modal 
+      :header="confirmModalTitle" 
+      :style="{ width: '400px' }"
+    >
+      <div class="text-center py-4">
+        <p class="text-gray-700 dark:text-gray-300 mb-4">
+          {{ confirmModalMessage }}
+        </p>
+      </div>
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <Button 
+            label="Cancel" 
+            severity="secondary" 
+            @click="showConfirmModal = false"
+          />
+          <Button 
+            label="Delete" 
+            severity="danger"
+            @click="confirmDelete"
+          />
+        </div>
+      </template>
+    </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { Publication } from '../types'
 import Button from 'primevue/button'
+import Dialog from 'primevue/dialog'
+import { ref } from 'vue'
 
 interface Props {
   publications: Publication[]
 }
 
-defineProps<Props>()
+interface Emits {
+  (e: 'refresh'): void
+}
+
+const props = defineProps<Props>()
+const emit = defineEmits<Emits>()
+
+// Confirmation modal state
+const showConfirmModal = ref(false)
+const confirmModalTitle = ref('')
+const confirmModalMessage = ref('')
+const pendingDeleteId = ref<number | null>(null)
 
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString()
@@ -102,6 +153,36 @@ const getFileIcon = (url: string) => {
       return 'pi pi-image'
     default:
       return 'pi pi-file'
+  }
+}
+
+const deletePublication = (publicationId: number) => {
+  const publication = props.publications.find(p => p.id === publicationId)
+  if (!publication) return
+
+  pendingDeleteId.value = publicationId
+  confirmModalTitle.value = 'Delete Publication'
+  confirmModalMessage.value = `Are you sure you want to delete "${publication.paper_name}"?`
+  showConfirmModal.value = true
+}
+
+const confirmDelete = async () => {
+  if (!pendingDeleteId.value) return
+
+  try {
+    const response = await $fetch<{success: boolean, message: string}>(`/api/publications?id=${pendingDeleteId.value}`, {
+      method: 'DELETE'
+    })
+    
+    if (response.success) {
+      emit('refresh')
+    }
+  } catch (error) {
+    console.error('Error deleting publication:', error)
+    alert('Failed to delete publication')
+  } finally {
+    showConfirmModal.value = false
+    pendingDeleteId.value = null
   }
 }
 </script>

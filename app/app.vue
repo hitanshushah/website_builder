@@ -263,7 +263,7 @@
         :style="{ width: '400px' }"
       >
         <div class="text-center py-4">
-          <p class="text-gray-600 dark:text-gray-400 mb-4">
+          <p class="text-gray-600 dark:text-gray-400">
             To add projects, edit profile, and add technologies, please log in to ProjectsBoard.
           </p>
         </div>

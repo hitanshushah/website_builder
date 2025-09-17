@@ -64,7 +64,7 @@
       :style="{ width: '400px' }"
     >
       <div class="text-center py-4">
-        <p class="text-gray-700 dark:text-gray-300 mb-4">
+        <p class="text-gray-700 dark:text-gray-300">
           {{ confirmModalMessage }}
         </p>
       </div>

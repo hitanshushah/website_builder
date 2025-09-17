@@ -168,6 +168,7 @@ export async function getProjectsBoardData(userId: number): Promise<ProjectsBoar
             FROM certifications c
             JOIN profiles p ON c.profile_id = p.id
             WHERE p.user_id = $1
+              AND c.deleted_at IS NULL
         ),
 
         'achievements', (
@@ -180,6 +181,7 @@ export async function getProjectsBoardData(userId: number): Promise<ProjectsBoar
             FROM achievements a
             JOIN profiles p ON a.profile_id = p.id
             WHERE p.user_id = $1
+              AND a.deleted_at IS NULL
         ),
 
         'experiences', (
@@ -199,6 +201,7 @@ export async function getProjectsBoardData(userId: number): Promise<ProjectsBoar
             FROM experiences e
             JOIN profiles p ON e.profile_id = p.id
             WHERE p.user_id = $1
+              AND e.deleted_at IS NULL
         ),
 
         'publications', (
@@ -216,6 +219,7 @@ export async function getProjectsBoardData(userId: number): Promise<ProjectsBoar
             FROM publications pub
             JOIN profiles p ON pub.profile_id = p.id
             WHERE p.user_id = $1
+              AND pub.deleted_at IS NULL
         ),
 
         'skills', (

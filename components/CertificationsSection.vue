@@ -35,18 +35,29 @@
               </div>
               
               <!-- Certificate on the right -->
-              <div v-if="cert.certificate_pdf" class="flex flex-wrap gap-2 ml-4 h-fit flex-row" style="height: fit-content;">
-                <div class="flex items-center gap-2 p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
+              <div class="flex flex-wrap gap-2 ml-4 h-fit flex-row" style="height: fit-content;">
+                <div v-if="cert.certificate_pdf" class="flex items-center gap-2 p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
                   <i :class="getFileIcon(cert.certificate_pdf)" style="color: green"></i>
                   <span class="text-sm text-black" style="color: black">Certificate Available</span>
                 </div>
                 <Button 
+                  v-if="cert.certificate_pdf"
                   icon="pi pi-download"
                   label="Download"
                   outlined
                   size="small"
                   @click="openLink(cert.certificate_pdf)"
                   class="whitespace-nowrap"
+                />
+                <Button
+                  icon="pi pi-trash"
+                  size="small"
+                  severity="danger"
+                  text
+                  rounded
+                  @click="deleteCertification(cert.id)"
+                  :title="`Delete ${cert.name}`"
+                  class="opacity-60 hover:opacity-100 transition-opacity"
                 />
               </div>
             </div>
@@ -62,17 +73,59 @@
         </div>
       </div>
     </div>
+
+    <!-- Confirmation Modal -->
+    <Dialog 
+      v-model:visible="showConfirmModal" 
+      modal 
+      :header="confirmModalTitle" 
+      :style="{ width: '400px' }"
+    >
+      <div class="text-center py-4">
+        <p class="text-gray-700 dark:text-gray-300">
+          {{ confirmModalMessage }}
+        </p>
+      </div>
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <Button 
+            label="Cancel" 
+            severity="secondary" 
+            @click="showConfirmModal = false"
+          />
+          <Button 
+            label="Delete" 
+            severity="danger"
+            @click="confirmDelete"
+          />
+        </div>
+      </template>
+    </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { Certification } from '../types'
+import Button from 'primevue/button'
+import Dialog from 'primevue/dialog'
+import { ref } from 'vue'
 
 interface Props {
   certifications: Certification[]
 }
 
-defineProps<Props>()
+interface Emits {
+  (e: 'refresh'): void
+}
+
+const props = defineProps<Props>()
+const emit = defineEmits<Emits>()
+
+// Confirmation modal state
+const showConfirmModal = ref(false)
+const confirmModalTitle = ref('')
+const confirmModalMessage = ref('')
+const pendingDeleteId = ref<number | null>(null)
 
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString()
@@ -95,6 +148,36 @@ const getFileIcon = (url: string) => {
       return 'pi pi-image'
     default:
       return 'pi pi-file'
+  }
+}
+
+const deleteCertification = (certificationId: number) => {
+  const certification = props.certifications.find(c => c.id === certificationId)
+  if (!certification) return
+
+  pendingDeleteId.value = certificationId
+  confirmModalTitle.value = 'Delete Certification'
+  confirmModalMessage.value = `Are you sure you want to delete "${certification.name}"?`
+  showConfirmModal.value = true
+}
+
+const confirmDelete = async () => {
+  if (!pendingDeleteId.value) return
+
+  try {
+    const response = await $fetch<{success: boolean, message: string}>(`/api/certifications?id=${pendingDeleteId.value}`, {
+      method: 'DELETE'
+    })
+    
+    if (response.success) {
+      emit('refresh')
+    }
+  } catch (error) {
+    console.error('Error deleting certification:', error)
+    alert('Failed to delete certification')
+  } finally {
+    showConfirmModal.value = false
+    pendingDeleteId.value = null
   }
 }
 </script>

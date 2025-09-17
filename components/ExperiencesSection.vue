@@ -54,6 +54,16 @@
                   </div>
                 </div>
               </div>
+              <Button
+                icon="pi pi-trash"
+                size="small"
+                severity="danger"
+                text
+                rounded
+                @click="deleteExperience(experience.id)"
+                :title="`Delete ${experience.role} at ${experience.company_name}`"
+                class="opacity-60 hover:opacity-100 transition-opacity"
+              />
             </div>
           </div>
         </div>
@@ -83,6 +93,34 @@
         </div>
       </div>
     </div>
+
+    <!-- Confirmation Modal -->
+    <Dialog 
+      v-model:visible="showConfirmModal" 
+      modal 
+      :header="confirmModalTitle" 
+      :style="{ width: '400px' }"
+    >
+      <div class="text-center py-4">
+        <p class="text-gray-700 dark:text-gray-300">
+          {{ confirmModalMessage }}
+        </p>
+      </div>
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <Button 
+            label="Cancel" 
+            severity="secondary" 
+            @click="showConfirmModal = false"
+          />
+          <Button 
+            label="Delete" 
+            severity="danger"
+            @click="confirmDelete"
+          />
+        </div>
+      </template>
+    </Dialog>
   </div>
 </template>
 
@@ -90,14 +128,58 @@
 import type { Experience } from '../types'
 import Avatar from 'primevue/avatar'
 import Tag from 'primevue/tag'
+import Button from 'primevue/button'
+import Dialog from 'primevue/dialog'
+import { ref } from 'vue'
 
 interface Props {
   experiences: Experience[]
 }
 
-defineProps<Props>()
+interface Emits {
+  (e: 'refresh'): void
+}
+
+const props = defineProps<Props>()
+const emit = defineEmits<Emits>()
+
+// Confirmation modal state
+const showConfirmModal = ref(false)
+const confirmModalTitle = ref('')
+const confirmModalMessage = ref('')
+const pendingDeleteId = ref<number | null>(null)
 
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString()
+}
+
+const deleteExperience = (experienceId: number) => {
+  const experience = props.experiences.find(e => e.id === experienceId)
+  if (!experience) return
+
+  pendingDeleteId.value = experienceId
+  confirmModalTitle.value = 'Delete Experience'
+  confirmModalMessage.value = `Are you sure you want to delete "${experience.role}" at "${experience.company_name}"?`
+  showConfirmModal.value = true
+}
+
+const confirmDelete = async () => {
+  if (!pendingDeleteId.value) return
+
+  try {
+    const response = await $fetch<{success: boolean, message: string}>(`/api/experiences?id=${pendingDeleteId.value}`, {
+      method: 'DELETE'
+    })
+    
+    if (response.success) {
+      emit('refresh')
+    }
+  } catch (error) {
+    console.error('Error deleting experience:', error)
+    alert('Failed to delete experience')
+  } finally {
+    showConfirmModal.value = false
+    pendingDeleteId.value = null
+  }
 }
 </script>

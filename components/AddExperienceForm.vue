@@ -9,7 +9,7 @@
     <div class="space-y-6">
       <!-- Experience List -->
       <div v-for="(experience, index) in experiences" :key="index" class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
             Experience {{ index + 1 }}
           </h3>
@@ -66,6 +66,7 @@
               placeholder="Select start date"
               dateFormat="yy-mm-dd"
               class="w-full"
+              :showIcon="true"
             />
           </div>
 
@@ -79,7 +80,8 @@
               placeholder="Select end date"
               dateFormat="yy-mm-dd"
               class="w-full"
-              :minDate="experience.start_date"
+              :showIcon="true"
+              :minDate="experience.start_date || undefined"
             />
             <div class="flex items-center mt-2">
               <Checkbox 
@@ -161,7 +163,7 @@
             <div class="space-y-2">
               <div v-for="(skill, skillIndex) in experience.skills" :key="skillIndex" class="flex items-center gap-2">
                 <InputText 
-                  v-model="experience.skills[skillIndex]"
+                  v-model="experience.skills![skillIndex]"
                   placeholder="Enter skill"
                   class="flex-1"
                 />
@@ -244,7 +246,7 @@ const saving = ref(false)
 const errors = ref<Record<string, string>>({})
 
 // Experience form data
-const experiences = ref<Partial<Experience>[]>([
+const experiences = ref<Partial<Omit<Experience, 'start_date' | 'end_date'> & { is_current: boolean; start_date: Date | null; end_date: Date | null }>[]>([
   {
     company_name: '',
     role: '',
@@ -288,14 +290,20 @@ const removeExperience = (index: number) => {
 }
 
 const addSkill = (experienceIndex: number) => {
-  if (!experiences.value[experienceIndex].skills) {
-    experiences.value[experienceIndex].skills = []
+  const experience = experiences.value[experienceIndex]
+  if (!experience) return
+  
+  if (!experience.skills) {
+    experience.skills = []
   }
-  experiences.value[experienceIndex].skills!.push('')
+  experience.skills.push('')
 }
 
 const removeSkill = (experienceIndex: number, skillIndex: number) => {
-  experiences.value[experienceIndex].skills!.splice(skillIndex, 1)
+  const experience = experiences.value[experienceIndex]
+  if (!experience || !experience.skills) return
+  
+  experience.skills.splice(skillIndex, 1)
 }
 
 const handleLogoUpload = async (event: any, experienceIndex: number) => {
@@ -307,13 +315,16 @@ const handleLogoUpload = async (event: any, experienceIndex: number) => {
     formData.append('file', file)
     formData.append('username', userStore.user?.username || 'default')
 
-    const response = await $fetch('/api/upload', {
+    const response = await $fetch<{success: boolean, url: string}>('/api/upload', {
       method: 'POST',
       body: formData
     })
 
     if (response.success) {
-      experiences.value[experienceIndex].company_logo = response.url
+      const experience = experiences.value[experienceIndex]
+      if (experience) {
+        experience.company_logo = response.url
+      }
     }
   } catch (error) {
     console.error('Error uploading logo:', error)
@@ -322,7 +333,10 @@ const handleLogoUpload = async (event: any, experienceIndex: number) => {
 }
 
 const removeCompanyLogo = (experienceIndex: number) => {
-  experiences.value[experienceIndex].company_logo = ''
+  const experience = experiences.value[experienceIndex]
+  if (experience) {
+    experience.company_logo = ''
+  }
 }
 
 const validateForm = () => {
@@ -356,7 +370,8 @@ const saveExperiences = async () => {
     const experiencesToSave = experiences.value.map(exp => ({
       ...exp,
       skills: exp.skills?.filter(skill => skill.trim()) || [],
-      end_date: exp.is_current ? null : exp.end_date
+      start_date: exp.start_date ? exp.start_date.toISOString().split('T')[0] : null,
+      end_date: exp.is_current ? null : (exp.end_date ? exp.end_date.toISOString().split('T')[0] : null)
     }))
 
     await $fetch('/api/experiences', {

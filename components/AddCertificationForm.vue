@@ -9,7 +9,7 @@
     <div class="space-y-6">
       <!-- Certification List -->
       <div v-for="(certification, index) in certifications" :key="index" class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
             Certification {{ index + 1 }}
           </h3>
