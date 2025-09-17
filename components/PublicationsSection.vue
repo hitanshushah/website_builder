@@ -32,10 +32,14 @@
               
               <!-- Action buttons on the right -->
               <div v-if="publication.paper_pdf || publication.paper_link" class="flex flex-wrap gap-2 ml-4 h-fit flex-row" style="height: fit-content;">
+                <div v-if="publication.paper_pdf" class="flex items-center gap-2 p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                  <i :class="getFileIcon(publication.paper_pdf)" style="color: green"></i>
+                  <span class="text-sm text-black" style="color: black">Paper Available</span>
+                </div>
                 <Button 
                   v-if="publication.paper_pdf"
                   icon="pi pi-download"
-                  label="Download PDF"
+                  label="Download"
                   outlined
                   size="small"
                   @click="openLink(publication.paper_pdf)"
@@ -83,5 +87,21 @@ const formatDate = (dateString: string) => {
 
 const openLink = (url: string) => {
   window.open(url, '_blank')
+}
+
+const getFileIcon = (url: string) => {
+  const extension = url.split('.').pop()?.toLowerCase()
+  switch (extension) {
+    case 'pdf':
+      return 'pi pi-file-pdf'
+    case 'png':
+    case 'jpg':
+    case 'jpeg':
+    case 'gif':
+    case 'webp':
+      return 'pi pi-image'
+    default:
+      return 'pi pi-file'
+  }
 }
 </script>

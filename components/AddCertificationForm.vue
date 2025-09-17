@@ -58,10 +58,11 @@
               Start Date
             </label>
             <Calendar 
-              v-model="certification.start_date"
               placeholder="Select start date"
               dateFormat="yy-mm-dd"
               class="w-full"
+              :model-value="certification.start_date ? new Date(certification.start_date) : null"
+              @update:model-value="(value: Date | null) => certification.start_date = value ? value.toISOString().split('T')[0] : undefined"
             />
           </div>
 
@@ -71,11 +72,12 @@
               End Date
             </label>
             <Calendar 
-              v-model="certification.end_date"
               placeholder="Select end date"
               dateFormat="yy-mm-dd"
               class="w-full"
-              :minDate="certification.start_date"
+              :model-value="certification.end_date ? new Date(certification.end_date) : null"
+              @update:model-value="(value: Date | null) => certification.end_date = value ? value.toISOString().split('T')[0] : undefined"
+              :min-date="certification.start_date ? new Date(certification.start_date) : undefined"
             />
           </div>
 
@@ -92,16 +94,38 @@
             />
           </div>
 
-          <!-- Certificate PDF -->
+          <!-- Certificate -->
           <div class="md:col-span-2">
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Certificate PDF URL
+              Certificate
             </label>
-            <InputText 
-              v-model="certification.certificate_pdf"
-              placeholder="Enter certificate PDF URL"
-              class="w-full"
-            />
+            <div class="flex items-center gap-4">
+              <div v-if="certification.certificate_pdf" class="flex items-center gap-2">
+                <div class="flex items-center gap-2 p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                  <i :class="getFileIcon(certification.certificate_pdf)" style="color: green"></i>
+                  <span class="text-sm text-black" style="color: black">Certificate uploaded</span>
+                </div>
+                <Button 
+                  icon="pi pi-trash" 
+                  severity="danger" 
+                  text 
+                  size="small"
+                  @click="removeCertificate(index)"
+                />
+              </div>
+              <FileUpload 
+                mode="basic"
+                accept=".pdf,.png,.jpg,.jpeg,.gif,.webp"
+                :maxFileSize="10000000"
+                @select="(event) => handleCertificateUpload(event, index)"
+                :auto="false"
+                chooseLabel="Choose Certificate"
+                class="w-full"
+              />
+            </div>
+            <small class="text-gray-500 dark:text-gray-400">
+              Upload a certificate (PDF, PNG, JPG, GIF, WebP - max 10MB)
+            </small>
           </div>
         </div>
       </div>
@@ -141,7 +165,9 @@ import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
 import Calendar from 'primevue/calendar'
+import FileUpload from 'primevue/fileupload'
 import type { Certification } from '../types'
+import { useUserStore } from '../stores/user'
 
 interface Props {
   modelValue: boolean
@@ -156,6 +182,7 @@ interface Emits {
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
+const userStore = useUserStore()
 const visible = ref(props.modelValue)
 const saving = ref(false)
 const errors = ref<Record<string, string>>({})
@@ -165,8 +192,8 @@ const certifications = ref<Partial<Certification>[]>([
   {
     name: '',
     description: '',
-    start_date: null,
-    end_date: null,
+    start_date: undefined,
+    end_date: undefined,
     institute_name: '',
     certificate_pdf: ''
   }
@@ -185,8 +212,8 @@ const addCertification = () => {
   certifications.value.push({
     name: '',
     description: '',
-    start_date: null,
-    end_date: null,
+    start_date: undefined,
+    end_date: undefined,
     institute_name: '',
     certificate_pdf: ''
   })
@@ -195,6 +222,50 @@ const addCertification = () => {
 const removeCertification = (index: number) => {
   if (certifications.value.length > 1) {
     certifications.value.splice(index, 1)
+  }
+}
+
+const handleCertificateUpload = async (event: any, certificationIndex: number) => {
+  const file = event.files[0]
+  if (!file) return
+
+  try {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('username', userStore.user?.username || 'default')
+    formData.append('fileType', 'certificate')
+
+    const response = await $fetch<{ success: boolean; url: string }>('/api/upload', {
+      method: 'POST',
+      body: formData
+    })
+
+    if (response.success) {
+      certifications.value[certificationIndex]!.certificate_pdf = response.url
+    }
+  } catch (error) {
+    console.error('Error uploading certificate:', error)
+    // You might want to show a toast notification here
+  }
+}
+
+const removeCertificate = (certificationIndex: number) => {
+  certifications.value[certificationIndex]!.certificate_pdf = ''
+}
+
+const getFileIcon = (url: string) => {
+  const extension = url.split('.').pop()?.toLowerCase()
+  switch (extension) {
+    case 'pdf':
+      return 'pi pi-file-pdf'
+    case 'png':
+    case 'jpg':
+    case 'jpeg':
+    case 'gif':
+    case 'webp':
+      return 'pi pi-image'
+    default:
+      return 'pi pi-file'
   }
 }
 
@@ -253,8 +324,8 @@ const closeDialog = () => {
   certifications.value = [{
     name: '',
     description: '',
-    start_date: null,
-    end_date: null,
+    start_date: undefined,
+    end_date: undefined,
     institute_name: '',
     certificate_pdf: ''
   }]

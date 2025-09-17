@@ -58,10 +58,11 @@
               Published Date
             </label>
             <Calendar 
-              v-model="publication.published_date"
               placeholder="Select published date"
               dateFormat="yy-mm-dd"
               class="w-full"
+              :model-value="publication.published_date ? new Date(publication.published_date) : null"
+              @update:model-value="(value: Date | null) => publication.published_date = value ? value.toISOString().split('T')[0] : undefined"
             />
           </div>
 
@@ -81,13 +82,35 @@
           <!-- Paper PDF -->
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Paper PDF URL
+              Paper PDF
             </label>
-            <InputText 
-              v-model="publication.paper_pdf"
-              placeholder="Enter paper PDF URL"
-              class="w-full"
-            />
+            <div class="flex items-center gap-4">
+              <div v-if="publication.paper_pdf" class="flex items-center gap-2">
+                <div class="flex items-center gap-2 p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                  <i :class="getFileIcon(publication.paper_pdf)" style="color: green"></i>
+                  <span class="text-sm text-black" style="color: black">Paper uploaded</span>
+                </div>
+                <Button 
+                  icon="pi pi-trash" 
+                  severity="danger" 
+                  text 
+                  size="small"
+                  @click="removePaper(index)"
+                />
+              </div>
+              <FileUpload 
+                mode="basic"
+                accept=".pdf,.png,.jpg,.jpeg,.gif,.webp"
+                :maxFileSize="10000000"
+                @select="(event) => handlePaperUpload(event, index)"
+                :auto="false"
+                chooseLabel="Choose Paper"
+                class="w-full"
+              />
+            </div>
+            <small class="text-gray-500 dark:text-gray-400">
+              Upload a paper (PDF, PNG, JPG, GIF, WebP - max 10MB)
+            </small>
           </div>
 
           <!-- Paper Link -->
@@ -139,7 +162,9 @@ import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
 import Calendar from 'primevue/calendar'
+import FileUpload from 'primevue/fileupload'
 import type { Publication } from '../types'
+import { useUserStore } from '../stores/user'
 
 interface Props {
   modelValue: boolean
@@ -154,6 +179,7 @@ interface Emits {
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
+const userStore = useUserStore()
 const visible = ref(props.modelValue)
 const saving = ref(false)
 const errors = ref<Record<string, string>>({})
@@ -164,7 +190,7 @@ const publications = ref<Partial<Publication>[]>([
     paper_name: '',
     conference_name: '',
     description: '',
-    published_date: null,
+    published_date: undefined,
     paper_pdf: '',
     paper_link: ''
   }
@@ -184,7 +210,7 @@ const addPublication = () => {
     paper_name: '',
     conference_name: '',
     description: '',
-    published_date: null,
+    published_date: undefined,
     paper_pdf: '',
     paper_link: ''
   })
@@ -193,6 +219,50 @@ const addPublication = () => {
 const removePublication = (index: number) => {
   if (publications.value.length > 1) {
     publications.value.splice(index, 1)
+  }
+}
+
+const handlePaperUpload = async (event: any, publicationIndex: number) => {
+  const file = event.files[0]
+  if (!file) return
+
+  try {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('username', userStore.user?.username || 'default')
+    formData.append('fileType', 'publication')
+
+    const response = await $fetch<{ success: boolean; url: string }>('/api/upload', {
+      method: 'POST',
+      body: formData
+    })
+
+    if (response.success) {
+      publications.value[publicationIndex]!.paper_pdf = response.url
+    }
+  } catch (error) {
+    console.error('Error uploading paper:', error)
+    // You might want to show a toast notification here
+  }
+}
+
+const removePaper = (publicationIndex: number) => {
+  publications.value[publicationIndex]!.paper_pdf = ''
+}
+
+const getFileIcon = (url: string) => {
+  const extension = url.split('.').pop()?.toLowerCase()
+  switch (extension) {
+    case 'pdf':
+      return 'pi pi-file-pdf'
+    case 'png':
+    case 'jpg':
+    case 'jpeg':
+    case 'gif':
+    case 'webp':
+      return 'pi pi-image'
+    default:
+      return 'pi pi-file'
   }
 }
 
@@ -252,7 +322,7 @@ const closeDialog = () => {
     paper_name: '',
     conference_name: '',
     description: '',
-    published_date: null,
+    published_date: undefined,
     paper_pdf: '',
     paper_link: ''
   }]

@@ -44,6 +44,15 @@ export default defineNuxtConfig({
     dbPort: process.env.DB_PORT,
     authentikLogoutUrl: process.env.AUTHENTIK_LOGOUT_URL,
     
+    // MinIO Configuration
+    minioEndpoint: process.env.MINIO_ENDPOINT,
+    minioPublicUrl: process.env.MINIO_PUBLIC_URL,
+    minioBucket: process.env.MINIO_BUCKET,
+    minioRegion: process.env.MINIO_REGION,
+    minioAccessKey: process.env.MINIO_ACCESS_KEY,
+    minioSecretKey: process.env.MINIO_SECRET_KEY,
+    minioUseSSL: process.env.MINIO_USE_SSL === 'true',
+    
     public: {
       authentikLogoutUrl: process.env.AUTHENTIK_LOGOUT_URL
     }

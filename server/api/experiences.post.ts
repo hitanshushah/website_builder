@@ -46,15 +46,16 @@ export default defineEventHandler(async (event) => {
         end_date, 
         description, 
         skills, 
-        location
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-      RETURNING id, company_name, role, start_date, end_date, description, skills, location
+        location,
+        company_logo
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      RETURNING id, company_name, role, start_date, end_date, description, skills, location, company_logo
     `
 
     const insertedExperiences = []
 
     for (const experience of experiences) {
-      const { company_name, role, start_date, end_date, description, skills, location } = experience
+      const { company_name, role, start_date, end_date, description, skills, location, company_logo } = experience
 
       if (!company_name || !role) {
         throw createError({
@@ -72,6 +73,7 @@ export default defineEventHandler(async (event) => {
         description: string | null
         skills: string[]
         location: string | null
+        company_logo: string | null
       }>(insertQuery, [
         profileId,
         company_name,
@@ -80,7 +82,8 @@ export default defineEventHandler(async (event) => {
         end_date,
         description,
         skills || [],
-        location
+        location,
+        company_logo || null
       ])
 
       insertedExperiences.push(result[0])

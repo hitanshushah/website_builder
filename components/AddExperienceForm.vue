@@ -105,6 +105,41 @@
             />
           </div>
 
+          <!-- Company Logo -->
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Company Logo
+            </label>
+            <div class="flex items-center gap-4">
+              <div v-if="experience.company_logo" class="flex items-center gap-2">
+                <img 
+                  :src="experience.company_logo" 
+                  alt="Company logo" 
+                  class="w-12 h-12 object-cover rounded-lg border border-gray-200 dark:border-gray-700"
+                />
+                <Button 
+                  icon="pi pi-trash" 
+                  severity="danger" 
+                  text 
+                  size="small"
+                  @click="removeCompanyLogo(index)"
+                />
+              </div>
+              <FileUpload 
+                mode="basic"
+                accept="image/*"
+                :maxFileSize="5000000"
+                @select="(event) => handleLogoUpload(event, index)"
+                :auto="false"
+                chooseLabel="Choose Logo"
+                class="w-full"
+              />
+            </div>
+            <small class="text-gray-500 dark:text-gray-400">
+              Upload a company logo (max 5MB, JPG, PNG, GIF, WebP)
+            </small>
+          </div>
+
           <!-- Description -->
           <div class="md:col-span-2">
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -186,7 +221,9 @@ import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
 import Calendar from 'primevue/calendar'
 import Checkbox from 'primevue/checkbox'
+import FileUpload from 'primevue/fileupload'
 import type { Experience } from '../types'
+import { useUserStore } from '../stores/user'
 
 interface Props {
   modelValue: boolean
@@ -201,6 +238,7 @@ interface Emits {
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
+const userStore = useUserStore()
 const visible = ref(props.modelValue)
 const saving = ref(false)
 const errors = ref<Record<string, string>>({})
@@ -215,7 +253,8 @@ const experiences = ref<Partial<Experience>[]>([
     description: '',
     skills: [],
     location: '',
-    is_current: false
+    is_current: false,
+    company_logo: ''
   }
 ])
 
@@ -237,7 +276,8 @@ const addExperience = () => {
     description: '',
     skills: [],
     location: '',
-    is_current: false
+    is_current: false,
+    company_logo: ''
   })
 }
 
@@ -256,6 +296,33 @@ const addSkill = (experienceIndex: number) => {
 
 const removeSkill = (experienceIndex: number, skillIndex: number) => {
   experiences.value[experienceIndex].skills!.splice(skillIndex, 1)
+}
+
+const handleLogoUpload = async (event: any, experienceIndex: number) => {
+  const file = event.files[0]
+  if (!file) return
+
+  try {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('username', userStore.user?.username || 'default')
+
+    const response = await $fetch('/api/upload', {
+      method: 'POST',
+      body: formData
+    })
+
+    if (response.success) {
+      experiences.value[experienceIndex].company_logo = response.url
+    }
+  } catch (error) {
+    console.error('Error uploading logo:', error)
+    // You might want to show a toast notification here
+  }
+}
+
+const removeCompanyLogo = (experienceIndex: number) => {
+  experiences.value[experienceIndex].company_logo = ''
 }
 
 const validateForm = () => {
@@ -321,7 +388,8 @@ const closeDialog = () => {
     description: '',
     skills: [],
     location: '',
-    is_current: false
+    is_current: false,
+    company_logo: ''
   }]
   errors.value = {}
 }
