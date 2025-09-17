@@ -127,6 +127,21 @@ export interface Publication {
   paper_link?: string;
 }
 
+export interface Category {
+  id: number;
+  name: string;
+  user_id: number;
+}
+
+export interface Skill {
+  id: number;
+  name: string;
+  category_id?: number;
+  category?: Category;
+  proficiency_level?: string;
+  description?: string;
+}
+
 export interface ProjectsBoardData {
   userProfile: UserProfile;
   projects: Project[];
@@ -134,6 +149,7 @@ export interface ProjectsBoardData {
   achievements: Achievement[];
   experiences: Experience[];
   publications: Publication[];
+  skills: Skill[];
   categories: Category[];
   technologies: string[];
 }

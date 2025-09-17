@@ -70,6 +70,29 @@
           <UserProfileSection :user-profile="projectsBoardData.userProfile" />
         </AccordionTab>
 
+        <!-- Experiences Section -->
+        <AccordionTab>
+          <template #header>
+            <div class="flex items-center gap-2 w-full">
+              <i class="pi pi-building text-primary"></i>
+              <span class="font-semibold">Experience</span>
+              <Badge v-if="projectsBoardData.experiences.length > 0" :value="projectsBoardData.experiences.length" severity="info" />
+              <Button
+                variant="outlined"  
+                label="Add Experience" 
+                size="small"
+                class="ml-4"
+                @click.stop="showExperienceForm = true"
+              />
+            </div>
+          </template>
+          <ExperiencesSection 
+            :experiences="projectsBoardData.experiences" 
+            :user-id="Number(userStore.user?.id) || 0"
+            @refresh="fetchProjectsBoardData"
+          />
+        </AccordionTab>
+
         <!-- Projects Section -->
         <AccordionTab>
           <template #header>
@@ -108,11 +131,34 @@
           <TechnologiesSection :technologies="projectsBoardData.technologies" />
         </AccordionTab>
 
+        <!-- Skills Section -->
+        <AccordionTab>
+          <template #header>
+            <div class="flex items-center gap-2 w-full">
+              <i class="pi pi-cog text-primary"></i>
+              <span class="font-semibold">Skills</span>
+              <Badge v-if="projectsBoardData.skills.length > 0" :value="projectsBoardData.skills.length" severity="info" />
+              <Button
+                variant="outlined"  
+                label="Add Skill" 
+                size="small"
+                class="ml-4"
+                @click.stop="showSkillForm = true"
+              />
+            </div>
+          </template>
+          <SkillsSection 
+            :skills="projectsBoardData.skills" 
+            :user-id="Number(userStore.user?.id) || 0"
+            @refresh="fetchProjectsBoardData"
+          />
+        </AccordionTab>
+
         <!-- Certifications Section -->
         <AccordionTab>
           <template #header>
             <div class="flex items-center gap-2 w-full">
-              <i class="pi pi-certificate text-primary"></i>
+              <i class="pi pi-objects-column text-primary"></i>
               <span class="font-semibold">Certifications</span>
               <Badge v-if="projectsBoardData.certifications.length > 0" :value="projectsBoardData.certifications.length" severity="info" />
               <Button
@@ -149,29 +195,6 @@
           </template>
           <AchievementsSection 
             :achievements="projectsBoardData.achievements" 
-            :user-id="Number(userStore.user?.id) || 0"
-            @refresh="fetchProjectsBoardData"
-          />
-        </AccordionTab>
-
-        <!-- Experiences Section -->
-        <AccordionTab>
-          <template #header>
-            <div class="flex items-center gap-2 w-full">
-              <i class="pi pi-building text-primary"></i>
-              <span class="font-semibold">Experience</span>
-              <Badge v-if="projectsBoardData.experiences.length > 0" :value="projectsBoardData.experiences.length" severity="info" />
-              <Button
-                variant="outlined"  
-                label="Add Experience" 
-                size="small"
-                class="ml-4"
-                @click.stop="showExperienceForm = true"
-              />
-            </div>
-          </template>
-          <ExperiencesSection 
-            :experiences="projectsBoardData.experiences" 
             :user-id="Number(userStore.user?.id) || 0"
             @refresh="fetchProjectsBoardData"
           />
@@ -225,6 +248,12 @@
         :user-id="Number(userStore.user?.id) || 0"
         @saved="handleFormSaved"
       />
+      
+      <AddSkillForm 
+        v-model="showSkillForm"
+        :user-id="Number(userStore.user?.id) || 0"
+        @saved="handleFormSaved"
+      />
 
       <!-- Redirect Modal -->
       <Dialog 
@@ -234,7 +263,6 @@
         :style="{ width: '400px' }"
       >
         <div class="text-center py-4">
-          <i class="pi pi-external-link text-4xl text-primary mb-4"></i>
           <p class="text-gray-600 dark:text-gray-400 mb-4">
             To add projects, edit profile, and add technologies, please log in to ProjectsBoard.
           </p>
@@ -264,6 +292,7 @@ import type { ProjectsBoardData } from '../types'
 import UserProfileSection from '../components/UserProfileSection.vue'
 import ProjectsSection from '../components/ProjectsSection.vue'
 import TechnologiesSection from '../components/TechnologiesSection.vue'
+import SkillsSection from '../components/SkillsSection.vue'
 import CertificationsSection from '../components/CertificationsSection.vue'
 import AchievementsSection from '../components/AchievementsSection.vue'
 import ExperiencesSection from '../components/ExperiencesSection.vue'
@@ -272,6 +301,7 @@ import AddExperienceForm from '../components/AddExperienceForm.vue'
 import AddAchievementForm from '../components/AddAchievementForm.vue'
 import AddCertificationForm from '../components/AddCertificationForm.vue'
 import AddPublicationForm from '../components/AddPublicationForm.vue'
+import AddSkillForm from '../components/AddSkillForm.vue'
 import Avatar from 'primevue/avatar'
 import ProgressSpinner from 'primevue/progressspinner'
 import Message from 'primevue/message'
@@ -291,6 +321,7 @@ const showExperienceForm = ref(false)
 const showAchievementForm = ref(false)
 const showCertificationForm = ref(false)
 const showPublicationForm = ref(false)
+const showSkillForm = ref(false)
 
 // Redirect modal state
 const showRedirectModal = ref(false)
@@ -337,28 +368,3 @@ onMounted(() => {
   }
 })
 </script>
-
-<style scoped>
-/* Custom accordion arrow styling */
-:deep(.p-accordion-header-link) {
-  position: relative;
-}
-
-:deep(.p-accordion-header-link .p-accordion-toggle-icon) {
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  transition: transform 0.2s ease;
-}
-
-/* Arrow down when closed */
-:deep(.p-accordion-header-link:not(.p-accordion-header-link-active) .p-accordion-toggle-icon) {
-  transform: translateY(-50%) rotate(0deg);
-}
-
-/* Arrow up when open */
-:deep(.p-accordion-header-link.p-accordion-header-link-active .p-accordion-toggle-icon) {
-  transform: translateY(-50%) rotate(180deg);
-}
-</style>

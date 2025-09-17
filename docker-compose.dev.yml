@@ -9,6 +9,8 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+      - /app/.nuxt
+      - /app/.output
     env_file:
       - .env
     environment:

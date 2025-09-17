@@ -4,13 +4,15 @@
       <i class="pi pi-cog text-4xl mb-4"></i>
       <p>No technologies available</p>
     </div>
-    <div v-else class="flex flex-wrap gap-2">
+    <div v-else class="flex flex-wrap gap-2 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"
+    style="padding: 24px;">
       <Tag 
         v-for="tech in technologies" 
         :key="tech"
         :value="tech"
-        :severity="getTechSeverity(tech)"
+        severity="green"
         class="text-sm"
+        rounded
       />
     </div>
   </div>
@@ -25,43 +27,4 @@ interface Props {
 
 defineProps<Props>()
 
-const getTechSeverity = (tech: string) => {
-  const techCategories: Record<string, string> = {
-    // Frontend
-    'react': 'info',
-    'vue': 'info',
-    'angular': 'info',
-    'javascript': 'info',
-    'typescript': 'info',
-    'html': 'info',
-    'css': 'info',
-    'tailwind': 'info',
-    'bootstrap': 'info',
-    
-    // Backend
-    'nodejs': 'success',
-    'python': 'success',
-    'java': 'success',
-    'php': 'success',
-    'ruby': 'success',
-    'go': 'success',
-    'rust': 'success',
-    
-    // Database
-    'postgresql': 'warning',
-    'mysql': 'warning',
-    'mongodb': 'warning',
-    'redis': 'warning',
-    'sqlite': 'warning',
-    
-    // Cloud/DevOps
-    'aws': 'danger',
-    'docker': 'danger',
-    'kubernetes': 'danger',
-    'azure': 'danger',
-    'gcp': 'danger'
-  }
-  
-  return techCategories[tech.toLowerCase()] || 'secondary'
-}
 </script>

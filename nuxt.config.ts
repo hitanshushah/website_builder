@@ -10,7 +10,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   modules: ['@pinia/nuxt','@nuxt/eslint', '@nuxt/ui', '@primevue/nuxt-module'],
-  css: ['~/assets/css/main.css'],
+  css: ['~/assets/css/main.css', 'primeicons/primeicons.css'],
   vite: {
     plugins: [
       tailwindcss(),
