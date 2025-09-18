@@ -88,6 +88,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { useUserStore } from '../stores/user'
 import Avatar from 'primevue/avatar'
 import type { UserProfile } from '../types'
+import { useRuntimeConfig, navigateTo } from 'nuxt/app'
 
 interface Props {
   userProfile?: UserProfile | null
@@ -106,7 +107,7 @@ const toggleUserMenu = () => {
 const handleLogout = () => {
   userStore.clearUser()
   showUserMenu.value = false
-  const logoutUrl = config.public.authentikLogoutUrl
+  const logoutUrl = config.public.authentikLogoutUrl as string
   
   if (logoutUrl) {
     // Open logout URL in the same window
