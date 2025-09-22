@@ -1,0 +1,68 @@
+<template>
+  <div class="space-y-4">
+    <div v-if="!education || education.length === 0" class="text-center py-8 text-gray-500">
+      <span class="text-4xl mb-4 block">🎓</span>
+      <p>No education data available</p>
+    </div>
+
+    <UCard 
+      v-for="edu in education" 
+      :key="edu.id"
+      class="bg-white dark:bg-gray-800"
+    >
+      <div class="p-4">
+        <div class="flex items-start justify-between">
+          <div class="flex-1">
+            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">{{ edu.degree }}</h4>
+            <p class="text-blue-600 dark:text-blue-400 font-medium mb-1">{{ edu.university_name }}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+              {{ formatDateRange(edu.from_date, edu.end_date) }}
+            </p>
+            <p v-if="edu.location" class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+              📍 {{ edu.location }}
+            </p>
+            <p v-if="edu.cgpa" class="text-sm text-gray-600 dark:text-gray-400">
+              CGPA: {{ edu.cgpa }}
+            </p>
+          </div>
+          <div class="flex gap-2 ml-4">
+            <UButton size="sm" variant="ghost" color="gray">
+              <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
+            </UButton>
+            <UButton size="sm" variant="ghost" color="red">
+              <UIcon name="i-heroicons-trash" class="w-4 h-4" />
+            </UButton>
+          </div>
+        </div>
+      </div>
+    </UCard>
+  </div>
+</template>
+
+<script setup lang="ts">
+import type { Education } from '@/types'
+
+const props = defineProps<{
+  education: Education[]
+}>()
+
+const formatDateRange = (fromDate?: string, endDate?: string) => {
+  if (!fromDate) return 'Date not specified'
+  
+  const start = new Date(fromDate).toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'short' 
+  })
+  
+  if (!endDate) {
+    return `${start} - Present`
+  }
+  
+  const end = new Date(endDate).toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'short' 
+  })
+  
+  return `${start} - ${end}`
+}
+</script>

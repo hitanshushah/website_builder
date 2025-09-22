@@ -1,6 +1,6 @@
 // server/db.ts
 import pkg from 'pg';
-import { User } from '../../types'
+import { User } from '../../app/types'
 
 const { Pool } = pkg;
 

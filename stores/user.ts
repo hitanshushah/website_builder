@@ -1,6 +1,6 @@
 // stores/user.ts
 import { defineStore } from 'pinia'
-import type { User } from '../types/index'
+import type { User } from '../app/types/index'
 
 export const useUserStore = defineStore('user', {
   state: () => ({

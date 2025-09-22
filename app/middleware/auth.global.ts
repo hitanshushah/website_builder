@@ -1,5 +1,5 @@
 import { useUserStore } from '../../stores/user'
-import type { User } from '../../types'
+import type { User } from '../types'
 
 export default defineNuxtRouteMiddleware(async (to) => {
   if (to.path === '/logout') {

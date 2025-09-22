@@ -1,6 +1,6 @@
 // server/db/models.ts
 import { query } from './db';
-import type { User, Profile, Education } from '../../types';
+import type { User, Profile, Education } from '../../app/types';
 
 export class UserModel {
   static async firstOrCreate(username: string, email: string): Promise<User> {

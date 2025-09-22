@@ -8,7 +8,7 @@ const allowedHosts = process.env.VITE_ALLOWED_HOSTS
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  modules: ['@pinia/nuxt','@nuxt/eslint'],
+  modules: ['@nuxt/ui','@pinia/nuxt','@nuxt/eslint'],
   css: ['~/assets/css/main.css'],
   vite: {
     plugins: [

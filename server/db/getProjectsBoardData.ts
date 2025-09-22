@@ -1,5 +1,5 @@
 import { query } from './db'
-import type { ProjectsBoardData } from '../../types'
+import type { ProjectsBoardData } from '../../app/types'
 
 export async function getProjectsBoardData(userId: number): Promise<ProjectsBoardData> {
   const sql = `
