@@ -130,6 +130,9 @@
   </div>
 </div>
 
+  <!-- AchievementForm Modal -->
+<AchievementForm v-if="showAchievementForm" @close="closeAchievementForm" @save="saveAchievements" />
+
 </template>
 
 <script setup>
@@ -223,6 +226,8 @@ const toggleAccordion = (section) => {
 const addItem = (section) => {
   if (section === 'education') {
     showEducationForm.value = true
+  } else if (section === 'achievements') {
+    showAchievementForm.value = true
   }
 }
 const closeEducationForm = () => {
@@ -235,11 +240,22 @@ const saveEducation = (data) => {
   showEducationForm.value = false
 }
 
+const closeAchievementForm = () => {
+  showAchievementForm.value = false
+}
+const saveAchievements = (data) => {
+  // Append new achievements to projectsBoardData
+  projectsBoardData.value.achievements = projectsBoardData.value.achievements || []
+  projectsBoardData.value.achievements.push(...data.achievements)
+  showAchievementForm.value = false
+}
+
 const userStore = useUserStore()
 const projectsBoardData = ref(null)
 const loading = ref(false)
 const error = ref(null)
 const showEducationForm = ref(false)
+const showAchievementForm = ref(false)
 
 const fetchProjectsBoardData = async () => {
   try {
