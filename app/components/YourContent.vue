@@ -123,6 +123,13 @@
       </AccordionCard>
     </div>
   </div>
+  <!-- EducationForm Modal -->
+<div v-if="showEducationForm" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-md p-6">
+    <EducationForm @close="closeEducationForm" @save="saveEducation" />
+  </div>
+</div>
+
 </template>
 
 <script setup>
@@ -214,15 +221,25 @@ const toggleAccordion = (section) => {
 
 // Function to handle add button clicks
 const addItem = (section) => {
-  console.log(`Add item to ${section}`)
-  // Add your logic here to handle adding new items
-  // For example, you could emit an event or call a function to show a modal
+  if (section === 'education') {
+    showEducationForm.value = true
+  }
+}
+const closeEducationForm = () => {
+  showEducationForm.value = false
+}
+const saveEducation = (data) => {
+  // Append new education to projectsBoardData
+  projectsBoardData.value.education = projectsBoardData.value.education || []
+  projectsBoardData.value.education.push(data)
+  showEducationForm.value = false
 }
 
 const userStore = useUserStore()
 const projectsBoardData = ref(null)
 const loading = ref(false)
 const error = ref(null)
+const showEducationForm = ref(false)
 
 const fetchProjectsBoardData = async () => {
   try {
