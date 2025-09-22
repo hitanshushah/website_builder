@@ -55,7 +55,7 @@
             <UButton size="sm" variant="ghost" color="gray">
               <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
             </UButton>
-            <UButton size="sm" variant="ghost" color="red">
+            <UButton size="sm" variant="ghost" color="red" @click="deletePublication(publication)">
               <UIcon name="i-heroicons-trash" class="w-4 h-4" />
             </UButton>
           </div>
@@ -63,14 +63,53 @@
       </div>
     </UCard>
   </div>
+
+  <!-- Delete Confirmation Modal -->
+  <DeleteConfirmModal 
+    v-if="showDeleteModal"
+    :item-type="deleteItemType"
+    :item-name="deleteItemName"
+    :item-id="deleteItemId"
+    :delete-api="deleteApi"
+    @cancel="closeDeleteModal"
+    @deleted="handleDeleteSuccess"
+  />
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import type { Publication } from '@/types'
 
 const props = defineProps<{
   publications: Publication[]
 }>()
+
+const emit = defineEmits<{
+  (e: 'deleted', publicationId: number): void
+}>()
+
+const showDeleteModal = ref(false)
+const deleteItemType = ref('')
+const deleteItemName = ref('')
+const deleteItemId = ref(0)
+const deleteApi = ref('')
+
+const deletePublication = (publication: Publication) => {
+  deleteItemType.value = 'Publication'
+  deleteItemName.value = publication.paper_name
+  deleteItemId.value = publication.id
+  deleteApi.value = '/api/publications'
+  showDeleteModal.value = true
+}
+
+const closeDeleteModal = () => {
+  showDeleteModal.value = false
+}
+
+const handleDeleteSuccess = () => {
+  showDeleteModal.value = false
+  emit('deleted', deleteItemId.value)
+}
 
 const formatDate = (dateString?: string) => {
   if (!dateString) return ''

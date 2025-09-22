@@ -27,7 +27,7 @@
             <UButton size="sm" variant="ghost" color="neutral">
               <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
             </UButton>
-            <UButton size="sm" variant="ghost" color="error">
+            <UButton size="sm" variant="ghost" color="error" @click="deleteAchievement(achievement)">
               <UIcon name="i-heroicons-trash" class="w-4 h-4" />
             </UButton>
           </div>
@@ -35,12 +35,51 @@
       </div>
     </UCard>
   </div>
+
+  <!-- Delete Confirmation Modal -->
+  <DeleteConfirmModal 
+    v-if="showDeleteModal"
+    :item-type="deleteItemType"
+    :item-name="deleteItemName"
+    :item-id="deleteItemId"
+    :delete-api="deleteApi"
+    @cancel="closeDeleteModal"
+    @deleted="handleDeleteSuccess"
+  />
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import type { Achievement } from '@/types'
 
 const props = defineProps<{
   achievements: Achievement[]
 }>()
+
+const emit = defineEmits<{
+  (e: 'deleted', achievementId: number): void
+}>()
+
+const showDeleteModal = ref(false)
+const deleteItemType = ref('')
+const deleteItemName = ref('')
+const deleteItemId = ref(0)
+const deleteApi = ref('')
+
+const deleteAchievement = (achievement: Achievement) => {
+  deleteItemType.value = 'Achievement'
+  deleteItemName.value = achievement.description
+  deleteItemId.value = achievement.id
+  deleteApi.value = '/api/achievements'
+  showDeleteModal.value = true
+}
+
+const closeDeleteModal = () => {
+  showDeleteModal.value = false
+}
+
+const handleDeleteSuccess = () => {
+  showDeleteModal.value = false
+  emit('deleted', deleteItemId.value)
+}
 </script>

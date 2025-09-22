@@ -13,7 +13,19 @@
         class="bg-white dark:bg-gray-800"
       >
         <div class="p-4">
-          <h4 class="font-semibold text-gray-900 dark:text-white mb-3">{{ categoryName || 'Other Skills' }}</h4>
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="font-semibold text-gray-900 dark:text-white">{{ categoryName || 'Other Skills' }}</h4>
+            <UButton 
+              v-if="categoryName && categoryName !== 'Other Skills'"
+              size="xs" 
+              variant="ghost" 
+              color="red"
+              @click="deleteCategory(categoryName, categorySkills[0]?.category?.id)"
+              class="ml-2"
+            >
+              <UIcon name="i-heroicons-trash" class="w-4 h-4" />
+            </UButton>
+          </div>
           <div class="flex flex-wrap gap-2">
             <div 
               v-for="skill in categorySkills" 
@@ -30,21 +42,83 @@
                   ({{ skill.proficiency_level }})
                 </span>
               </UBadge>
+              <UButton 
+                size="xs" 
+                variant="ghost" 
+                color="red"
+                @click="deleteSkill(skill)"
+                class="ml-1"
+              >
+                <UIcon name="i-heroicons-x-mark" class="w-3 h-3" />
+              </UButton>
             </div>
           </div>
         </div>
       </UCard>
     </div>
   </div>
+
+  <!-- Delete Confirmation Modal -->
+  <DeleteConfirmModal 
+    v-if="showDeleteModal"
+    :item-type="deleteItemType"
+    :item-name="deleteItemName"
+    :item-id="deleteItemId"
+    :delete-api="deleteApi"
+    @cancel="closeDeleteModal"
+    @deleted="handleDeleteSuccess"
+  />
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import type { Skill } from '@/types'
 
 const props = defineProps<{
   skills: Skill[]
 }>()
+
+const emit = defineEmits<{
+  (e: 'deleted', skillId: number): void
+  (e: 'categoryDeleted', categoryId: number): void
+}>()
+
+const showDeleteModal = ref(false)
+const deleteItemType = ref('')
+const deleteItemName = ref('')
+const deleteItemId = ref(0)
+const deleteApi = ref('')
+
+const deleteSkill = (skill: Skill) => {
+  deleteItemType.value = 'Skill'
+  deleteItemName.value = skill.name
+  deleteItemId.value = skill.id
+  deleteApi.value = '/api/skills'
+  showDeleteModal.value = true
+}
+
+const closeDeleteModal = () => {
+  showDeleteModal.value = false
+}
+
+const handleDeleteSuccess = () => {
+  showDeleteModal.value = false
+  if (deleteItemType.value === 'Category') {
+    emit('categoryDeleted', deleteItemId.value)
+  } else {
+    emit('deleted', deleteItemId.value)
+  }
+}
+
+const deleteCategory = (categoryName: string, categoryId?: number) => {
+  if (!categoryId) return
+  
+  deleteItemType.value = 'Category'
+  deleteItemName.value = categoryName
+  deleteItemId.value = categoryId
+  deleteApi.value = '/api/categories'
+  showDeleteModal.value = true
+}
 
 const groupedSkills = computed(() => {
   if (!props.skills) return {}

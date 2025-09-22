@@ -36,7 +36,7 @@
             <UButton size="sm" variant="ghost" color="gray">
               <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
             </UButton>
-            <UButton size="sm" variant="ghost" color="red">
+            <UButton size="sm" variant="ghost" color="red" @click="deleteCertification(cert)">
               <UIcon name="i-heroicons-trash" class="w-4 h-4" />
             </UButton>
           </div>
@@ -44,14 +44,53 @@
       </div>
     </UCard>
   </div>
+
+  <!-- Delete Confirmation Modal -->
+  <DeleteConfirmModal 
+    v-if="showDeleteModal"
+    :item-type="deleteItemType"
+    :item-name="deleteItemName"
+    :item-id="deleteItemId"
+    :delete-api="deleteApi"
+    @cancel="closeDeleteModal"
+    @deleted="handleDeleteSuccess"
+  />
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import type { Certification } from '@/types'
 
 const props = defineProps<{
   certifications: Certification[]
 }>()
+
+const emit = defineEmits<{
+  (e: 'deleted', certificationId: number): void
+}>()
+
+const showDeleteModal = ref(false)
+const deleteItemType = ref('')
+const deleteItemName = ref('')
+const deleteItemId = ref(0)
+const deleteApi = ref('')
+
+const deleteCertification = (certification: Certification) => {
+  deleteItemType.value = 'Certification'
+  deleteItemName.value = certification.name
+  deleteItemId.value = certification.id
+  deleteApi.value = '/api/certifications'
+  showDeleteModal.value = true
+}
+
+const closeDeleteModal = () => {
+  showDeleteModal.value = false
+}
+
+const handleDeleteSuccess = () => {
+  showDeleteModal.value = false
+  emit('deleted', deleteItemId.value)
+}
 
 const formatDateRange = (startDate?: string, endDate?: string) => {
   if (!startDate) return 'Date not specified'

@@ -37,7 +37,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.experiences?.length">
-            <Experience :experiences="projectsBoardData.experiences" />
+            <Experience :experiences="projectsBoardData.experiences" @deleted="handleExperienceDeleted" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No experience data available</p>
@@ -59,7 +59,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.education?.length">
-            <Education :education="projectsBoardData.education" />
+            <Education :education="projectsBoardData.education" @deleted="handleEducationDeleted" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No education data available</p>
@@ -70,7 +70,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.skills?.length">
-            <Skills :skills="projectsBoardData.skills" />
+            <Skills :skills="projectsBoardData.skills" @deleted="handleSkillDeleted" @categoryDeleted="handleCategoryDeleted" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No skills data available</p>
@@ -81,7 +81,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.certifications?.length">
-            <Certifications :certifications="projectsBoardData.certifications" />
+            <Certifications :certifications="projectsBoardData.certifications" @deleted="handleCertificationDeleted" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No certifications data available</p>
@@ -103,7 +103,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.achievements?.length">
-            <Achievements :achievements="projectsBoardData.achievements" />
+            <Achievements :achievements="projectsBoardData.achievements" @deleted="handleAchievementDeleted" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No achievements data available</p>
@@ -114,7 +114,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.publications?.length">
-            <Publications :publications="projectsBoardData.publications" />
+            <Publications :publications="projectsBoardData.publications" @deleted="handlePublicationDeleted" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No publications data available</p>
@@ -144,6 +144,9 @@
 
   <!-- SkillsForm Modal -->
 <SkillsForm v-if="showSkillsForm" @close="closeSkillsForm" @save="saveSkill" />
+
+  <!-- ProjectsBoardModal -->
+<ProjectsBoardModal v-if="showProjectsBoardModal" :section="projectsBoardSection" @close="closeProjectsBoardModal" />
 
 </template>
 
@@ -248,6 +251,9 @@ const addItem = (section) => {
     showCertificationForm.value = true
   } else if (section === 'skills') {
     showSkillsForm.value = true
+  } else if (section === 'projects' || section === 'user-info' || section === 'technologies') {
+    projectsBoardSection.value = section
+    showProjectsBoardModal.value = true
   }
 }
 const closeEducationForm = () => {
@@ -310,6 +316,73 @@ const saveSkill = (data) => {
   showSkillsForm.value = false
 }
 
+const closeProjectsBoardModal = () => {
+  showProjectsBoardModal.value = false
+}
+
+const handleExperienceDeleted = (experienceId) => {
+  // Remove the deleted experience from the data
+  if (projectsBoardData.value?.experiences) {
+    projectsBoardData.value.experiences = projectsBoardData.value.experiences.filter(
+      exp => exp.id !== experienceId
+    )
+  }
+}
+
+const handleEducationDeleted = (educationId) => {
+  // Remove the deleted education from the data
+  if (projectsBoardData.value?.education) {
+    projectsBoardData.value.education = projectsBoardData.value.education.filter(
+      edu => edu.id !== educationId
+    )
+  }
+}
+
+const handleAchievementDeleted = (achievementId) => {
+  // Remove the deleted achievement from the data
+  if (projectsBoardData.value?.achievements) {
+    projectsBoardData.value.achievements = projectsBoardData.value.achievements.filter(
+      achievement => achievement.id !== achievementId
+    )
+  }
+}
+
+const handlePublicationDeleted = (publicationId) => {
+  // Remove the deleted publication from the data
+  if (projectsBoardData.value?.publications) {
+    projectsBoardData.value.publications = projectsBoardData.value.publications.filter(
+      publication => publication.id !== publicationId
+    )
+  }
+}
+
+const handleCertificationDeleted = (certificationId) => {
+  // Remove the deleted certification from the data
+  if (projectsBoardData.value?.certifications) {
+    projectsBoardData.value.certifications = projectsBoardData.value.certifications.filter(
+      certification => certification.id !== certificationId
+    )
+  }
+}
+
+const handleSkillDeleted = (skillId) => {
+  // Remove the deleted skill from the data
+  if (projectsBoardData.value?.skills) {
+    projectsBoardData.value.skills = projectsBoardData.value.skills.filter(
+      skill => skill.id !== skillId
+    )
+  }
+}
+
+const handleCategoryDeleted = (categoryId) => {
+  // Remove all skills from the deleted category
+  if (projectsBoardData.value?.skills) {
+    projectsBoardData.value.skills = projectsBoardData.value.skills.filter(
+      skill => skill.category?.id !== categoryId
+    )
+  }
+}
+
 const userStore = useUserStore()
 const projectsBoardData = ref(null)
 const loading = ref(false)
@@ -320,6 +393,8 @@ const showExperienceForm = ref(false)
 const showPublicationsForm = ref(false)
 const showCertificationForm = ref(false)
 const showSkillsForm = ref(false)
+const showProjectsBoardModal = ref(false)
+const projectsBoardSection = ref('')
 
 const fetchProjectsBoardData = async () => {
   try {
