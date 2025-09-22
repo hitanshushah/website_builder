@@ -133,6 +133,18 @@
   <!-- AchievementForm Modal -->
 <AchievementForm v-if="showAchievementForm" @close="closeAchievementForm" @save="saveAchievements" />
 
+  <!-- ExperienceForm Modal -->
+<ExperienceForm v-if="showExperienceForm" @close="closeExperienceForm" @save="saveExperience" />
+
+  <!-- PublicationsForm Modal -->
+<PublicationsForm v-if="showPublicationsForm" @close="closePublicationsForm" @save="savePublication" />
+
+  <!-- CertificationForm Modal -->
+<CertificationForm v-if="showCertificationForm" @close="closeCertificationForm" @save="saveCertification" />
+
+  <!-- SkillsForm Modal -->
+<SkillsForm v-if="showSkillsForm" @close="closeSkillsForm" @save="saveSkill" />
+
 </template>
 
 <script setup>
@@ -228,6 +240,14 @@ const addItem = (section) => {
     showEducationForm.value = true
   } else if (section === 'achievements') {
     showAchievementForm.value = true
+  } else if (section === 'experience') {
+    showExperienceForm.value = true
+  } else if (section === 'publications') {
+    showPublicationsForm.value = true
+  } else if (section === 'certifications') {
+    showCertificationForm.value = true
+  } else if (section === 'skills') {
+    showSkillsForm.value = true
   }
 }
 const closeEducationForm = () => {
@@ -250,12 +270,56 @@ const saveAchievements = (data) => {
   showAchievementForm.value = false
 }
 
+const closeExperienceForm = () => {
+  showExperienceForm.value = false
+}
+const saveExperience = (data) => {
+  // Append new experience to projectsBoardData
+  projectsBoardData.value.experiences = projectsBoardData.value.experiences || []
+  projectsBoardData.value.experiences.push(data)
+  showExperienceForm.value = false
+}
+
+const closePublicationsForm = () => {
+  showPublicationsForm.value = false
+}
+const savePublication = (data) => {
+  // Append new publication to projectsBoardData
+  projectsBoardData.value.publications = projectsBoardData.value.publications || []
+  projectsBoardData.value.publications.push(data)
+  showPublicationsForm.value = false
+}
+
+const closeCertificationForm = () => {
+  showCertificationForm.value = false
+}
+const saveCertification = (data) => {
+  // Append new certification to projectsBoardData
+  projectsBoardData.value.certifications = projectsBoardData.value.certifications || []
+  projectsBoardData.value.certifications.push(data)
+  showCertificationForm.value = false
+}
+
+const closeSkillsForm = () => {
+  showSkillsForm.value = false
+}
+const saveSkill = (data) => {
+  // Append new skill to projectsBoardData
+  projectsBoardData.value.skills = projectsBoardData.value.skills || []
+  projectsBoardData.value.skills.push(data)
+  showSkillsForm.value = false
+}
+
 const userStore = useUserStore()
 const projectsBoardData = ref(null)
 const loading = ref(false)
 const error = ref(null)
 const showEducationForm = ref(false)
 const showAchievementForm = ref(false)
+const showExperienceForm = ref(false)
+const showPublicationsForm = ref(false)
+const showCertificationForm = ref(false)
+const showSkillsForm = ref(false)
 
 const fetchProjectsBoardData = async () => {
   try {
