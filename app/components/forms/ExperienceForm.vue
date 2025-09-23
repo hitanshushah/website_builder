@@ -111,7 +111,7 @@
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
 import { reactive, ref, watch } from 'vue'
-import { useUserStore } from '../../stores/user'
+import { useUserStore } from '../../../stores/user'
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024 // 2MB
 const MIN_DIMENSIONS = { width: 200, height: 200 }

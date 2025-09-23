@@ -33,10 +33,10 @@
             </div>
           </div>
           <div class="flex gap-2 ml-4">
-            <UButton size="sm" variant="ghost" color="gray">
+            <UButton size="sm" variant="ghost" color="neutral">
               <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
             </UButton>
-            <UButton size="sm" variant="ghost" color="red" @click="deleteCertification(cert)">
+            <UButton size="sm" variant="ghost" color="error" @click="deleteCertification(cert)">
               <UIcon name="i-heroicons-trash" class="w-4 h-4" />
             </UButton>
           </div>
@@ -46,7 +46,7 @@
   </div>
 
   <!-- Delete Confirmation Modal -->
-  <DeleteConfirmModal 
+  <ModalsDeleteConfirmModal 
     v-if="showDeleteModal"
     :item-type="deleteItemType"
     :item-name="deleteItemName"

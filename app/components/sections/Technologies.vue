@@ -34,34 +34,34 @@ const getTechColor = (tech: string) => {
   
   // Programming Languages
   if (['javascript', 'typescript', 'python', 'java', 'c++', 'c#', 'go', 'rust', 'php', 'ruby', 'swift', 'kotlin'].some(lang => techLower.includes(lang))) {
-    return 'blue'
+    return 'info'
   }
   
   // Frontend Frameworks
   if (['react', 'vue', 'angular', 'svelte', 'next', 'nuxt', 'sveltekit'].some(fw => techLower.includes(fw))) {
-    return 'green'
+    return 'primary'
   }
   
   // Backend Frameworks
   if (['node', 'express', 'django', 'flask', 'fastapi', 'spring', 'laravel', 'rails'].some(fw => techLower.includes(fw))) {
-    return 'yellow'
+    return 'warning'
   }
   
   // Databases
   if (['mysql', 'postgresql', 'mongodb', 'redis', 'sqlite', 'oracle', 'sql server'].some(db => techLower.includes(db))) {
-    return 'purple'
+    return 'secondary'
   }
   
   // Cloud & DevOps
   if (['aws', 'azure', 'gcp', 'docker', 'kubernetes', 'terraform', 'jenkins', 'gitlab', 'github'].some(cloud => techLower.includes(cloud))) {
-    return 'red'
+    return 'error'
   }
   
   // Tools
   if (['git', 'npm', 'yarn', 'webpack', 'vite', 'babel', 'eslint', 'prettier'].some(tool => techLower.includes(tool))) {
-    return 'gray'
+    return 'neutral'
   }
   
-  return 'blue'
+  return 'info'
 }
 </script>

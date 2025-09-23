@@ -37,7 +37,7 @@
   </div>
 
   <!-- Delete Confirmation Modal -->
-  <DeleteConfirmModal 
+  <ModalsDeleteConfirmModal 
     v-if="showDeleteModal"
     :item-type="deleteItemType"
     :item-name="deleteItemName"

@@ -53,7 +53,7 @@
 </template>
 <script setup lang="ts">
 import { reactive, watch, ref } from 'vue'
-import { useUserStore } from '../../stores/user'
+import { useUserStore } from '../../../stores/user'
 
 const emit = defineEmits<{
   (e: 'save', data: EducationData): void

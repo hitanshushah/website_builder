@@ -25,7 +25,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.userProfile">
-            <UserInfo :user-profile="projectsBoardData.userProfile" />
+            <SectionsUserInfo :user-profile="projectsBoardData.userProfile" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No user profile data available</p>
@@ -37,7 +37,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.experiences?.length">
-            <Experience :experiences="projectsBoardData.experiences" @deleted="handleExperienceDeleted" />
+            <SectionsExperience :experiences="projectsBoardData.experiences" @deleted="handleExperienceDeleted" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No experience data available</p>
@@ -48,7 +48,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.projects?.length">
-            <Projects :projects="projectsBoardData.projects" />
+            <SectionsProjects :projects="projectsBoardData.projects" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No projects data available</p>
@@ -59,7 +59,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.education?.length">
-            <Education :education="projectsBoardData.education" @deleted="handleEducationDeleted" />
+            <SectionsEducation :education="projectsBoardData.education" @deleted="handleEducationDeleted" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No education data available</p>
@@ -70,7 +70,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.skills?.length">
-            <Skills :skills="projectsBoardData.skills" @deleted="handleSkillDeleted" @categoryDeleted="handleCategoryDeleted" />
+            <SectionsSkills :skills="projectsBoardData.skills" @deleted="handleSkillDeleted" @categoryDeleted="handleCategoryDeleted" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No skills data available</p>
@@ -81,7 +81,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.certifications?.length">
-            <Certifications :certifications="projectsBoardData.certifications" @deleted="handleCertificationDeleted" />
+            <SectionsCertifications :certifications="projectsBoardData.certifications" @deleted="handleCertificationDeleted" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No certifications data available</p>
@@ -92,7 +92,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.technologies?.length">
-            <Technologies :technologies="projectsBoardData.technologies" />
+            <SectionsTechnologies :technologies="projectsBoardData.technologies" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No technologies data available</p>
@@ -103,7 +103,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.achievements?.length">
-            <Achievements :achievements="projectsBoardData.achievements" @deleted="handleAchievementDeleted" />
+            <SectionsAchievements :achievements="projectsBoardData.achievements" @deleted="handleAchievementDeleted" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No achievements data available</p>
@@ -114,7 +114,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.publications?.length">
-            <Publications :publications="projectsBoardData.publications" @deleted="handlePublicationDeleted" />
+            <SectionsPublications :publications="projectsBoardData.publications" @deleted="handlePublicationDeleted" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No publications data available</p>
@@ -126,27 +126,27 @@
   <!-- EducationForm Modal -->
 <div v-if="showEducationForm" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-md p-6">
-    <EducationForm @close="closeEducationForm" @save="saveEducation" />
+    <FormsEducationForm @close="closeEducationForm" @save="saveEducation" />
   </div>
 </div>
 
   <!-- AchievementForm Modal -->
-<AchievementForm v-if="showAchievementForm" @close="closeAchievementForm" @save="saveAchievements" />
+<FormsAchievementForm v-if="showAchievementForm" @close="closeAchievementForm" @save="saveAchievements" />
 
   <!-- ExperienceForm Modal -->
-<ExperienceForm v-if="showExperienceForm" @close="closeExperienceForm" @save="saveExperience" />
+<FormsExperienceForm v-if="showExperienceForm" @close="closeExperienceForm" @save="saveExperience" />
 
   <!-- PublicationsForm Modal -->
-<PublicationsForm v-if="showPublicationsForm" @close="closePublicationsForm" @save="savePublication" />
+<FormsPublicationsForm v-if="showPublicationsForm" @close="closePublicationsForm" @save="savePublication" />
 
   <!-- CertificationForm Modal -->
-<CertificationForm v-if="showCertificationForm" @close="closeCertificationForm" @save="saveCertification" />
+<FormsCertificationForm v-if="showCertificationForm" @close="closeCertificationForm" @save="saveCertification" />
 
   <!-- SkillsForm Modal -->
-<SkillsForm v-if="showSkillsForm" @close="closeSkillsForm" @save="saveSkill" />
+<FormsSkillsForm v-if="showSkillsForm" @close="closeSkillsForm" @save="saveSkill" />
 
   <!-- ProjectsBoardModal -->
-<ProjectsBoardModal v-if="showProjectsBoardModal" :section="projectsBoardSection" @close="closeProjectsBoardModal" />
+<ModalsProjectsBoardModal v-if="showProjectsBoardModal" :section="projectsBoardSection" @close="closeProjectsBoardModal" />
 
 </template>
 

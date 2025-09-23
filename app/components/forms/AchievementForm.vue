@@ -33,7 +33,7 @@
                 class="flex justify-between items-center text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 p-2 rounded"
               >
                 <span>{{ index + 1 }}. {{ achievement.description }}</span>
-                <UButton type="button" size="sm" color="negative" @click="removeAchievement(index)">
+                <UButton type="button" size="sm" color="error" @click="removeAchievement(index)">
                   Remove
                 </UButton>
               </div>
@@ -59,7 +59,7 @@
   
   <script setup lang="ts">
   import { reactive, ref } from 'vue'
-  import { useUserStore } from '../../stores/user'
+  import { useUserStore } from '../../../stores/user'
   
   const emit = defineEmits<{
     (e: 'save', data: { achievements: Array<{ description: string }> }): void

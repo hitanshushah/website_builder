@@ -34,7 +34,7 @@
       <!-- Buttons -->
       <div class="flex justify-end space-x-3">
         <UButton 
-          color="gray" 
+          color="neutral" 
           variant="outline" 
           @click="emit('cancel')"
           :disabled="loading"
@@ -42,7 +42,7 @@
           Cancel
         </UButton>
         <UButton 
-          color="red" 
+          color="error" 
           @click="confirmDelete"
           :loading="loading"
           :disabled="loading"
@@ -76,7 +76,7 @@ const confirmDelete = async () => {
   try {
     loading.value = true
     
-    const response = await $fetch(props.deleteApi, {
+    const response = await $fetch<{success: boolean}>(props.deleteApi, {
       method: 'DELETE',
       query: { id: props.itemId }
     })

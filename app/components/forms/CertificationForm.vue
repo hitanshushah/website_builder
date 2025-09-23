@@ -72,7 +72,7 @@
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
 import { reactive, ref, watch } from 'vue'
-import { useUserStore } from '../../stores/user'
+import { useUserStore } from '../../../stores/user'
 
 const MAX_PDF_SIZE = 10 * 1024 * 1024 // 10MB for PDFs
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB for images
@@ -117,12 +117,7 @@ const schema = z.object({
       const maxSize = isPDF ? MAX_PDF_SIZE : MAX_IMAGE_SIZE
       return file.size <= maxSize
     }, {
-      message: (file) => {
-        if (!file) return ''
-        const isPDF = file.type === 'application/pdf'
-        const maxSize = isPDF ? MAX_PDF_SIZE : MAX_IMAGE_SIZE
-        return `The file is too large. Please choose a file smaller than ${formatBytes(maxSize)}.`
-      }
+      message: 'The file is too large. Please choose a file smaller than 10MB for PDFs or 5MB for images.'
     })
 })
 
@@ -151,7 +146,7 @@ const state = reactive<Schema>({
 watch(
   () => state.startDate,
   (newStart) => {
-    if (state.endDate && state.endDate < newStart) {
+    if (newStart && state.endDate && state.endDate < newStart) {
       state.endDate = newStart
     }
   }

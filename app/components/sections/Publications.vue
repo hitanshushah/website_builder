@@ -32,7 +32,7 @@
                   v-if="publication.paper_link"
                   size="xs" 
                   variant="soft" 
-                  color="red"
+                  color="error"
                   @click="openLink(publication.paper_link)"
                 >
                   <UIcon name="i-heroicons-arrow-top-right-on-square" class="w-3 h-3 mr-1" />
@@ -42,7 +42,7 @@
                   v-if="publication.paper_pdf"
                   size="xs" 
                   variant="soft" 
-                  color="gray"
+                  color="neutral"
                   @click="downloadPaper(publication.paper_pdf, publication.paper_name)"
                 >
                   <UIcon name="i-heroicons-document-arrow-down" class="w-3 h-3 mr-1" />
@@ -52,10 +52,10 @@
             </div>
           </div>
           <div class="flex gap-2 ml-4">
-            <UButton size="sm" variant="ghost" color="gray">
+            <UButton size="sm" variant="ghost" color="neutral">
               <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
             </UButton>
-            <UButton size="sm" variant="ghost" color="red" @click="deletePublication(publication)">
+            <UButton size="sm" variant="ghost" color="error" @click="deletePublication(publication)">
               <UIcon name="i-heroicons-trash" class="w-4 h-4" />
             </UButton>
           </div>
@@ -65,7 +65,7 @@
   </div>
 
   <!-- Delete Confirmation Modal -->
-  <DeleteConfirmModal 
+  <ModalsDeleteConfirmModal 
     v-if="showDeleteModal"
     :item-type="deleteItemType"
     :item-name="deleteItemName"

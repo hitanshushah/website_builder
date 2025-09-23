@@ -35,7 +35,7 @@
       <!-- Buttons -->
       <div class="flex justify-end space-x-3">
         <UButton 
-          color="gray" 
+          color="neutral" 
           variant="outline" 
           @click="emit('close')"
         >

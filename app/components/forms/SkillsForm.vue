@@ -25,14 +25,7 @@
                 searchable
                 searchable-placeholder="Type to search or create new category"
                 @search="onCategorySearch"
-              >
-                <template #empty>
-                  <div class="text-center py-4 text-gray-500 dark:text-gray-400">
-                    <div class="text-sm">No categories available</div>
-                    <div class="text-xs mt-1">Please create one using the button above</div>
-                  </div>
-                </template>
-              </USelect>
+              />
               <UButton
                 :label="showNewCategory ? 'Cancel' : 'Create Category'"
                 size="sm"
@@ -59,7 +52,7 @@
                 <UButton
                   label="Cancel"
                   size="sm"
-                  color="gray"
+                  color="neutral"
                   variant="outline"
                   @click="cancelNewCategory"
                 />
@@ -99,7 +92,7 @@
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
 import { reactive, ref, watch, onMounted } from 'vue'
-import { useUserStore } from '../../stores/user'
+import { useUserStore } from '../../../stores/user'
 
 const schema = z.object({
   name: z.string().min(1, 'Skill name is required'),

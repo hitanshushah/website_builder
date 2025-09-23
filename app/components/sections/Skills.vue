@@ -19,7 +19,7 @@
               v-if="categoryName && categoryName !== 'Other Skills'"
               size="xs" 
               variant="ghost" 
-              color="red"
+              color="error"
               @click="deleteCategory(categoryName, categorySkills[0]?.category?.id)"
               class="ml-2"
             >
@@ -45,7 +45,7 @@
               <UButton 
                 size="xs" 
                 variant="ghost" 
-                color="red"
+                color="error"
                 @click="deleteSkill(skill)"
                 class="ml-1"
               >
@@ -59,7 +59,7 @@
   </div>
 
   <!-- Delete Confirmation Modal -->
-  <DeleteConfirmModal 
+  <ModalsDeleteConfirmModal 
     v-if="showDeleteModal"
     :item-type="deleteItemType"
     :item-name="deleteItemName"
@@ -134,12 +134,12 @@ const groupedSkills = computed(() => {
 })
 
 const getSkillColor = (proficiencyLevel?: string) => {
-  if (!proficiencyLevel) return 'blue'
+  if (!proficiencyLevel) return 'info'
   
   const level = proficiencyLevel.toLowerCase()
-  if (level.includes('expert') || level.includes('advanced')) return 'green'
-  if (level.includes('intermediate')) return 'yellow'
-  if (level.includes('beginner')) return 'red'
-  return 'blue'
+  if (level.includes('expert') || level.includes('advanced')) return 'primary'
+  if (level.includes('intermediate')) return 'warning'
+  if (level.includes('beginner')) return 'error'
+  return 'info'
 }
 </script>
