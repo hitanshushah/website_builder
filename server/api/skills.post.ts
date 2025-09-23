@@ -1,4 +1,4 @@
-import { query } from '../db/db'
+import { createSkill } from '../db/skills'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -12,18 +12,17 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const sql = `
-      INSERT INTO skills (profile_id, name, category_id, proficiency_level, description)
-      VALUES ($1, $2, $3, $4, $5)
-      RETURNING *
-    `
-
-    const values = [profile_id, name, category_id || null, proficiency_level || 'intermediate', description || null]
-    const result = await query(sql, values)
+    const skill = await createSkill({
+      profile_id,
+      name,
+      category_id,
+      proficiency_level,
+      description
+    })
 
     return {
       success: true,
-      data: result[0]
+      data: skill
     }
   } catch (error: any) {
     console.error('Error creating skill:', error)

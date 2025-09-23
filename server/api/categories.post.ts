@@ -1,4 +1,4 @@
-import { query } from '../db/db'
+import { createCategory, type SkillCategory } from '../db/categories'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -12,20 +12,14 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const sql = `
-      INSERT INTO skill_categories (user_id, name)
-      VALUES ($1, $2)
-      ON CONFLICT (user_id, name) DO UPDATE SET
-        updated_at = CURRENT_TIMESTAMP
-      RETURNING *
-    `
-
-    const values = [user_id, name.trim()]
-    const result = await query(sql, values)
+    const category = await createCategory({
+      user_id,
+      name: name.trim()
+    })
 
     return {
       success: true,
-      data: result[0]
+      data: category
     }
   } catch (error: any) {
     console.error('Error creating category:', error)

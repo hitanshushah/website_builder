@@ -1,4 +1,4 @@
-import { EducationModel } from '../db/models'
+import { deleteEducation } from '../db/education'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -11,8 +11,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Soft delete by setting deleted_at timestamp
-    await EducationModel.delete(educationId)
+    await deleteEducation(educationId)
 
     return {
       success: true,

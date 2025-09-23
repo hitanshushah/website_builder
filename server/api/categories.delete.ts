@@ -1,4 +1,4 @@
-import { query } from '../db/db'
+import { deleteCategory } from '../db/categories'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -11,29 +11,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // First, update all skills in this category to have no category (set category_id to null)
-    const updateSkillsSql = `
-      UPDATE skills 
-      SET category_id = NULL 
-      WHERE category_id = $1
-    `
-    await query(updateSkillsSql, [categoryId])
-
-    // Then delete the category
-    const deleteCategorySql = `
-      DELETE FROM skill_categories 
-      WHERE id = $1
-      RETURNING *
-    `
-
-    const result = await query(deleteCategorySql, [categoryId])
-
-    if (result.length === 0) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: 'Category not found'
-      })
-    }
+    await deleteCategory(categoryId)
 
     return {
       success: true,

@@ -1,4 +1,4 @@
-import { query } from '../db/db'
+import { deleteAchievement } from '../db/achievements'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -11,22 +11,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Soft delete by setting deleted_at timestamp
-    const sql = `
-      UPDATE achievements 
-      SET deleted_at = CURRENT_TIMESTAMP
-      WHERE id = $1 AND deleted_at IS NULL
-      RETURNING *
-    `
-
-    const result = await query(sql, [achievementId])
-
-    if (result.length === 0) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: 'Achievement not found or already deleted'
-      })
-    }
+    await deleteAchievement(achievementId)
 
     return {
       success: true,

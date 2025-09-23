@@ -1,5 +1,4 @@
-import { EducationModel } from '../db/models'
-import { query } from '../db/db'
+import { createEducation } from '../db/education'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -28,33 +27,14 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // First, get the profile_id for the user
-    const profileQuery = `
-      SELECT p.id as profile_id 
-      FROM profiles p 
-      WHERE p.user_id = $1
-    `
-    const profileResult = await query<{ profile_id: number }>(profileQuery, [userId])
-    
-    if (profileResult.length === 0) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: 'Profile not found for user'
-      })
-    }
-
-    const profileId = profileResult[0].profile_id
-
-    // Create education record
-    const education = await EducationModel.create(
-      profileId,
+    const education = await createEducation(userId, {
       university_name,
       degree,
       from_date,
       end_date,
       location,
       cgpa
-    )
+    })
 
     return {
       success: true,
@@ -70,7 +50,7 @@ export default defineEventHandler(async (event) => {
     
     throw createError({
       statusCode: 500,
-      statusMessage: 'Failed to add education record'
+      statusMessage: error.message || 'Failed to add education record'
     })
   }
 })

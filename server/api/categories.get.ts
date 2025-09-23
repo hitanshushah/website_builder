@@ -1,4 +1,4 @@
-import { query } from '../db/db'
+import { getCategories } from '../db/categories'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -11,18 +11,11 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const sql = `
-      SELECT id, name, user_id
-      FROM skill_categories
-      WHERE user_id = $1
-      ORDER BY name ASC
-    `
-
-    const result = await query(sql, [userId])
+    const categories = await getCategories(userId)
 
     return {
       success: true,
-      data: result
+      data: categories
     }
   } catch (error: any) {
     console.error('Error fetching categories:', error)

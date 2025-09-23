@@ -1,4 +1,4 @@
-import { query } from '../db/db'
+import { deleteSkill } from '../db/skills'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -11,20 +11,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const sql = `
-      DELETE FROM skills 
-      WHERE id = $1
-      RETURNING *
-    `
-
-    const result = await query(sql, [skillId])
-
-    if (result.length === 0) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: 'Skill not found'
-      })
-    }
+    await deleteSkill(skillId)
 
     return {
       success: true,

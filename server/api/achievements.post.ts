@@ -1,4 +1,4 @@
-import { query } from '../db/db'
+import { createAchievements } from '../db/achievements'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -19,54 +19,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // First, get the profile_id for the user
-    const profileQuery = `
-      SELECT p.id as profile_id 
-      FROM profiles p 
-      WHERE p.user_id = $1
-    `
-    const profileResult = await query<{ profile_id: number }>(profileQuery, [userId])
-    
-    if (profileResult.length === 0) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: 'Profile not found for user'
-      })
-    }
-
-    const profileId = profileResult[0].profile_id
-
-    // Insert achievements
-    const insertQuery = `
-      INSERT INTO achievements (
-        profile_id, 
-        description
-      ) VALUES ($1, $2)
-      RETURNING id, description
-    `
-
-    const insertedAchievements = []
-
-    for (const achievement of achievements) {
-      const { description } = achievement
-
-      if (!description || !description.trim()) {
-        throw createError({
-          statusCode: 400,
-          statusMessage: 'Description is required'
-        })
-      }
-
-      const result = await query<{
-        id: number
-        description: string
-      }>(insertQuery, [
-        profileId,
-        description.trim()
-      ])
-
-      insertedAchievements.push(result[0])
-    }
+    const insertedAchievements = await createAchievements(userId, achievements)
 
     return {
       success: true,
@@ -82,7 +35,7 @@ export default defineEventHandler(async (event) => {
     
     throw createError({
       statusCode: 500,
-      statusMessage: 'Failed to add achievements'
+      statusMessage: error.message || 'Failed to add achievements'
     })
   }
 })

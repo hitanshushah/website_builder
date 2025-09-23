@@ -1,4 +1,4 @@
-import { query } from '../db/db'
+import { deletePublication } from '../db/publications'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -11,22 +11,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Soft delete by setting deleted_at timestamp
-    const sql = `
-      UPDATE publications 
-      SET deleted_at = CURRENT_TIMESTAMP
-      WHERE id = $1 AND deleted_at IS NULL
-      RETURNING *
-    `
-
-    const result = await query(sql, [publicationId])
-
-    if (result.length === 0) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: 'Publication not found or already deleted'
-      })
-    }
+    await deletePublication(publicationId)
 
     return {
       success: true,

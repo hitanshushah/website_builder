@@ -1,4 +1,4 @@
-import { query } from '../db/db'
+import { deleteCertification } from '../db/certifications'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -11,22 +11,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Soft delete by setting deleted_at timestamp
-    const sql = `
-      UPDATE certifications 
-      SET deleted_at = CURRENT_TIMESTAMP
-      WHERE id = $1 AND deleted_at IS NULL
-      RETURNING *
-    `
-
-    const result = await query(sql, [certificationId])
-
-    if (result.length === 0) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: 'Certification not found or already deleted'
-      })
-    }
+    await deleteCertification(certificationId)
 
     return {
       success: true,
