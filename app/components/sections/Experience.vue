@@ -56,7 +56,7 @@
             </div>
           </div>
           <div class="flex gap-2 ml-4">
-            <UButton size="sm" variant="ghost" color="neutral">
+            <UButton size="sm" variant="ghost" color="neutral" @click="editExperience(experience)">
               <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
             </UButton>
             <UButton size="sm" variant="ghost" color="error" @click="deleteExperience(experience)">
@@ -67,6 +67,14 @@
       </div>
     </UCard>
   </div>
+
+  <!-- Edit Experience Modal -->
+  <FormsExperienceEditForm 
+    v-if="editingExperience"
+    :experience="editingExperience"
+    @updated="handleExperienceUpdated"
+    @close="closeEditModal"
+  />
 
   <!-- Delete Confirmation Modal -->
   <ModalsDeleteConfirmModal 
@@ -90,6 +98,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'deleted', experienceId: number): void
+  (e: 'updated', experience: Experience): void
 }>()
 
 const showDeleteModal = ref(false)
@@ -97,6 +106,7 @@ const deleteItemType = ref('')
 const deleteItemName = ref('')
 const deleteItemId = ref(0)
 const deleteApi = ref('')
+const editingExperience = ref<Experience | null>(null)
 
 const deleteExperience = (experience: Experience) => {
   deleteItemType.value = 'Experience'
@@ -113,6 +123,19 @@ const closeDeleteModal = () => {
 const handleDeleteSuccess = () => {
   showDeleteModal.value = false
   emit('deleted', deleteItemId.value)
+}
+
+const editExperience = (experience: Experience) => {
+  editingExperience.value = experience
+}
+
+const closeEditModal = () => {
+  editingExperience.value = null
+}
+
+const handleExperienceUpdated = (updatedExperience: Experience) => {
+  editingExperience.value = null
+  emit('updated', updatedExperience)
 }
 
 const formatDateRange = (startDate?: string, endDate?: string) => {

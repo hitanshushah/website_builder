@@ -26,7 +26,7 @@
             </p>
           </div>
           <div class="flex gap-2 ml-4">
-            <UButton size="sm" variant="ghost" color="neutral">
+            <UButton size="sm" variant="ghost" color="neutral" @click="editEducation(edu)">
               <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
             </UButton>
             <UButton size="sm" variant="ghost" color="error" @click="deleteEducation(edu)">
@@ -37,6 +37,14 @@
       </div>
     </UCard>
   </div>
+
+  <!-- Edit Education Modal -->
+  <FormsEducationEditForm 
+    v-if="editingEducation"
+    :education="editingEducation"
+    @updated="handleEducationUpdated"
+    @close="closeEditModal"
+  />
 
   <!-- Delete Confirmation Modal -->
   <ModalsDeleteConfirmModal 
@@ -60,6 +68,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'deleted', educationId: number): void
+  (e: 'updated', education: Education): void
 }>()
 
 const showDeleteModal = ref(false)
@@ -67,6 +76,7 @@ const deleteItemType = ref('')
 const deleteItemName = ref('')
 const deleteItemId = ref(0)
 const deleteApi = ref('')
+const editingEducation = ref<Education | null>(null)
 
 const deleteEducation = (education: Education) => {
   deleteItemType.value = 'Education'
@@ -83,6 +93,19 @@ const closeDeleteModal = () => {
 const handleDeleteSuccess = () => {
   showDeleteModal.value = false
   emit('deleted', deleteItemId.value)
+}
+
+const editEducation = (education: Education) => {
+  editingEducation.value = education
+}
+
+const closeEditModal = () => {
+  editingEducation.value = null
+}
+
+const handleEducationUpdated = (updatedEducation: Education) => {
+  editingEducation.value = null
+  emit('updated', updatedEducation)
 }
 
 const formatDateRange = (fromDate?: string, endDate?: string) => {

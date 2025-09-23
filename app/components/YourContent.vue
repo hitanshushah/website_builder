@@ -37,7 +37,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.experiences?.length">
-            <SectionsExperience :experiences="projectsBoardData.experiences" @deleted="handleExperienceDeleted" />
+            <SectionsExperience :experiences="projectsBoardData.experiences" @deleted="handleExperienceDeleted" @updated="handleExperienceUpdated" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No experience data available</p>
@@ -59,7 +59,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.education?.length">
-            <SectionsEducation :education="projectsBoardData.education" @deleted="handleEducationDeleted" />
+            <SectionsEducation :education="projectsBoardData.education" @deleted="handleEducationDeleted" @updated="handleEducationUpdated" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No education data available</p>
@@ -70,7 +70,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.skills?.length">
-            <SectionsSkills :skills="projectsBoardData.skills" @deleted="handleSkillDeleted" @categoryDeleted="handleCategoryDeleted" />
+            <SectionsSkills :skills="projectsBoardData.skills" :categories="projectsBoardData.categories" @deleted="handleSkillDeleted" @categoryDeleted="handleCategoryDeleted" @updated="handleSkillUpdated" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No skills data available</p>
@@ -81,7 +81,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.certifications?.length">
-            <SectionsCertifications :certifications="projectsBoardData.certifications" @deleted="handleCertificationDeleted" />
+            <SectionsCertifications :certifications="projectsBoardData.certifications" @deleted="handleCertificationDeleted" @updated="handleCertificationUpdated" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No certifications data available</p>
@@ -103,7 +103,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.achievements?.length">
-            <SectionsAchievements :achievements="projectsBoardData.achievements" @deleted="handleAchievementDeleted" />
+            <SectionsAchievements :achievements="projectsBoardData.achievements" @deleted="handleAchievementDeleted" @updated="handleAchievementUpdated" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No achievements data available</p>
@@ -114,7 +114,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.publications?.length">
-            <SectionsPublications :publications="projectsBoardData.publications" @deleted="handlePublicationDeleted" />
+            <SectionsPublications :publications="projectsBoardData.publications" @deleted="handlePublicationDeleted" @updated="handlePublicationUpdated" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No publications data available</p>
@@ -380,6 +380,67 @@ const handleCategoryDeleted = (categoryId) => {
     projectsBoardData.value.skills = projectsBoardData.value.skills.filter(
       skill => skill.category?.id !== categoryId
     )
+  }
+}
+
+// Update handlers
+const handleExperienceUpdated = (updatedExperience) => {
+  // Update the experience in the data
+  if (projectsBoardData.value?.experiences) {
+    const index = projectsBoardData.value.experiences.findIndex(exp => exp.id === updatedExperience.id)
+    if (index !== -1) {
+      projectsBoardData.value.experiences[index] = updatedExperience
+    }
+  }
+}
+
+const handleEducationUpdated = (updatedEducation) => {
+  // Update the education in the data
+  if (projectsBoardData.value?.education) {
+    const index = projectsBoardData.value.education.findIndex(edu => edu.id === updatedEducation.id)
+    if (index !== -1) {
+      projectsBoardData.value.education[index] = updatedEducation
+    }
+  }
+}
+
+const handleSkillUpdated = (updatedSkill) => {
+  // Update the skill in the data
+  if (projectsBoardData.value?.skills) {
+    const index = projectsBoardData.value.skills.findIndex(skill => skill.id === updatedSkill.id)
+    if (index !== -1) {
+      projectsBoardData.value.skills[index] = updatedSkill
+    }
+  }
+}
+
+const handleCertificationUpdated = (updatedCertification) => {
+  // Update the certification in the data
+  if (projectsBoardData.value?.certifications) {
+    const index = projectsBoardData.value.certifications.findIndex(cert => cert.id === updatedCertification.id)
+    if (index !== -1) {
+      projectsBoardData.value.certifications[index] = updatedCertification
+    }
+  }
+}
+
+const handleAchievementUpdated = (updatedAchievement) => {
+  // Update the achievement in the data
+  if (projectsBoardData.value?.achievements) {
+    const index = projectsBoardData.value.achievements.findIndex(achievement => achievement.id === updatedAchievement.id)
+    if (index !== -1) {
+      projectsBoardData.value.achievements[index] = updatedAchievement
+    }
+  }
+}
+
+const handlePublicationUpdated = (updatedPublication) => {
+  // Update the publication in the data
+  if (projectsBoardData.value?.publications) {
+    const index = projectsBoardData.value.publications.findIndex(publication => publication.id === updatedPublication.id)
+    if (index !== -1) {
+      projectsBoardData.value.publications[index] = updatedPublication
+    }
   }
 }
 

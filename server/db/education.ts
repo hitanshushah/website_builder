@@ -45,6 +45,33 @@ export async function createEducation(userId: number, educationData: Omit<Educat
   return result[0]
 }
 
+export async function updateEducation(educationId: number, educationData: Omit<Education, 'id'>): Promise<Education> {
+  const sql = `
+    UPDATE education 
+    SET university_name = $2, degree = $3, from_date = $4, end_date = $5, location = $6, cgpa = $7, updated_at = CURRENT_TIMESTAMP
+    WHERE id = $1 AND deleted_at IS NULL
+    RETURNING id, university_name, degree, from_date, end_date, location, cgpa
+  `
+
+  const { university_name, degree, from_date, end_date, location, cgpa } = educationData
+
+  const result = await query<Education>(sql, [
+    educationId,
+    university_name,
+    degree,
+    from_date,
+    end_date,
+    location,
+    cgpa
+  ])
+
+  if (result.length === 0) {
+    throw new Error('Education record not found or already deleted')
+  }
+
+  return result[0]
+}
+
 export async function deleteEducation(educationId: number): Promise<void> {
   // Soft delete by setting deleted_at timestamp
   const sql = `

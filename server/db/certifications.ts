@@ -55,6 +55,33 @@ export async function createCertifications(userId: number, certifications: Omit<
   return insertedCertifications
 }
 
+export async function updateCertification(certificationId: number, certificationData: Omit<Certification, 'id'>): Promise<Certification> {
+  const sql = `
+    UPDATE certifications 
+    SET name = $2, description = $3, start_date = $4, end_date = $5, institute_name = $6, certificate_pdf = $7, updated_at = CURRENT_TIMESTAMP
+    WHERE id = $1 AND deleted_at IS NULL
+    RETURNING id, name, description, start_date, end_date, institute_name, certificate_pdf
+  `
+
+  const { name, description, start_date, end_date, institute_name, certificate_pdf } = certificationData
+
+  const result = await query<Certification>(sql, [
+    certificationId,
+    name,
+    description,
+    start_date,
+    end_date,
+    institute_name,
+    certificate_pdf
+  ])
+
+  if (result.length === 0) {
+    throw new Error('Certification not found or already deleted')
+  }
+
+  return result[0]
+}
+
 export async function deleteCertification(certificationId: number): Promise<void> {
   // Soft delete by setting deleted_at timestamp
   const sql = `

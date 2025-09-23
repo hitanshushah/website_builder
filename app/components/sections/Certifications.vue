@@ -33,7 +33,7 @@
             </div>
           </div>
           <div class="flex gap-2 ml-4">
-            <UButton size="sm" variant="ghost" color="neutral">
+            <UButton size="sm" variant="ghost" color="neutral" @click="editCertification(cert)">
               <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
             </UButton>
             <UButton size="sm" variant="ghost" color="error" @click="deleteCertification(cert)">
@@ -44,6 +44,14 @@
       </div>
     </UCard>
   </div>
+
+  <!-- Edit Certification Modal -->
+  <FormsCertificationEditForm 
+    v-if="editingCertification"
+    :certification="editingCertification"
+    @updated="handleCertificationUpdated"
+    @close="closeEditModal"
+  />
 
   <!-- Delete Confirmation Modal -->
   <ModalsDeleteConfirmModal 
@@ -67,6 +75,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'deleted', certificationId: number): void
+  (e: 'updated', certification: Certification): void
 }>()
 
 const showDeleteModal = ref(false)
@@ -74,6 +83,7 @@ const deleteItemType = ref('')
 const deleteItemName = ref('')
 const deleteItemId = ref(0)
 const deleteApi = ref('')
+const editingCertification = ref<Certification | null>(null)
 
 const deleteCertification = (certification: Certification) => {
   deleteItemType.value = 'Certification'
@@ -90,6 +100,19 @@ const closeDeleteModal = () => {
 const handleDeleteSuccess = () => {
   showDeleteModal.value = false
   emit('deleted', deleteItemId.value)
+}
+
+const editCertification = (certification: Certification) => {
+  editingCertification.value = certification
+}
+
+const closeEditModal = () => {
+  editingCertification.value = null
+}
+
+const handleCertificationUpdated = (updatedCertification: Certification) => {
+  editingCertification.value = null
+  emit('updated', updatedCertification)
 }
 
 const formatDateRange = (startDate?: string, endDate?: string) => {

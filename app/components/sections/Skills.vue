@@ -35,7 +35,8 @@
               <UBadge 
                 :color="getSkillColor(skill.proficiency_level)" 
                 variant="soft"
-                class="flex items-center gap-2"
+                class="flex items-center gap-2 cursor-pointer"
+                @click="editSkill(skill)"
               >
                 {{ skill.name }}
                 <span v-if="skill.proficiency_level" class="text-xs opacity-75">
@@ -58,6 +59,15 @@
     </div>
   </div>
 
+  <!-- Edit Skill Modal -->
+  <FormsSkillEditForm 
+    v-if="editingSkill"
+    :skill="editingSkill"
+    :categories="categories"
+    @updated="handleSkillUpdated"
+    @close="closeEditModal"
+  />
+
   <!-- Delete Confirmation Modal -->
   <ModalsDeleteConfirmModal 
     v-if="showDeleteModal"
@@ -76,11 +86,13 @@ import type { Skill } from '@/types'
 
 const props = defineProps<{
   skills: Skill[]
+  categories?: any[]
 }>()
 
 const emit = defineEmits<{
   (e: 'deleted', skillId: number): void
   (e: 'categoryDeleted', categoryId: number): void
+  (e: 'updated', skill: Skill): void
 }>()
 
 const showDeleteModal = ref(false)
@@ -88,6 +100,7 @@ const deleteItemType = ref('')
 const deleteItemName = ref('')
 const deleteItemId = ref(0)
 const deleteApi = ref('')
+const editingSkill = ref<Skill | null>(null)
 
 const deleteSkill = (skill: Skill) => {
   deleteItemType.value = 'Skill'
@@ -108,6 +121,19 @@ const handleDeleteSuccess = () => {
   } else {
     emit('deleted', deleteItemId.value)
   }
+}
+
+const editSkill = (skill: Skill) => {
+  editingSkill.value = skill
+}
+
+const closeEditModal = () => {
+  editingSkill.value = null
+}
+
+const handleSkillUpdated = (updatedSkill: Skill) => {
+  editingSkill.value = null
+  emit('updated', updatedSkill)
 }
 
 const deleteCategory = (categoryName: string, categoryId?: number) => {

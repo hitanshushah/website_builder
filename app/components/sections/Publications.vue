@@ -52,7 +52,7 @@
             </div>
           </div>
           <div class="flex gap-2 ml-4">
-            <UButton size="sm" variant="ghost" color="neutral">
+            <UButton size="sm" variant="ghost" color="neutral" @click="editPublication(publication)">
               <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
             </UButton>
             <UButton size="sm" variant="ghost" color="error" @click="deletePublication(publication)">
@@ -63,6 +63,14 @@
       </div>
     </UCard>
   </div>
+
+  <!-- Edit Publication Modal -->
+  <FormsPublicationEditForm 
+    v-if="editingPublication"
+    :publication="editingPublication"
+    @updated="handlePublicationUpdated"
+    @close="closeEditModal"
+  />
 
   <!-- Delete Confirmation Modal -->
   <ModalsDeleteConfirmModal 
@@ -86,6 +94,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'deleted', publicationId: number): void
+  (e: 'updated', publication: Publication): void
 }>()
 
 const showDeleteModal = ref(false)
@@ -93,6 +102,7 @@ const deleteItemType = ref('')
 const deleteItemName = ref('')
 const deleteItemId = ref(0)
 const deleteApi = ref('')
+const editingPublication = ref<Publication | null>(null)
 
 const deletePublication = (publication: Publication) => {
   deleteItemType.value = 'Publication'
@@ -109,6 +119,19 @@ const closeDeleteModal = () => {
 const handleDeleteSuccess = () => {
   showDeleteModal.value = false
   emit('deleted', deleteItemId.value)
+}
+
+const editPublication = (publication: Publication) => {
+  editingPublication.value = publication
+}
+
+const closeEditModal = () => {
+  editingPublication.value = null
+}
+
+const handlePublicationUpdated = (updatedPublication: Publication) => {
+  editingPublication.value = null
+  emit('updated', updatedPublication)
 }
 
 const formatDate = (dateString?: string) => {

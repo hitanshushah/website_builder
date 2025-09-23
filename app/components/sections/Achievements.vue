@@ -24,7 +24,7 @@
             </div>
           </div>
           <div class="flex gap-2 ml-4">
-            <UButton size="sm" variant="ghost" color="neutral">
+            <UButton size="sm" variant="ghost" color="neutral" @click="editAchievement(achievement)">
               <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
             </UButton>
             <UButton size="sm" variant="ghost" color="error" @click="deleteAchievement(achievement)">
@@ -35,6 +35,14 @@
       </div>
     </UCard>
   </div>
+
+  <!-- Edit Achievement Modal -->
+  <FormsAchievementEditForm 
+    v-if="editingAchievement"
+    :achievement="editingAchievement"
+    @updated="handleAchievementUpdated"
+    @close="closeEditModal"
+  />
 
   <!-- Delete Confirmation Modal -->
   <ModalsDeleteConfirmModal 
@@ -58,6 +66,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'deleted', achievementId: number): void
+  (e: 'updated', achievement: Achievement): void
 }>()
 
 const showDeleteModal = ref(false)
@@ -65,6 +74,7 @@ const deleteItemType = ref('')
 const deleteItemName = ref('')
 const deleteItemId = ref(0)
 const deleteApi = ref('')
+const editingAchievement = ref<Achievement | null>(null)
 
 const deleteAchievement = (achievement: Achievement) => {
   deleteItemType.value = 'Achievement'
@@ -81,5 +91,18 @@ const closeDeleteModal = () => {
 const handleDeleteSuccess = () => {
   showDeleteModal.value = false
   emit('deleted', deleteItemId.value)
+}
+
+const editAchievement = (achievement: Achievement) => {
+  editingAchievement.value = achievement
+}
+
+const closeEditModal = () => {
+  editingAchievement.value = null
+}
+
+const handleAchievementUpdated = (updatedAchievement: Achievement) => {
+  editingAchievement.value = null
+  emit('updated', updatedAchievement)
 }
 </script>

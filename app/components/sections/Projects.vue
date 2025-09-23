@@ -72,14 +72,6 @@
               />
             </div>
           </div>
-          <div class="flex gap-2 ml-4">
-            <UButton size="sm" variant="ghost" color="neutral">
-              <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
-            </UButton>
-            <UButton size="sm" variant="ghost" color="error">
-              <UIcon name="i-heroicons-trash" class="w-4 h-4" />
-            </UButton>
-          </div>
         </div>
       </div>
     </UCard>

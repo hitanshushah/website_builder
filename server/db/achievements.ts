@@ -45,6 +45,23 @@ export async function createAchievements(userId: number, achievements: Omit<Achi
   return insertedAchievements
 }
 
+export async function updateAchievement(achievementId: number, description: string): Promise<Achievement> {
+  const sql = `
+    UPDATE achievements 
+    SET description = $2, updated_at = CURRENT_TIMESTAMP
+    WHERE id = $1 AND deleted_at IS NULL
+    RETURNING id, description
+  `
+
+  const result = await query<Achievement>(sql, [achievementId, description])
+
+  if (result.length === 0) {
+    throw new Error('Achievement not found or already deleted')
+  }
+
+  return result[0]
+}
+
 export async function deleteAchievement(achievementId: number): Promise<void> {
   // Soft delete by setting deleted_at timestamp
   const sql = `

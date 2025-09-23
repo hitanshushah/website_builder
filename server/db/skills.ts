@@ -20,6 +20,31 @@ export async function createSkill(skillData: Omit<Skill, 'id'> & { profile_id: n
   return result[0]
 }
 
+export async function updateSkill(skillId: number, skillData: Omit<Skill, 'id'>): Promise<Skill> {
+  const sql = `
+    UPDATE skills 
+    SET name = $2, category_id = $3, proficiency_level = $4, description = $5, updated_at = CURRENT_TIMESTAMP
+    WHERE id = $1
+    RETURNING *
+  `
+
+  const { name, category_id, proficiency_level, description } = skillData
+
+  const result = await query<Skill>(sql, [
+    skillId,
+    name,
+    category_id,
+    proficiency_level,
+    description
+  ])
+
+  if (result.length === 0) {
+    throw new Error('Skill not found')
+  }
+
+  return result[0]
+}
+
 export async function deleteSkill(skillId: number): Promise<void> {
   const sql = `
     DELETE FROM skills 

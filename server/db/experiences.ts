@@ -59,6 +59,35 @@ export async function createExperiences(userId: number, experiences: Omit<Experi
   return insertedExperiences
 }
 
+export async function updateExperience(experienceId: number, experienceData: Omit<Experience, 'id'>): Promise<Experience> {
+  const sql = `
+    UPDATE experiences 
+    SET company_name = $2, role = $3, start_date = $4, end_date = $5, description = $6, skills = $7, location = $8, company_logo = $9, updated_at = CURRENT_TIMESTAMP
+    WHERE id = $1 AND deleted_at IS NULL
+    RETURNING id, company_name, role, start_date, end_date, description, skills, location, company_logo
+  `
+
+  const { company_name, role, start_date, end_date, description, skills, location, company_logo } = experienceData
+
+  const result = await query<Experience>(sql, [
+    experienceId,
+    company_name,
+    role,
+    start_date,
+    end_date,
+    description,
+    skills,
+    location,
+    company_logo
+  ])
+
+  if (result.length === 0) {
+    throw new Error('Experience not found or already deleted')
+  }
+
+  return result[0]
+}
+
 export async function deleteExperience(experienceId: number): Promise<void> {
   // Soft delete by setting deleted_at timestamp
   const sql = `
