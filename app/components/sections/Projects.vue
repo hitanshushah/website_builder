@@ -6,7 +6,7 @@
     </div>
 
     <UCard 
-      v-for="project in projects" 
+      v-for="project in localProjects" 
       :key="project.id"
       class="bg-white dark:bg-gray-800"
     >
@@ -72,6 +72,17 @@
               />
             </div>
           </div>
+          <div class="flex gap-2 ml-4">
+            <UButton 
+              size="sm" 
+              variant="ghost" 
+              :color="project.hide_on_website ? 'warning' : 'success'"
+              @click="toggleVisibility(project)"
+              :title="project.hide_on_website ? 'Show on website' : 'Hide from website'"
+            >
+              <UIcon :name="project.hide_on_website ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" class="w-4 h-4" />
+            </UButton>
+          </div>
         </div>
       </div>
     </UCard>
@@ -79,11 +90,24 @@
 </template>
 
 <script setup lang="ts">
+import { ref, watch } from 'vue'
 import type { Project } from '@/types'
 
 const props = defineProps<{
   projects: Project[]
 }>()
+
+const emit = defineEmits<{
+  (e: 'visibilityToggled', project: Project): void
+}>()
+
+// Create a reactive copy of projects for local state management
+const localProjects = ref<Project[]>([])
+
+// Watch for changes in props and update local state
+watch(() => props.projects, (newProjects) => {
+  localProjects.value = [...newProjects]
+}, { immediate: true })
 
 const formatDateRange = (startDate?: string, endDate?: string) => {
   if (!startDate) return ''
@@ -103,6 +127,50 @@ const formatDateRange = (startDate?: string, endDate?: string) => {
   })
   
   return `${start} - ${end}`
+}
+
+const toggleVisibility = async (project: Project) => {
+  try {
+    // Immediately update local state for instant UI feedback
+    const projectIndex = localProjects.value.findIndex(p => p.id === project.id)
+    if (projectIndex !== -1) {
+      const project = localProjects.value[projectIndex]
+      if (project) {
+        project.hide_on_website = !project.hide_on_website
+      }
+    }
+    
+    const response = await $fetch<{ success: boolean; project: Project }>('/api/projects.toggle', {
+      method: 'POST',
+      body: { id: project.id }
+    })
+    
+    if (response.success) {
+      // Update local state with server response
+      if (projectIndex !== -1) {
+        localProjects.value[projectIndex] = response.project
+      }
+      emit('visibilityToggled', response.project)
+    } else {
+      // Revert local state if API call failed
+      if (projectIndex !== -1) {
+        const project = localProjects.value[projectIndex]
+        if (project) {
+          project.hide_on_website = !project.hide_on_website
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error toggling project visibility:', error)
+    // Revert local state if API call failed
+    const projectIndex = localProjects.value.findIndex(p => p.id === project.id)
+    if (projectIndex !== -1) {
+      const project = localProjects.value[projectIndex]
+      if (project) {
+        project.hide_on_website = !project.hide_on_website
+      }
+    }
+  }
 }
 
 const openLink = (url: string) => {

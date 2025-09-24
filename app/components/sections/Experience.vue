@@ -56,6 +56,15 @@
             </div>
           </div>
           <div class="flex gap-2 ml-4">
+            <UButton 
+              size="sm" 
+              variant="ghost" 
+              :color="experience.hide_on_website ? 'warning' : 'success'"
+              @click="toggleVisibility(experience)"
+              :title="experience.hide_on_website ? 'Show on website' : 'Hide from website'"
+            >
+              <UIcon :name="experience.hide_on_website ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" class="w-4 h-4" />
+            </UButton>
             <UButton size="sm" variant="ghost" color="neutral" @click="editExperience(experience)">
               <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
             </UButton>
@@ -99,6 +108,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'deleted', experienceId: number): void
   (e: 'updated', experience: Experience): void
+  (e: 'visibilityToggled', experience: Experience): void
 }>()
 
 const showDeleteModal = ref(false)
@@ -136,6 +146,21 @@ const closeEditModal = () => {
 const handleExperienceUpdated = (updatedExperience: Experience) => {
   editingExperience.value = null
   emit('updated', updatedExperience)
+}
+
+const toggleVisibility = async (experience: Experience) => {
+  try {
+    const response = await $fetch<{ success: boolean; experience: Experience }>('/api/experiences.toggle', {
+      method: 'POST',
+      body: { id: experience.id }
+    })
+    
+    if (response.success) {
+      emit('visibilityToggled', response.experience)
+    }
+  } catch (error) {
+    console.error('Error toggling experience visibility:', error)
+  }
 }
 
 const formatDateRange = (startDate?: string, endDate?: string) => {

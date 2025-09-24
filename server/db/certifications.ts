@@ -25,15 +25,16 @@ export async function createCertifications(userId: number, certifications: Omit<
       start_date, 
       end_date, 
       institute_name, 
-      certificate_pdf
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7)
-    RETURNING id, name, description, start_date, end_date, institute_name, certificate_pdf
+      certificate_pdf,
+      hide_on_website
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    RETURNING id, name, description, start_date, end_date, institute_name, certificate_pdf, hide_on_website
   `
 
   const insertedCertifications: Certification[] = []
 
   for (const certification of certifications) {
-    const { name, description, start_date, end_date, institute_name, certificate_pdf } = certification
+    const { name, description, start_date, end_date, institute_name, certificate_pdf, hide_on_website } = certification
 
     if (!name || !name.trim()) {
       throw new Error('Certification name is required')
@@ -46,7 +47,8 @@ export async function createCertifications(userId: number, certifications: Omit<
       start_date,
       end_date,
       institute_name?.trim() || null,
-      certificate_pdf?.trim() || null
+      certificate_pdf?.trim() || null,
+      hide_on_website || false
     ])
 
     insertedCertifications.push(result[0])
@@ -58,12 +60,12 @@ export async function createCertifications(userId: number, certifications: Omit<
 export async function updateCertification(certificationId: number, certificationData: Omit<Certification, 'id'>): Promise<Certification> {
   const sql = `
     UPDATE certifications 
-    SET name = $2, description = $3, start_date = $4, end_date = $5, institute_name = $6, certificate_pdf = $7, updated_at = CURRENT_TIMESTAMP
+    SET name = $2, description = $3, start_date = $4, end_date = $5, institute_name = $6, certificate_pdf = $7, hide_on_website = $8, updated_at = CURRENT_TIMESTAMP
     WHERE id = $1 AND deleted_at IS NULL
-    RETURNING id, name, description, start_date, end_date, institute_name, certificate_pdf
+    RETURNING id, name, description, start_date, end_date, institute_name, certificate_pdf, hide_on_website
   `
 
-  const { name, description, start_date, end_date, institute_name, certificate_pdf } = certificationData
+  const { name, description, start_date, end_date, institute_name, certificate_pdf, hide_on_website } = certificationData
 
   const result = await query<Certification>(sql, [
     certificationId,
@@ -72,7 +74,8 @@ export async function updateCertification(certificationId: number, certification
     start_date,
     end_date,
     institute_name,
-    certificate_pdf
+    certificate_pdf,
+    hide_on_website
   ])
 
   if (result.length === 0) {
@@ -96,4 +99,21 @@ export async function deleteCertification(certificationId: number): Promise<void
   if (result.length === 0) {
     throw new Error('Certification not found or already deleted')
   }
+}
+
+export async function toggleHideOnWebsite(certificationId: number): Promise<Certification> {
+  const sql = `
+    UPDATE certifications 
+    SET hide_on_website = NOT hide_on_website, updated_at = CURRENT_TIMESTAMP
+    WHERE id = $1 AND deleted_at IS NULL
+    RETURNING id, name, description, start_date, end_date, institute_name, certificate_pdf, hide_on_website
+  `
+
+  const result = await query<Certification>(sql, [certificationId])
+
+  if (result.length === 0) {
+    throw new Error('Certification not found or already deleted')
+  }
+
+  return result[0]
 }

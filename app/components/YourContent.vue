@@ -37,7 +37,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.experiences?.length">
-            <SectionsExperience :experiences="projectsBoardData.experiences" @deleted="handleExperienceDeleted" @updated="handleExperienceUpdated" />
+            <SectionsExperience :experiences="projectsBoardData.experiences" @deleted="handleExperienceDeleted" @updated="handleExperienceUpdated" @visibilityToggled="handleExperienceVisibilityToggled" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No experience data available</p>
@@ -48,7 +48,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.projects?.length">
-            <SectionsProjects :projects="projectsBoardData.projects" />
+            <SectionsProjects :projects="projectsBoardData.projects" @visibilityToggled="handleProjectVisibilityToggled" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No projects data available</p>
@@ -59,7 +59,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.education?.length">
-            <SectionsEducation :education="projectsBoardData.education" @deleted="handleEducationDeleted" @updated="handleEducationUpdated" />
+            <SectionsEducation :education="projectsBoardData.education" @deleted="handleEducationDeleted" @updated="handleEducationUpdated" @visibilityToggled="handleEducationVisibilityToggled" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No education data available</p>
@@ -70,7 +70,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.skills?.length">
-            <SectionsSkills :skills="projectsBoardData.skills" :categories="projectsBoardData.categories" @deleted="handleSkillDeleted" @categoryDeleted="handleCategoryDeleted" @updated="handleSkillUpdated" />
+            <SectionsSkills :skills="projectsBoardData.skills" :categories="projectsBoardData.categories" @deleted="handleSkillDeleted" @categoryDeleted="handleCategoryDeleted" @updated="handleSkillUpdated" @visibilityToggled="handleSkillVisibilityToggled" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No skills data available</p>
@@ -81,7 +81,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.certifications?.length">
-            <SectionsCertifications :certifications="projectsBoardData.certifications" @deleted="handleCertificationDeleted" @updated="handleCertificationUpdated" />
+            <SectionsCertifications :certifications="projectsBoardData.certifications" @deleted="handleCertificationDeleted" @updated="handleCertificationUpdated" @visibilityToggled="handleCertificationVisibilityToggled" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No certifications data available</p>
@@ -103,7 +103,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.achievements?.length">
-            <SectionsAchievements :achievements="projectsBoardData.achievements" @deleted="handleAchievementDeleted" @updated="handleAchievementUpdated" />
+            <SectionsAchievements :achievements="projectsBoardData.achievements" @deleted="handleAchievementDeleted" @updated="handleAchievementUpdated" @visibilityToggled="handleAchievementVisibilityToggled" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No achievements data available</p>
@@ -114,7 +114,7 @@
             <USkeleton class="h-24 w-full rounded-lg" />
           </div>
           <div v-else-if="projectsBoardData?.publications?.length">
-            <SectionsPublications :publications="projectsBoardData.publications" @deleted="handlePublicationDeleted" @updated="handlePublicationUpdated" />
+            <SectionsPublications :publications="projectsBoardData.publications" @deleted="handlePublicationDeleted" @updated="handlePublicationUpdated" @visibilityToggled="handlePublicationVisibilityToggled" />
           </div>
           <div v-else>
             <p class="text-sm text-gray-600 dark:text-gray-400">No publications data available</p>
@@ -320,59 +320,22 @@ const closeProjectsBoardModal = () => {
   showProjectsBoardModal.value = false
 }
 
-const handleExperienceDeleted = (experienceId) => {
-  // Remove the deleted experience from the data
-  if (projectsBoardData.value?.experiences) {
-    projectsBoardData.value.experiences = projectsBoardData.value.experiences.filter(
-      exp => exp.id !== experienceId
+// Generic delete handler
+const handleItemDeleted = (itemId, section) => {
+  if (projectsBoardData.value?.[section]) {
+    projectsBoardData.value[section] = projectsBoardData.value[section].filter(
+      item => item.id !== itemId
     )
   }
 }
 
-const handleEducationDeleted = (educationId) => {
-  // Remove the deleted education from the data
-  if (projectsBoardData.value?.education) {
-    projectsBoardData.value.education = projectsBoardData.value.education.filter(
-      edu => edu.id !== educationId
-    )
-  }
-}
-
-const handleAchievementDeleted = (achievementId) => {
-  // Remove the deleted achievement from the data
-  if (projectsBoardData.value?.achievements) {
-    projectsBoardData.value.achievements = projectsBoardData.value.achievements.filter(
-      achievement => achievement.id !== achievementId
-    )
-  }
-}
-
-const handlePublicationDeleted = (publicationId) => {
-  // Remove the deleted publication from the data
-  if (projectsBoardData.value?.publications) {
-    projectsBoardData.value.publications = projectsBoardData.value.publications.filter(
-      publication => publication.id !== publicationId
-    )
-  }
-}
-
-const handleCertificationDeleted = (certificationId) => {
-  // Remove the deleted certification from the data
-  if (projectsBoardData.value?.certifications) {
-    projectsBoardData.value.certifications = projectsBoardData.value.certifications.filter(
-      certification => certification.id !== certificationId
-    )
-  }
-}
-
-const handleSkillDeleted = (skillId) => {
-  // Remove the deleted skill from the data
-  if (projectsBoardData.value?.skills) {
-    projectsBoardData.value.skills = projectsBoardData.value.skills.filter(
-      skill => skill.id !== skillId
-    )
-  }
-}
+// Specific delete handlers
+const handleExperienceDeleted = (experienceId) => handleItemDeleted(experienceId, 'experiences')
+const handleEducationDeleted = (educationId) => handleItemDeleted(educationId, 'education')
+const handleAchievementDeleted = (achievementId) => handleItemDeleted(achievementId, 'achievements')
+const handlePublicationDeleted = (publicationId) => handleItemDeleted(publicationId, 'publications')
+const handleCertificationDeleted = (certificationId) => handleItemDeleted(certificationId, 'certifications')
+const handleSkillDeleted = (skillId) => handleItemDeleted(skillId, 'skills')
 
 const handleCategoryDeleted = (categoryId) => {
   // Remove all skills from the deleted category
@@ -383,66 +346,42 @@ const handleCategoryDeleted = (categoryId) => {
   }
 }
 
-// Update handlers
-const handleExperienceUpdated = (updatedExperience) => {
-  // Update the experience in the data
-  if (projectsBoardData.value?.experiences) {
-    const index = projectsBoardData.value.experiences.findIndex(exp => exp.id === updatedExperience.id)
+// Generic update handler
+const handleItemUpdated = (updatedItem, section) => {
+  if (projectsBoardData.value?.[section]) {
+    const index = projectsBoardData.value[section].findIndex(item => item.id === updatedItem.id)
     if (index !== -1) {
-      projectsBoardData.value.experiences[index] = updatedExperience
+      projectsBoardData.value[section][index] = updatedItem
     }
   }
 }
 
-const handleEducationUpdated = (updatedEducation) => {
-  // Update the education in the data
-  if (projectsBoardData.value?.education) {
-    const index = projectsBoardData.value.education.findIndex(edu => edu.id === updatedEducation.id)
+// Specific update handlers
+const handleExperienceUpdated = (updatedExperience) => handleItemUpdated(updatedExperience, 'experiences')
+const handleEducationUpdated = (updatedEducation) => handleItemUpdated(updatedEducation, 'education')
+const handleSkillUpdated = (updatedSkill) => handleItemUpdated(updatedSkill, 'skills')
+const handleCertificationUpdated = (updatedCertification) => handleItemUpdated(updatedCertification, 'certifications')
+const handleAchievementUpdated = (updatedAchievement) => handleItemUpdated(updatedAchievement, 'achievements')
+const handlePublicationUpdated = (updatedPublication) => handleItemUpdated(updatedPublication, 'publications')
+
+// Generic visibility toggle handler
+const handleVisibilityToggled = (updatedItem, section) => {
+  if (projectsBoardData.value?.[section]) {
+    const index = projectsBoardData.value[section].findIndex(item => item.id === updatedItem.id)
     if (index !== -1) {
-      projectsBoardData.value.education[index] = updatedEducation
+      projectsBoardData.value[section][index] = updatedItem
     }
   }
 }
 
-const handleSkillUpdated = (updatedSkill) => {
-  // Update the skill in the data
-  if (projectsBoardData.value?.skills) {
-    const index = projectsBoardData.value.skills.findIndex(skill => skill.id === updatedSkill.id)
-    if (index !== -1) {
-      projectsBoardData.value.skills[index] = updatedSkill
-    }
-  }
-}
-
-const handleCertificationUpdated = (updatedCertification) => {
-  // Update the certification in the data
-  if (projectsBoardData.value?.certifications) {
-    const index = projectsBoardData.value.certifications.findIndex(cert => cert.id === updatedCertification.id)
-    if (index !== -1) {
-      projectsBoardData.value.certifications[index] = updatedCertification
-    }
-  }
-}
-
-const handleAchievementUpdated = (updatedAchievement) => {
-  // Update the achievement in the data
-  if (projectsBoardData.value?.achievements) {
-    const index = projectsBoardData.value.achievements.findIndex(achievement => achievement.id === updatedAchievement.id)
-    if (index !== -1) {
-      projectsBoardData.value.achievements[index] = updatedAchievement
-    }
-  }
-}
-
-const handlePublicationUpdated = (updatedPublication) => {
-  // Update the publication in the data
-  if (projectsBoardData.value?.publications) {
-    const index = projectsBoardData.value.publications.findIndex(publication => publication.id === updatedPublication.id)
-    if (index !== -1) {
-      projectsBoardData.value.publications[index] = updatedPublication
-    }
-  }
-}
+// Specific visibility toggle handlers
+const handleExperienceVisibilityToggled = (updatedExperience) => handleVisibilityToggled(updatedExperience, 'experiences')
+const handleEducationVisibilityToggled = (updatedEducation) => handleVisibilityToggled(updatedEducation, 'education')
+const handleSkillVisibilityToggled = (updatedSkill) => handleVisibilityToggled(updatedSkill, 'skills')
+const handleCertificationVisibilityToggled = (updatedCertification) => handleVisibilityToggled(updatedCertification, 'certifications')
+const handleAchievementVisibilityToggled = (updatedAchievement) => handleVisibilityToggled(updatedAchievement, 'achievements')
+const handlePublicationVisibilityToggled = (updatedPublication) => handleVisibilityToggled(updatedPublication, 'publications')
+const handleProjectVisibilityToggled = (updatedProject) => handleVisibilityToggled(updatedProject, 'projects')
 
 const userStore = useUserStore()
 const projectsBoardData = ref(null)

@@ -52,6 +52,15 @@
             </div>
           </div>
           <div class="flex gap-2 ml-4">
+            <UButton 
+              size="sm" 
+              variant="ghost" 
+              :color="publication.hide_on_website ? 'warning' : 'success'"
+              @click="toggleVisibility(publication)"
+              :title="publication.hide_on_website ? 'Show on website' : 'Hide from website'"
+            >
+              <UIcon :name="publication.hide_on_website ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" class="w-4 h-4" />
+            </UButton>
             <UButton size="sm" variant="ghost" color="neutral" @click="editPublication(publication)">
               <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
             </UButton>
@@ -95,6 +104,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'deleted', publicationId: number): void
   (e: 'updated', publication: Publication): void
+  (e: 'visibilityToggled', publication: Publication): void
 }>()
 
 const showDeleteModal = ref(false)
@@ -144,6 +154,21 @@ const formatDate = (dateString?: string) => {
 
 const openLink = (url: string) => {
   window.open(url, '_blank')
+}
+
+const toggleVisibility = async (publication: Publication) => {
+  try {
+    const response = await $fetch<{ success: boolean; publication: Publication }>('/api/publications.toggle', {
+      method: 'POST',
+      body: { id: publication.id }
+    })
+    
+    if (response.success) {
+      emit('visibilityToggled', response.publication)
+    }
+  } catch (error) {
+    console.error('Error toggling publication visibility:', error)
+  }
 }
 
 const downloadPaper = (url: string, filename: string) => {

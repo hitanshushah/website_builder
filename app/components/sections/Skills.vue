@@ -46,6 +46,16 @@
               <UButton 
                 size="xs" 
                 variant="ghost" 
+                :color="skill.hide_on_website ? 'warning' : 'success'"
+                @click="toggleVisibility(skill)"
+                :title="skill.hide_on_website ? 'Show on website' : 'Hide from website'"
+                class="ml-1"
+              >
+                <UIcon :name="skill.hide_on_website ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" class="w-3 h-3" />
+              </UButton>
+              <UButton 
+                size="xs" 
+                variant="ghost" 
                 color="error"
                 @click="deleteSkill(skill)"
                 class="ml-1"
@@ -93,6 +103,7 @@ const emit = defineEmits<{
   (e: 'deleted', skillId: number): void
   (e: 'categoryDeleted', categoryId: number): void
   (e: 'updated', skill: Skill): void
+  (e: 'visibilityToggled', skill: Skill): void
 }>()
 
 const showDeleteModal = ref(false)
@@ -158,6 +169,21 @@ const groupedSkills = computed(() => {
     return groups
   }, {} as Record<string, Skill[]>)
 })
+
+const toggleVisibility = async (skill: Skill) => {
+  try {
+    const response = await $fetch<{ success: boolean; skill: Skill }>('/api/skills.toggle', {
+      method: 'POST',
+      body: { id: skill.id }
+    })
+    
+    if (response.success) {
+      emit('visibilityToggled', response.skill)
+    }
+  } catch (error) {
+    console.error('Error toggling skill visibility:', error)
+  }
+}
 
 const getSkillColor = (proficiencyLevel?: string) => {
   if (!proficiencyLevel) return 'info'

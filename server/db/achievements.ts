@@ -20,15 +20,16 @@ export async function createAchievements(userId: number, achievements: Omit<Achi
   const insertQuery = `
     INSERT INTO achievements (
       profile_id, 
-      description
-    ) VALUES ($1, $2)
-    RETURNING id, description
+      description,
+      hide_on_website
+    ) VALUES ($1, $2, $3)
+    RETURNING id, description, hide_on_website
   `
 
   const insertedAchievements: Achievement[] = []
 
   for (const achievement of achievements) {
-    const { description } = achievement
+    const { description, hide_on_website } = achievement
 
     if (!description || !description.trim()) {
       throw new Error('Description is required')
@@ -36,7 +37,8 @@ export async function createAchievements(userId: number, achievements: Omit<Achi
 
     const result = await query<Achievement>(insertQuery, [
       profileId,
-      description.trim()
+      description.trim(),
+      hide_on_website || false
     ])
 
     insertedAchievements.push(result[0])
@@ -45,15 +47,17 @@ export async function createAchievements(userId: number, achievements: Omit<Achi
   return insertedAchievements
 }
 
-export async function updateAchievement(achievementId: number, description: string): Promise<Achievement> {
+export async function updateAchievement(achievementId: number, achievementData: Omit<Achievement, 'id'>): Promise<Achievement> {
   const sql = `
     UPDATE achievements 
-    SET description = $2, updated_at = CURRENT_TIMESTAMP
+    SET description = $2, hide_on_website = $3, updated_at = CURRENT_TIMESTAMP
     WHERE id = $1 AND deleted_at IS NULL
-    RETURNING id, description
+    RETURNING id, description, hide_on_website
   `
 
-  const result = await query<Achievement>(sql, [achievementId, description])
+  const { description, hide_on_website } = achievementData
+
+  const result = await query<Achievement>(sql, [achievementId, description, hide_on_website])
 
   if (result.length === 0) {
     throw new Error('Achievement not found or already deleted')
@@ -76,4 +80,21 @@ export async function deleteAchievement(achievementId: number): Promise<void> {
   if (result.length === 0) {
     throw new Error('Achievement not found or already deleted')
   }
+}
+
+export async function toggleHideOnWebsite(achievementId: number): Promise<Achievement> {
+  const sql = `
+    UPDATE achievements 
+    SET hide_on_website = NOT hide_on_website, updated_at = CURRENT_TIMESTAMP
+    WHERE id = $1 AND deleted_at IS NULL
+    RETURNING id, description, hide_on_website
+  `
+
+  const result = await query<Achievement>(sql, [achievementId])
+
+  if (result.length === 0) {
+    throw new Error('Achievement not found or already deleted')
+  }
+
+  return result[0]
 }

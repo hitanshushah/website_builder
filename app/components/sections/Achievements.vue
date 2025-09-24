@@ -24,6 +24,15 @@
             </div>
           </div>
           <div class="flex gap-2 ml-4">
+            <UButton 
+              size="sm" 
+              variant="ghost" 
+              :color="achievement.hide_on_website ? 'warning' : 'success'"
+              @click="toggleVisibility(achievement)"
+              :title="achievement.hide_on_website ? 'Show on website' : 'Hide from website'"
+            >
+              <UIcon :name="achievement.hide_on_website ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" class="w-4 h-4" />
+            </UButton>
             <UButton size="sm" variant="ghost" color="neutral" @click="editAchievement(achievement)">
               <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
             </UButton>
@@ -67,6 +76,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'deleted', achievementId: number): void
   (e: 'updated', achievement: Achievement): void
+  (e: 'visibilityToggled', achievement: Achievement): void
 }>()
 
 const showDeleteModal = ref(false)
@@ -104,5 +114,20 @@ const closeEditModal = () => {
 const handleAchievementUpdated = (updatedAchievement: Achievement) => {
   editingAchievement.value = null
   emit('updated', updatedAchievement)
+}
+
+const toggleVisibility = async (achievement: Achievement) => {
+  try {
+    const response = await $fetch<{ success: boolean; achievement: Achievement }>('/api/achievements.toggle', {
+      method: 'POST',
+      body: { id: achievement.id }
+    })
+    
+    if (response.success) {
+      emit('visibilityToggled', response.achievement)
+    }
+  } catch (error) {
+    console.error('Error toggling achievement visibility:', error)
+  }
 }
 </script>

@@ -26,6 +26,15 @@
             </p>
           </div>
           <div class="flex gap-2 ml-4">
+            <UButton 
+              size="sm" 
+              variant="ghost" 
+              :color="edu.hide_on_website ? 'warning' : 'success'"
+              @click="toggleVisibility(edu)"
+              :title="edu.hide_on_website ? 'Show on website' : 'Hide from website'"
+            >
+              <UIcon :name="edu.hide_on_website ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" class="w-4 h-4" />
+            </UButton>
             <UButton size="sm" variant="ghost" color="neutral" @click="editEducation(edu)">
               <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
             </UButton>
@@ -69,6 +78,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'deleted', educationId: number): void
   (e: 'updated', education: Education): void
+  (e: 'visibilityToggled', education: Education): void
 }>()
 
 const showDeleteModal = ref(false)
@@ -106,6 +116,21 @@ const closeEditModal = () => {
 const handleEducationUpdated = (updatedEducation: Education) => {
   editingEducation.value = null
   emit('updated', updatedEducation)
+}
+
+const toggleVisibility = async (education: Education) => {
+  try {
+    const response = await $fetch<{ success: boolean; education: Education }>('/api/education.toggle', {
+      method: 'POST',
+      body: { id: education.id }
+    })
+    
+    if (response.success) {
+      emit('visibilityToggled', response.education)
+    }
+  } catch (error) {
+    console.error('Error toggling education visibility:', error)
+  }
 }
 
 const formatDateRange = (fromDate?: string, endDate?: string) => {

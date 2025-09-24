@@ -49,6 +49,7 @@ export interface Project {
   start_date?: string;
   end_date?: string;
   is_public: boolean;
+  hide_on_website?: boolean;
   sorting_order?: number;
   created_at: string;
   updated_at: string;
@@ -98,11 +99,13 @@ export interface Certification {
   end_date?: string;
   institute_name?: string;
   certificate_pdf?: string;
+  hide_on_website?: boolean;
 }
 
 export interface Achievement {
   id: number;
   description: string;
+  hide_on_website?: boolean;
 }
 
 export interface Experience {
@@ -115,6 +118,7 @@ export interface Experience {
   skills?: string[];
   company_logo?: string;
   location?: string;
+  hide_on_website?: boolean;
 }
 
 export interface Publication {
@@ -125,6 +129,7 @@ export interface Publication {
   published_date?: string;
   paper_pdf?: string;
   paper_link?: string;
+  hide_on_website?: boolean;
 }
 
 export interface Category {
@@ -140,6 +145,7 @@ export interface Skill {
   category?: Category;
   proficiency_level?: string;
   description?: string;
+  hide_on_website?: boolean;
 }
 
 export interface Education {
@@ -150,6 +156,7 @@ export interface Education {
   end_date?: string;
   location?: string;
   cgpa?: number;
+  hide_on_website?: boolean;
 }
 
 export interface ProjectsBoardData {

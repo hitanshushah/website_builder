@@ -33,6 +33,15 @@
             </div>
           </div>
           <div class="flex gap-2 ml-4">
+            <UButton 
+              size="sm" 
+              variant="ghost" 
+              :color="cert.hide_on_website ? 'warning' : 'success'"
+              @click="toggleVisibility(cert)"
+              :title="cert.hide_on_website ? 'Show on website' : 'Hide from website'"
+            >
+              <UIcon :name="cert.hide_on_website ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" class="w-4 h-4" />
+            </UButton>
             <UButton size="sm" variant="ghost" color="neutral" @click="editCertification(cert)">
               <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
             </UButton>
@@ -76,6 +85,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'deleted', certificationId: number): void
   (e: 'updated', certification: Certification): void
+  (e: 'visibilityToggled', certification: Certification): void
 }>()
 
 const showDeleteModal = ref(false)
@@ -133,6 +143,21 @@ const formatDateRange = (startDate?: string, endDate?: string) => {
   })
   
   return `${start} - ${end}`
+}
+
+const toggleVisibility = async (certification: Certification) => {
+  try {
+    const response = await $fetch<{ success: boolean; certification: Certification }>('/api/certifications.toggle', {
+      method: 'POST',
+      body: { id: certification.id }
+    })
+    
+    if (response.success) {
+      emit('visibilityToggled', response.certification)
+    }
+  } catch (error) {
+    console.error('Error toggling certification visibility:', error)
+  }
 }
 
 const downloadCertificate = (url: string, filename: string) => {

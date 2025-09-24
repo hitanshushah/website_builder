@@ -9,12 +9,12 @@ export async function createSkill(skillData: Omit<Skill, 'id'> & { profile_id: n
   }
 
   const sql = `
-    INSERT INTO skills (profile_id, name, category_id, proficiency_level, description)
-    VALUES ($1, $2, $3, $4, $5)
+    INSERT INTO skills (profile_id, name, category_id, proficiency_level, description, hide_on_website)
+    VALUES ($1, $2, $3, $4, $5, $6)
     RETURNING *
   `
 
-  const values = [profile_id, name, category_id || null, proficiency_level || 'intermediate', description || null]
+  const values = [profile_id, name, category_id || null, proficiency_level || 'intermediate', description || null, skillData.hide_on_website || false]
   const result = await query<Skill>(sql, values)
 
   return result[0]
@@ -23,19 +23,20 @@ export async function createSkill(skillData: Omit<Skill, 'id'> & { profile_id: n
 export async function updateSkill(skillId: number, skillData: Omit<Skill, 'id'>): Promise<Skill> {
   const sql = `
     UPDATE skills 
-    SET name = $2, category_id = $3, proficiency_level = $4, description = $5, updated_at = CURRENT_TIMESTAMP
+    SET name = $2, category_id = $3, proficiency_level = $4, description = $5, hide_on_website = $6, updated_at = CURRENT_TIMESTAMP
     WHERE id = $1
     RETURNING *
   `
 
-  const { name, category_id, proficiency_level, description } = skillData
+  const { name, category_id, proficiency_level, description, hide_on_website } = skillData
 
   const result = await query<Skill>(sql, [
     skillId,
     name,
     category_id,
     proficiency_level,
-    description
+    description,
+    hide_on_website
   ])
 
   if (result.length === 0) {
@@ -57,4 +58,21 @@ export async function deleteSkill(skillId: number): Promise<void> {
   if (result.length === 0) {
     throw new Error('Skill not found')
   }
+}
+
+export async function toggleHideOnWebsite(skillId: number): Promise<Skill> {
+  const sql = `
+    UPDATE skills 
+    SET hide_on_website = NOT hide_on_website, updated_at = CURRENT_TIMESTAMP
+    WHERE id = $1
+    RETURNING *
+  `
+
+  const result = await query<Skill>(sql, [skillId])
+
+  if (result.length === 0) {
+    throw new Error('Skill not found')
+  }
+
+  return result[0]
 }
