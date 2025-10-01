@@ -1,6 +1,10 @@
 <template>
   <div class="fixed inset-0 z-50 flex items-start justify-center bg-black/50 overflow-y-auto">
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-2xl p-6 my-8 mx-4">
+        <div class="mb-3">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Add Education</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Enter your education details</p>
+        </div>
       <UForm :state="state" @submit.prevent="submitForm" @keydown.enter.prevent="" class="space-y-3">
         <!-- University Name, Degree, and Location -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
