@@ -8,50 +8,62 @@
     <UCard 
       v-for="cert in certifications" 
       :key="cert.id"
-      class="bg-white dark:bg-gray-800"
+      class="bg-gray-50 dark:bg-gray-900 rounded-xl shadow-md border border-gray-200 dark:border-gray-700"
     >
-      <div class="p-4">
-        <div class="flex items-start justify-between">
-          <div class="flex-1">
-            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">{{ cert.name }}</h4>
-            <p v-if="cert.institute_name" class="text-blue-600 dark:text-blue-400 font-medium mb-1">{{ cert.institute_name }}</p>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
-              {{ formatDateRange(cert.start_date, cert.end_date) }}
-            </p>
-            <p v-if="cert.description" class="text-sm text-gray-700 dark:text-gray-300 mb-3">
-              {{ cert.description }}
-            </p>
-            <div v-if="cert.certificate_pdf" class="flex gap-2">
-              <UButton
-                size="sm"
-                variant="outline"
-                @click="downloadCertificate(cert.certificate_pdf, cert.name)"
-              >
-                <UIcon name="i-heroicons-document-arrow-down" class="w-4 h-4 mr-1" />
-                Download Certificate
-              </UButton>
-            </div>
+      <div class="flex justify-between items-start">
+        <!-- Certification Info -->
+        <div class="flex-1 space-y-1">
+          <!-- Certificate Name and Institute on same line -->
+          <div class="flex flex-wrap items-baseline gap-2">
+            <h4 class="font-bold text-gray-900 dark:text-white text-lg">{{ cert.name }},</h4>
+            <p v-if="cert.institute_name" class="text-gray-900 dark:text-white font-medium">{{ cert.institute_name }}</p>
           </div>
-          <div class="flex gap-2 ml-4">
-            <UButton 
-              size="sm" 
-              variant="ghost" 
-              :color="cert.hide_on_website ? 'warning' : 'success'"
-              @click="toggleVisibility(cert)"
-              :title="cert.hide_on_website ? 'Show on website' : 'Hide from website'"
+
+          <!-- Date -->
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            {{ formatDateRange(cert.start_date, cert.end_date) }}
+          </p>
+
+          <!-- Description -->
+          <p v-if="cert.description" class="text-sm text-gray-700 dark:text-gray-300">
+            {{ cert.description }}
+          </p>
+
+          <!-- Download Button -->
+          <div v-if="cert.certificate_pdf" class="flex gap-2 mt-2">
+            <UButton
+              size="sm"
+              color="neutral"
+              variant="subtle"
+              @click="downloadCertificate(cert.certificate_pdf, cert.name)"
             >
-              <UIcon :name="cert.hide_on_website ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" class="w-4 h-4" />
-            </UButton>
-            <UButton size="sm" variant="ghost" color="neutral" @click="editCertification(cert)">
-              <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
-            </UButton>
-            <UButton size="sm" variant="ghost" color="error" @click="deleteCertification(cert)">
-              <UIcon name="i-heroicons-trash" class="w-4 h-4" />
+              <UIcon name="i-heroicons-document-arrow-down" class="w-4 h-4 mr-1" />
+              Download Certificate
             </UButton>
           </div>
         </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-2 ml-4">
+          <UButton 
+            size="sm" 
+            variant="ghost" 
+            :color="cert.hide_on_website ? 'warning' : 'success'"
+            @click="toggleVisibility(cert)"
+            :title="cert.hide_on_website ? 'Show on website' : 'Hide from website'"
+          >
+            <UIcon :name="cert.hide_on_website ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" class="w-4 h-4" />
+          </UButton>
+          <UButton size="sm" variant="ghost" color="neutral" @click="editCertification(cert)">
+            <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
+          </UButton>
+          <UButton size="sm" variant="ghost" color="error" @click="deleteCertification(cert)">
+            <UIcon name="i-heroicons-trash" class="w-4 h-4" />
+          </UButton>
+        </div>
       </div>
     </UCard>
+
   </div>
 
   <!-- Edit Certification Modal -->
@@ -126,7 +138,7 @@ const handleCertificationUpdated = (updatedCertification: Certification) => {
 }
 
 const formatDateRange = (startDate?: string, endDate?: string) => {
-  if (!startDate) return 'Date not specified'
+  if (!startDate) return ''
   
   const start = new Date(startDate).toLocaleDateString('en-US', { 
     year: 'numeric', 

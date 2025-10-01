@@ -5,44 +5,37 @@
       <p>No achievements data available</p>
     </div>
 
-    <UCard 
-      v-for="achievement in achievements" 
-      :key="achievement.id"
-      class="bg-white dark:bg-gray-800"
-    >
-      <div class="p-4">
-        <div class="flex items-start justify-between">
-          <div class="flex items-start space-x-3 flex-1">
-            <div class="bg-yellow-100 dark:bg-yellow-900 w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0">
-              <UIcon name="i-heroicons-trophy" class="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
-            </div>
-            <div class="flex-1">
-              <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Achievement</h4>
-              <p class="text-sm text-gray-700 dark:text-gray-300">
-                {{ achievement.description }}
-              </p>
-            </div>
-          </div>
-          <div class="flex gap-2 ml-4">
-            <UButton 
-              size="sm" 
-              variant="ghost" 
-              :color="achievement.hide_on_website ? 'warning' : 'success'"
-              @click="toggleVisibility(achievement)"
-              :title="achievement.hide_on_website ? 'Show on website' : 'Hide from website'"
-            >
-              <UIcon :name="achievement.hide_on_website ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" class="w-4 h-4" />
-            </UButton>
-            <UButton size="sm" variant="ghost" color="neutral" @click="editAchievement(achievement)">
-              <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
-            </UButton>
-            <UButton size="sm" variant="ghost" color="error" @click="deleteAchievement(achievement)">
-              <UIcon name="i-heroicons-trash" class="w-4 h-4" />
-            </UButton>
-          </div>
+  <UCard class="bg-gray-50 dark:bg-gray-900 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
+    <div class="space-y-3">
+
+      <div v-for="(achievement, index) in achievements" :key="achievement.id" class="flex justify-between items-start">
+        <!-- Achievement Description with numbering -->
+        <p class="text-sm text-gray-700 dark:text-gray-300">
+          {{ index + 1 }}. {{ achievement.description }}
+        </p>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-2 ml-4">
+          <UButton 
+            size="sm" 
+            variant="ghost" 
+            :color="achievement.hide_on_website ? 'warning' : 'success'"
+            @click="toggleVisibility(achievement)"
+            :title="achievement.hide_on_website ? 'Show on website' : 'Hide from website'"
+          >
+            <UIcon :name="achievement.hide_on_website ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" class="w-4 h-4" />
+          </UButton>
+          <UButton size="sm" variant="ghost" color="neutral" @click="editAchievement(achievement)">
+            <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
+          </UButton>
+          <UButton size="sm" variant="ghost" color="error" @click="deleteAchievement(achievement)">
+            <UIcon name="i-heroicons-trash" class="w-4 h-4" />
+          </UButton>
         </div>
       </div>
-    </UCard>
+    </div>
+  </UCard>
+
   </div>
 
   <!-- Edit Achievement Modal -->

@@ -5,46 +5,54 @@
       <p>No education data available</p>
     </div>
 
-    <UCard 
-      v-for="edu in education" 
-      :key="edu.id"
-      class="bg-white dark:bg-gray-800"
-    >
-      <div class="p-4">
-        <div class="flex items-start justify-between">
-          <div class="flex-1">
-            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">{{ edu.degree }}</h4>
-            <p class="text-blue-600 dark:text-blue-400 font-medium mb-1">{{ edu.university_name }}</p>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
-              {{ formatDateRange(edu.from_date, edu.end_date) }}
-            </p>
-            <p v-if="edu.location" class="text-sm text-gray-500 dark:text-gray-400 mb-2">
-              📍 {{ edu.location }}
-            </p>
-            <p v-if="edu.cgpa" class="text-sm text-gray-600 dark:text-gray-400">
-              CGPA: {{ edu.cgpa }}
-            </p>
-          </div>
-          <div class="flex gap-2 ml-4">
-            <UButton 
-              size="sm" 
-              variant="ghost" 
-              :color="edu.hide_on_website ? 'warning' : 'success'"
-              @click="toggleVisibility(edu)"
-              :title="edu.hide_on_website ? 'Show on website' : 'Hide from website'"
-            >
-              <UIcon :name="edu.hide_on_website ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" class="w-4 h-4" />
-            </UButton>
-            <UButton size="sm" variant="ghost" color="neutral" @click="editEducation(edu)">
-              <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
-            </UButton>
-            <UButton size="sm" variant="ghost" color="error" @click="deleteEducation(edu)">
-              <UIcon name="i-heroicons-trash" class="w-4 h-4" />
-            </UButton>
-          </div>
+  <UCard 
+    v-for="edu in education" 
+    :key="edu.id"
+    class="bg-gray-50 dark:bg-gray-900 rounded-xl shadow-md border border-gray-200 dark:border-gray-700"
+  >
+    <div class="flex justify-between items-start">
+      <!-- Education Info -->
+      <div class="flex-1 space-y-1">
+        <!-- Degree and University on same line -->
+        <div class="flex flex-wrap items-baseline gap-1">
+          <h4 class="font-bold text-gray-900 dark:text-white text-lg">{{ edu.degree }},</h4>
+          <p class="text-gray-900 dark:text-white font-medium">{{ edu.university_name }}</p>
         </div>
+
+        <!-- Location and Date -->
+        <div class="text-sm text-gray-500 dark:text-gray-400 flex flex-wrap gap-2">
+          <span v-if="edu.location"> {{ edu.location }}</span>
+          <span>{{ formatDateRange(edu.from_date, edu.end_date) }}</span>
+        </div>
+
+        <!-- CGPA -->
+        <p v-if="edu.cgpa" class="text-sm text-gray-600 dark:text-gray-400">
+          CGPA: {{ edu.cgpa }}
+        </p>
       </div>
-    </UCard>
+
+      <!-- Action Buttons -->
+      <div class="flex gap-2 ml-4">
+        <UButton 
+          size="sm" 
+          variant="ghost" 
+          :color="edu.hide_on_website ? 'warning' : 'success'"
+          @click="toggleVisibility(edu)"
+          :title="edu.hide_on_website ? 'Show on website' : 'Hide from website'"
+        >
+          <UIcon :name="edu.hide_on_website ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" class="w-4 h-4" />
+        </UButton>
+        <UButton size="sm" variant="ghost" color="neutral" @click="editEducation(edu)">
+          <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
+        </UButton>
+        <UButton size="sm" variant="ghost" color="error" @click="deleteEducation(edu)">
+          <UIcon name="i-heroicons-trash" class="w-4 h-4" />
+        </UButton>
+      </div>
+    </div>
+  </UCard>
+
+
   </div>
 
   <!-- Edit Education Modal -->
@@ -134,7 +142,7 @@ const toggleVisibility = async (education: Education) => {
 }
 
 const formatDateRange = (fromDate?: string, endDate?: string) => {
-  if (!fromDate) return 'Date not specified'
+  if (!fromDate) return ''
   
   const start = new Date(fromDate).toLocaleDateString('en-US', { 
     year: 'numeric', 

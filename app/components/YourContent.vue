@@ -198,13 +198,13 @@ const sections = computed(() => [
     icon: 'i-heroicons-document-text',
     iconColor: 'indigo'
   },
-  {
-    id: 'technologies',
-    title: 'Technologies',
-    itemCount: projectsBoardData.value?.technologies?.length || 0,
-    icon: 'i-heroicons-cpu-chip',
-    iconColor: 'blue'
-  },
+  // {
+  //   id: 'technologies',
+  //   title: 'Technologies',
+  //   itemCount: projectsBoardData.value?.technologies?.length || 0,
+  //   icon: 'i-heroicons-cpu-chip',
+  //   iconColor: 'blue'
+  // },
   {
     id: 'achievements',
     title: 'Achievements',

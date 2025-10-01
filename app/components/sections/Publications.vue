@@ -8,14 +8,11 @@
     <UCard 
       v-for="publication in publications" 
       :key="publication.id"
-      class="bg-white dark:bg-gray-800"
+      class="bg-gray-50 dark:bg-gray-900 rounded-xl shadow-md border border-gray-200 dark:border-gray-700"
     >
-      <div class="p-4">
+      <div>
         <div class="flex items-start justify-between">
           <div class="flex items-start space-x-3 flex-1">
-            <div class="bg-red-100 dark:bg-red-900 w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0">
-              <UIcon name="i-heroicons-document-text" class="w-5 h-5 text-red-600 dark:text-red-400" />
-            </div>
             <div class="flex-1">
               <h4 class="font-semibold text-gray-900 dark:text-white mb-1">{{ publication.paper_name }}</h4>
               <p v-if="publication.conference_name" class="text-sm text-gray-600 dark:text-gray-400 mb-2">
@@ -31,8 +28,8 @@
                 <UButton 
                   v-if="publication.paper_link"
                   size="xs" 
-                  variant="soft" 
-                  color="error"
+                  variant="subtle" 
+                  color="neutral"
                   @click="openLink(publication.paper_link)"
                 >
                   <UIcon name="i-heroicons-arrow-top-right-on-square" class="w-3 h-3 mr-1" />
@@ -41,7 +38,7 @@
                 <UButton 
                   v-if="publication.paper_pdf"
                   size="xs" 
-                  variant="soft" 
+                  variant="subtle" 
                   color="neutral"
                   @click="downloadPaper(publication.paper_pdf, publication.paper_name)"
                 >
