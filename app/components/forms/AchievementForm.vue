@@ -1,7 +1,7 @@
 <template>
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-2xl p-6 my-8">
-        <UForm :state="state" @submit.prevent="submitForm" class="space-y-4">
+  <div class="fixed inset-0 z-50 flex items-start justify-center bg-black/50 overflow-y-auto">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-2xl p-6 my-8 mx-4">
+        <UForm :state="state" @submit.prevent="submitForm" @keydown.enter.prevent="" class="space-y-4">
           <!-- Header -->
           <div class="mb-4">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Add Achievements</h3>
@@ -48,7 +48,7 @@
           <!-- Buttons -->
           <div class="flex justify-end space-x-2 mt-4">
             <UButton type="button" color="neutral" @click="emit('close')" :disabled="loading">Cancel</UButton>
-            <UButton type="submit" color="primary" :loading="loading" :disabled="loading || (!achievements.length && !currentAchievement.trim())">
+            <UButton type="button" color="primary" :loading="loading" :disabled="loading || (!achievements.length && !currentAchievement.trim())" @click="submitForm">
               {{ loading ? 'Saving...' : 'Save Achievements' }}
             </UButton>
           </div>

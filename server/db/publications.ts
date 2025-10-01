@@ -104,7 +104,7 @@ export async function deletePublication(publicationId: number): Promise<void> {
 export async function toggleHideOnWebsite(publicationId: number): Promise<Publication> {
   const sql = `
     UPDATE publications 
-    SET hide_on_website = NOT hide_on_website, updated_at = CURRENT_TIMESTAMP
+    SET hide_on_website = NOT COALESCE(hide_on_website, false), updated_at = CURRENT_TIMESTAMP
     WHERE id = $1 AND deleted_at IS NULL
     RETURNING id, paper_name, conference_name, description, published_date, paper_pdf, paper_link, hide_on_website
   `

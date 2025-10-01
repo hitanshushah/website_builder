@@ -1,7 +1,7 @@
 <template>
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-2xl p-6 my-8">
-      <UForm :schema="schema" :state="state" @submit="onSubmit" class="space-y-4">
+  <div class="fixed inset-0 z-50 flex items-start justify-center bg-black/50 overflow-y-auto">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-2xl p-6 my-8 mx-4">
+      <UForm :schema="schema" :state="state" @submit="onSubmit" @keydown.enter.prevent="" class="space-y-4">
         <!-- Header -->
         <div class="mb-4">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Add Skill</h3>
@@ -197,8 +197,6 @@ const fetchCategories = async () => {
       query: { userId }
     })
     
-    console.log('Categories response:', response)
-    
     // Handle both possible response formats
     let categories: Array<{id: number, name: string}> = []
     if (response.success && response.data) {
@@ -212,8 +210,6 @@ const fetchCategories = async () => {
     if (categories.length > 0) {
       categoryOptions.value = categories.map((cat) => cat.name)
       categoryMap.value = new Map(categories.map((cat) => [cat.name, cat.id]))
-      console.log('Mapped categories:', categoryOptions.value)
-      console.log('Category map:', categoryMap.value)
     }
   } catch (err) {
     console.error('Error fetching categories:', err)

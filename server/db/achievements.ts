@@ -85,7 +85,7 @@ export async function deleteAchievement(achievementId: number): Promise<void> {
 export async function toggleHideOnWebsite(achievementId: number): Promise<Achievement> {
   const sql = `
     UPDATE achievements 
-    SET hide_on_website = NOT hide_on_website, updated_at = CURRENT_TIMESTAMP
+    SET hide_on_website = NOT COALESCE(hide_on_website, false), updated_at = CURRENT_TIMESTAMP
     WHERE id = $1 AND deleted_at IS NULL
     RETURNING id, description, hide_on_website
   `

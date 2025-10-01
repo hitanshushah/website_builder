@@ -104,7 +104,7 @@ export async function deleteCertification(certificationId: number): Promise<void
 export async function toggleHideOnWebsite(certificationId: number): Promise<Certification> {
   const sql = `
     UPDATE certifications 
-    SET hide_on_website = NOT hide_on_website, updated_at = CURRENT_TIMESTAMP
+    SET hide_on_website = NOT COALESCE(hide_on_website, false), updated_at = CURRENT_TIMESTAMP
     WHERE id = $1 AND deleted_at IS NULL
     RETURNING id, name, description, start_date, end_date, institute_name, certificate_pdf, hide_on_website
   `

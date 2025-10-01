@@ -1,49 +1,85 @@
 <template>
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-2xl p-6 my-8">
-      <UForm :state="state" @submit.prevent="submitForm" class="space-y-4">
-        <!-- University Name and Degree -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <UFormField label="University Name" help="Enter the name of your university" required>
+  <div class="fixed inset-0 z-50 flex items-start justify-center bg-black/50 overflow-y-auto">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-2xl p-6 my-8 mx-4">
+      <UForm :state="state" @submit.prevent="submitForm" @keydown.enter.prevent="" class="space-y-3">
+        <!-- University Name, Degree, and Location -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <UFormField label="University Name" required>
             <UInput v-model="state.university" placeholder="Enter university name" />
           </UFormField>
 
-          <UFormField label="Degree" help="Enter your degree (e.g., BSc, MSc)" required>
+          <UFormField label="Degree" required>
             <UInput v-model="state.degree" placeholder="Enter degree" />
+          </UFormField>
+
+          <UFormField label="Location">
+            <UInput v-model="state.location" placeholder="Enter location" />
           </UFormField>
         </div>
 
-        <!-- Start Date and End Date -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <UFormField label="Start Date" help="Select the start date of your education" required>
+        <!-- Start Date, End Date, and CGPA/Percentage -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <UFormField label="Start Date" required>
             <UInput type="date" v-model="state.startDate" />
           </UFormField>
 
-          <UFormField label="End Date" help="Select the end date of your education" required>
-            <UInput type="date" v-model="state.endDate" :min="state.startDate" />
+          <UFormField label="End Date" :required="!state.currentlyPursuing">
+            <UInput 
+              type="date" 
+              v-model="state.endDate" 
+              :min="state.startDate"
+              :disabled="state.currentlyPursuing"
+            />
+          </UFormField>
+
+          <UFormField :label="state.gradeType === 'cgpa' ? 'CGPA (0-10)' : 'Percentage (1-100)'">
+            <div class="space-y-2">
+              <div class="flex gap-4">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input 
+                    type="radio" 
+                    v-model="state.gradeType" 
+                    value="cgpa"
+                    class="w-4 h-4 text-primary-600 focus:ring-primary-500"
+                  />
+                  <span class="text-sm">CGPA</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input 
+                    type="radio" 
+                    v-model="state.gradeType" 
+                    value="percentage"
+                    class="w-4 h-4 text-primary-600 focus:ring-primary-500"
+                  />
+                  <span class="text-sm">Percentage</span>
+                </label>
+              </div>
+              <UInput 
+                type="number" 
+                step="0.01" 
+                :min="state.gradeType === 'cgpa' ? 0 : 1" 
+                :max="state.gradeType === 'cgpa' ? 10 : 100" 
+                v-model="state.gradeValue" 
+                :placeholder="state.gradeType === 'cgpa' ? 'e.g., 8.5' : 'e.g., 85'"
+              />
+            </div>
           </UFormField>
         </div>
 
-        <!-- Location and CGPA -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <UFormField label="Location" help="Enter university location">
-            <UInput v-model="state.location" placeholder="Enter location" />
-          </UFormField>
-
-          <UFormField label="CGPA" help="Enter your CGPA (0-10)">
-            <UInput type="number" step="0.01" min="0" max="10" v-model="state.cgpa" placeholder="Enter CGPA" />
-          </UFormField>
-        </div>
+        <!-- Currently Pursuing Checkbox -->
+        <UFormField name="currentlyPursuing">
+          <UCheckbox v-model="state.currentlyPursuing" label="I am currently pursuing this degree" />
+        </UFormField>
 
         <!-- Error Message -->
-        <div v-if="error" class="text-red-600 text-sm bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">
+        <div v-if="error" class="text-red-600 text-sm bg-red-50 dark:bg-red-900/20 p-2 rounded-lg">
           {{ error }}
         </div>
 
         <!-- Buttons -->
-        <div class="flex justify-end space-x-2 mt-4">
+        <div class="flex justify-end space-x-2 mt-3">
           <UButton type="button" color="neutral" @click="emit('close')" :disabled="loading">Cancel</UButton>
-          <UButton type="submit" color="primary" :loading="loading" :disabled="loading">
+          <UButton type="button" color="primary" :loading="loading" :disabled="loading" @click="submitForm">
             {{ loading ? 'Saving...' : 'Save' }}
           </UButton>
         </div>
@@ -67,6 +103,9 @@ type EducationData = {
   endDate: string
   location: string
   cgpa: number | null
+  currentlyPursuing: boolean
+  gradeType: 'cgpa' | 'percentage'
+  gradeValue: number | null
 }
 
 const userStore = useUserStore()
@@ -81,8 +120,21 @@ const state = reactive<EducationData>({
   startDate: '',
   endDate: '',
   location: '',
-  cgpa: null
+  cgpa: null,
+  currentlyPursuing: false,
+  gradeType: 'cgpa',
+  gradeValue: null
 })
+
+// Watch currentlyPursuing to clear endDate when checked
+watch(
+  () => state.currentlyPursuing,
+  (isCurrentlyPursuing) => {
+    if (isCurrentlyPursuing) {
+      state.endDate = ''
+    }
+  }
+)
 
 // Watch to enforce endDate >= startDate
 watch(
@@ -95,7 +147,7 @@ watch(
 )
 
 const submitForm = async () => {
-  if (state.endDate < state.startDate) {
+  if (!state.currentlyPursuing && state.endDate < state.startDate) {
     alert('End date cannot be earlier than Start date')
     return
   }
@@ -115,9 +167,9 @@ const submitForm = async () => {
       university_name: state.university,
       degree: state.degree,
       from_date: state.startDate,
-      end_date: state.endDate,
+      end_date: state.currentlyPursuing ? null : state.endDate,
       location: state.location,
-      cgpa: state.cgpa
+      cgpa: state.gradeValue
     }
 
     const response = await $fetch('/api/education', {
@@ -130,7 +182,7 @@ const submitForm = async () => {
         title: 'Education saved successfully',
         color: 'success'
       })
-      emit('save', { ...state })
+      emit('save', response.education)
       emit('close')
     }
   } catch (err: any) {

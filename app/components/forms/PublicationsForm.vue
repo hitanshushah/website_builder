@@ -1,35 +1,49 @@
 <template>
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-2xl p-6 my-8">
-      <UForm :schema="schema" :state="state" @submit="onSubmit" class="space-y-4">
+  <div class="fixed inset-0 z-50 flex items-start justify-center bg-black/50 overflow-y-auto">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-2xl p-6 my-8 mx-4">
+      <UForm :schema="schema" :state="state" @submit="onSubmit" @keydown.enter.prevent="" class="space-y-3">
         <!-- Header -->
-        <div class="mb-4">
+        <div class="mb-3">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Add Publication</h3>
           <p class="text-sm text-gray-600 dark:text-gray-400">Enter your publication details</p>
         </div>
 
-        <!-- Paper Name -->
-        <UFormField name="paperName" label="Paper Name" required>
-          <UInput v-model="state.paperName" placeholder="Enter paper title" />
-        </UFormField>
+        <!-- Paper Name and Conference Name -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <UFormField name="paperName" label="Paper Name" required>
+            <UInput v-model="state.paperName" placeholder="Enter paper title" />
+          </UFormField>
 
-        <!-- Conference Name -->
-        <UFormField name="conferenceName" label="Conference/Journal Name">
-          <UInput v-model="state.conferenceName" placeholder="Enter conference or journal name" />
-        </UFormField>
+          <UFormField name="conferenceName" label="Conference/Journal">
+            <UInput v-model="state.conferenceName" placeholder="Enter conference or journal name" />
+          </UFormField>
 
-        <!-- Description -->
-        <UFormField name="description" label="Description">
+          <!-- Empty column for consistency -->
+          <div></div>
+        </div>
+
+        <!-- Published Date and Paper Link -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <UFormField name="publishedDate" label="Published Date">
+            <UInput type="date" v-model="state.publishedDate" />
+          </UFormField>
+
+          <UFormField name="paperLink" label="Paper Link">
+            <UInput v-model="state.paperLink" placeholder="https://example.com/paper" />
+          </UFormField>
+
+          <!-- Empty column for consistency -->
+          <div></div>
+        </div>
+
+        <!-- Description (Full Width) -->
+        <UFormField name="description" label="Description" class="w-full">
           <UTextarea 
             v-model="state.description" 
             placeholder="Brief description of your publication"
             :rows="3"
+            class="w-full"
           />
-        </UFormField>
-
-        <!-- Published Date -->
-        <UFormField name="publishedDate" label="Published Date">
-          <UInput type="date" v-model="state.publishedDate" />
         </UFormField>
 
         <!-- Paper PDF Upload -->
@@ -45,18 +59,13 @@
           </div>
         </UFormField>
 
-        <!-- Paper Link -->
-        <UFormField name="paperLink" label="Paper Link">
-          <UInput v-model="state.paperLink" placeholder="https://example.com/paper" />
-        </UFormField>
-
         <!-- Error Message -->
-        <div v-if="error" class="text-red-600 text-sm bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">
+        <div v-if="error" class="text-red-600 text-sm bg-red-50 dark:bg-red-900/20 p-2 rounded-lg">
           {{ error }}
         </div>
 
         <!-- Buttons -->
-        <div class="flex justify-end space-x-2 mt-4">
+        <div class="flex justify-end space-x-2 mt-3">
           <UButton type="button" color="neutral" @click="emit('close')" :disabled="loading">Cancel</UButton>
           <UButton type="submit" color="primary" :loading="loading" :disabled="loading">
             {{ loading ? 'Saving...' : 'Save Publication' }}

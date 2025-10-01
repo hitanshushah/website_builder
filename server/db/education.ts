@@ -94,7 +94,7 @@ export async function deleteEducation(educationId: number): Promise<void> {
 export async function toggleHideOnWebsite(educationId: number): Promise<Education> {
   const sql = `
     UPDATE education 
-    SET hide_on_website = NOT hide_on_website, updated_at = CURRENT_TIMESTAMP
+    SET hide_on_website = NOT COALESCE(hide_on_website, false), updated_at = CURRENT_TIMESTAMP
     WHERE id = $1 AND deleted_at IS NULL
     RETURNING id, university_name, degree, from_date, end_date, location, cgpa, hide_on_website
   `

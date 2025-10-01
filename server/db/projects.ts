@@ -4,7 +4,7 @@ import type { Project } from '../../app/types'
 export async function toggleHideOnWebsite(projectId: number): Promise<Project> {
   const sql = `
     UPDATE projects 
-    SET hide_on_website = NOT hide_on_website, updated_at = CURRENT_TIMESTAMP
+    SET hide_on_website = NOT COALESCE(hide_on_website, false), updated_at = CURRENT_TIMESTAMP
     WHERE id = $1 AND deleted_at IS NULL
     RETURNING id, key, name, description, start_date, end_date, is_public, hide_on_website, sorting_order, created_at, updated_at
   `

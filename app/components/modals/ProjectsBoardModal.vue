@@ -1,6 +1,6 @@
 <template>
   <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-md p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-lg p-6">
       <!-- Header -->
       <div class="mb-4">
         <div class="flex items-center gap-3 mb-2">
@@ -25,7 +25,7 @@
                 <li>• Create and manage projects</li>
                 <li>• Add technologies and skills</li>
                 <li>• Update your profile information</li>
-                <li>• Organize your portfolio</li>
+                <li>• Create your own domain</li>
               </ul>
             </div>
           </div>

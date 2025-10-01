@@ -110,7 +110,7 @@ export async function deleteExperience(experienceId: number): Promise<void> {
 export async function toggleHideOnWebsite(experienceId: number): Promise<Experience> {
   const sql = `
     UPDATE experiences 
-    SET hide_on_website = NOT hide_on_website, updated_at = CURRENT_TIMESTAMP
+    SET hide_on_website = NOT COALESCE(hide_on_website, false), updated_at = CURRENT_TIMESTAMP
     WHERE id = $1 AND deleted_at IS NULL
     RETURNING id, company_name, role, start_date, end_date, description, skills, location, company_logo, hide_on_website
   `
