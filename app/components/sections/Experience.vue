@@ -40,11 +40,15 @@
                   {{ experience.role }}
                 </h4>
               </div>
-
+              <div class="flex gap-2">
               <!-- Date -->
               <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                {{ formatDateRange(experience.start_date, experience.end_date) }}
+                {{ formatDateRange(experience.start_date, experience.end_date) }},
               </p>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                {{ experience.location }}
+              </p>
+              </div>
             </div>
           </div>
 
@@ -66,23 +70,12 @@
         </div>
 
         <!-- Actions -->
-        <div class="flex gap-2 ml-4">
-          <UButton 
-            size="sm" 
-            variant="ghost" 
-            :color="experience.hide_on_website ? 'warning' : 'success'"
-            @click="toggleVisibility(experience)"
-            :title="experience.hide_on_website ? 'Show on website' : 'Hide from website'"
-          >
-            <UIcon :name="experience.hide_on_website ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" class="w-4 h-4" />
-          </UButton>
-          <UButton size="sm" variant="ghost" color="neutral" @click="editExperience(experience)">
-            <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
-          </UButton>
-          <UButton size="sm" variant="ghost" color="error" @click="deleteExperience(experience)">
-            <UIcon name="i-heroicons-trash" class="w-4 h-4" />
-          </UButton>
-        </div>
+        <ActionButtons 
+          :item="experience"
+          @toggle-visibility="toggleVisibility"
+          @edit="editExperience"
+          @delete="deleteExperience"
+        />
       </div>
     </div>
     </UCard>

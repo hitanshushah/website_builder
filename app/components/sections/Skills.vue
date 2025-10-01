@@ -46,33 +46,14 @@
            </UBadge>
      
            <!-- Action Buttons -->
-           <div class="flex gap-1">
-             <UButton 
-               size="xs" 
-               variant="ghost" 
-               :color="skill.hide_on_website ? 'warning' : 'success'"
-               @click="toggleVisibility(skill)"
-               :title="skill.hide_on_website ? 'Show on website' : 'Hide from website'"
-             >
-               <UIcon :name="skill.hide_on_website ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" class="w-3 h-3" />
-             </UButton>
-             <UButton 
-               size="xs" 
-               variant="ghost" 
-               color="neutral"
-               @click="editSkill(skill)"
-             >
-               <UIcon name="i-heroicons-pencil" class="w-3 h-3" />
-             </UButton>
-             <UButton 
-               size="xs" 
-               variant="ghost" 
-               color="error"
-               @click="deleteSkill(skill)"
-             >
-               <UIcon name="i-heroicons-trash" class="w-3 h-3" />
-             </UButton>
-           </div>
+           <ActionButtons 
+             :item="skill"
+             size="xs"
+             container-class=""
+             @toggle-visibility="toggleVisibility"
+             @edit="editSkill"
+             @delete="deleteSkill"
+           />
          </div>
        </div>
     </UCard>

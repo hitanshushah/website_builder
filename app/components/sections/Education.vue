@@ -32,23 +32,12 @@
       </div>
 
       <!-- Action Buttons -->
-      <div class="flex gap-2 ml-4">
-        <UButton 
-          size="sm" 
-          variant="ghost" 
-          :color="edu.hide_on_website ? 'warning' : 'success'"
-          @click="toggleVisibility(edu)"
-          :title="edu.hide_on_website ? 'Show on website' : 'Hide from website'"
-        >
-          <UIcon :name="edu.hide_on_website ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" class="w-4 h-4" />
-        </UButton>
-        <UButton size="sm" variant="ghost" color="neutral" @click="editEducation(edu)">
-          <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
-        </UButton>
-        <UButton size="sm" variant="ghost" color="error" @click="deleteEducation(edu)">
-          <UIcon name="i-heroicons-trash" class="w-4 h-4" />
-        </UButton>
-      </div>
+      <ActionButtons 
+        :item="edu"
+        @toggle-visibility="toggleVisibility"
+        @edit="editEducation"
+        @delete="deleteEducation"
+      />
     </div>
   </UCard>
 

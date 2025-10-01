@@ -15,23 +15,12 @@
         </p>
 
         <!-- Action Buttons -->
-        <div class="flex gap-2 ml-4">
-          <UButton 
-            size="sm" 
-            variant="ghost" 
-            :color="achievement.hide_on_website ? 'warning' : 'success'"
-            @click="toggleVisibility(achievement)"
-            :title="achievement.hide_on_website ? 'Show on website' : 'Hide from website'"
-          >
-            <UIcon :name="achievement.hide_on_website ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" class="w-4 h-4" />
-          </UButton>
-          <UButton size="sm" variant="ghost" color="neutral" @click="editAchievement(achievement)">
-            <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
-          </UButton>
-          <UButton size="sm" variant="ghost" color="error" @click="deleteAchievement(achievement)">
-            <UIcon name="i-heroicons-trash" class="w-4 h-4" />
-          </UButton>
-        </div>
+        <ActionButtons 
+          :item="achievement"
+          @toggle-visibility="toggleVisibility"
+          @edit="editAchievement"
+          @delete="deleteAchievement"
+        />
       </div>
     </div>
   </UCard>

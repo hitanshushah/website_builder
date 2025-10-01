@@ -51,20 +51,13 @@
             </div>
 
             <!-- Actions -->
-            <div class="flex gap-2 ml-3">
-              <UButton
-                size="sm"
-                variant="ghost"
-                :color="project.hide_on_website ? 'warning' : 'success'"
-                @click="toggleVisibility(project)"
-                :title="project.hide_on_website ? 'Show on website' : 'Hide from website'"
-              >
-                <UIcon
-                  :name="project.hide_on_website ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'"
-                  class="w-4 h-4"
-                />
-              </UButton>
-            </div>
+            <ActionButtons 
+              :item="project"
+              container-class="ml-3"
+              :show-edit="false"
+              :show-delete="false"
+              @toggle-visibility="toggleVisibility"
+            />
           </div>
 
           <!-- Description -->

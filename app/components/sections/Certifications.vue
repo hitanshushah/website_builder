@@ -44,23 +44,12 @@
         </div>
 
         <!-- Action Buttons -->
-        <div class="flex gap-2 ml-4">
-          <UButton 
-            size="sm" 
-            variant="ghost" 
-            :color="cert.hide_on_website ? 'warning' : 'success'"
-            @click="toggleVisibility(cert)"
-            :title="cert.hide_on_website ? 'Show on website' : 'Hide from website'"
-          >
-            <UIcon :name="cert.hide_on_website ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" class="w-4 h-4" />
-          </UButton>
-          <UButton size="sm" variant="ghost" color="neutral" @click="editCertification(cert)">
-            <UIcon name="i-heroicons-pencil" class="w-4 h-4" />
-          </UButton>
-          <UButton size="sm" variant="ghost" color="error" @click="deleteCertification(cert)">
-            <UIcon name="i-heroicons-trash" class="w-4 h-4" />
-          </UButton>
-        </div>
+        <ActionButtons 
+          :item="cert"
+          @toggle-visibility="toggleVisibility"
+          @edit="editCertification"
+          @delete="deleteCertification"
+        />
       </div>
     </UCard>
 
