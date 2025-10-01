@@ -48,6 +48,8 @@
            <!-- Action Buttons -->
            <ActionButtons 
              :item="skill"
+             item-type="Skill"
+             :item-name="skill.name"
              size="xs"
              container-class=""
              @toggle-visibility="toggleVisibility"

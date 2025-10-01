@@ -17,6 +17,8 @@
         <!-- Action Buttons -->
         <ActionButtons 
           :item="achievement"
+          item-type="Achievement"
+          :item-name="achievement.description"
           @toggle-visibility="toggleVisibility"
           @edit="editAchievement"
           @delete="deleteAchievement"

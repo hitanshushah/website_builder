@@ -34,6 +34,8 @@
       <!-- Action Buttons -->
       <ActionButtons 
         :item="edu"
+        item-type="Education"
+        :item-name="`${edu.degree} from ${edu.university_name}`"
         @toggle-visibility="toggleVisibility"
         @edit="editEducation"
         @delete="deleteEducation"

@@ -53,6 +53,8 @@
             <!-- Actions -->
             <ActionButtons 
               :item="project"
+              item-type="Project"
+              :item-name="project.name"
               container-class="ml-3"
               :show-edit="false"
               :show-delete="false"

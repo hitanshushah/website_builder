@@ -6,7 +6,7 @@
       :size="size" 
       variant="ghost" 
       :color="item.hide_on_website ? 'warning' : 'success'"
-      @click="$emit('toggle-visibility', item)"
+      @click="openVisibilityModal"
       :title="item.hide_on_website ? 'Show on website' : 'Hide from website'"
     >
       <UIcon :name="item.hide_on_website ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" :class="iconClass" />
@@ -34,13 +34,25 @@
       <UIcon name="i-heroicons-trash" :class="iconClass" />
     </UButton>
   </div>
+
+  <!-- Visibility Toggle Modal -->
+  <ModalsVisibilityToggleModal
+    v-if="showVisibilityModal"
+    :item-type="itemType"
+    :item-name="itemName"
+    :will-hide="!item.hide_on_website"
+    @cancel="closeVisibilityModal"
+    @confirm="confirmToggleVisibility"
+  />
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 const props = withDefaults(defineProps<{
   item: any
+  itemType?: string
+  itemName?: string
   size?: 'xs' | 'sm' | 'md' | 'lg'
   showVisibility?: boolean
   showEdit?: boolean
@@ -51,7 +63,9 @@ const props = withDefaults(defineProps<{
   showVisibility: true,
   showEdit: true,
   showDelete: true,
-  containerClass: 'ml-4'
+  containerClass: 'ml-4',
+  itemType: 'Item',
+  itemName: 'this item'
 })
 
 const emit = defineEmits<{
@@ -59,6 +73,21 @@ const emit = defineEmits<{
   (e: 'edit', item: any): void
   (e: 'delete', item: any): void
 }>()
+
+const showVisibilityModal = ref(false)
+
+const openVisibilityModal = () => {
+  showVisibilityModal.value = true
+}
+
+const closeVisibilityModal = () => {
+  showVisibilityModal.value = false
+}
+
+const confirmToggleVisibility = () => {
+  showVisibilityModal.value = false
+  emit('toggle-visibility', props.item)
+}
 
 const iconClass = computed(() => {
   return props.size === 'xs' ? 'w-3 h-3' : 'w-4 h-4'

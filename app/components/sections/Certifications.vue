@@ -46,6 +46,8 @@
         <!-- Action Buttons -->
         <ActionButtons 
           :item="cert"
+          item-type="Certification"
+          :item-name="cert.name"
           @toggle-visibility="toggleVisibility"
           @edit="editCertification"
           @delete="deleteCertification"

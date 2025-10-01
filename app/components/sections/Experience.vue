@@ -72,6 +72,8 @@
         <!-- Actions -->
         <ActionButtons 
           :item="experience"
+          item-type="Experience"
+          :item-name="`${experience.role} at ${experience.company_name}`"
           @toggle-visibility="toggleVisibility"
           @edit="editExperience"
           @delete="deleteExperience"

@@ -50,6 +50,8 @@
           </div>
           <ActionButtons 
             :item="publication"
+            item-type="Publication"
+            :item-name="publication.paper_name"
             @toggle-visibility="toggleVisibility"
             @edit="editPublication"
             @delete="deletePublication"
