@@ -39,7 +39,7 @@
             {{ userProfile.designation }}
           </p>
 
-          <p v-if="userProfile.bio" class="text-gray-700 dark:text-gray-300 leading-relaxed mb-2">
+          <p v-if="userProfile.bio" class="text-gray-700 dark:text-gray-300 leading-relaxed mb-2 whitespace-pre-line">
             {{ userProfile.bio }}
           </p>
 

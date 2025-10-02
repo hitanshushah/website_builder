@@ -11,6 +11,13 @@ export interface Profile {
   id: number;
   user_id: number;
   name: string;
+  phone_number?: string;
+  secondary_email?: string;
+  introduction?: string;
+  hide_phone_on_website?: boolean;
+  hide_secondary_email_on_website?: boolean;
+  hide_introduction_on_website?: boolean;
+  override_email?: boolean;
   created_at?: Date;
   updated_at?: Date;
 }
@@ -72,6 +79,13 @@ export interface UserProfile {
   city?: string;
   province?: string;
   country?: string;
+  phone_number?: string;
+  secondary_email?: string;
+  introduction?: string;
+  hide_phone_on_website?: boolean;
+  hide_secondary_email_on_website?: boolean;
+  hide_introduction_on_website?: boolean;
+  override_email?: boolean;
   public_url?: string;
   share_profile?: boolean;
   profile_photo_url?: string;

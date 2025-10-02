@@ -10,7 +10,7 @@
 
       <div v-for="(achievement, index) in achievements" :key="achievement.id" class="flex justify-between items-start">
         <!-- Achievement Description with numbering -->
-        <p class="text-sm text-gray-700 dark:text-gray-300">
+        <p class="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-line">
           {{ index + 1 }}. {{ achievement.description }}
         </p>
 

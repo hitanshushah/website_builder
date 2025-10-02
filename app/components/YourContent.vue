@@ -32,6 +32,20 @@
           </div>
         </template>
 
+        <template v-else-if="section.id === 'contact-details'">
+          <div v-if="loading">
+            <USkeleton class="h-24 w-full rounded-lg" />
+          </div>
+          <div v-else>
+            <SectionsContactDetails 
+              :user-profile="projectsBoardData?.userProfile || null" 
+              @updated="handleContactDetailsUpdated"
+              @fieldDeleted="handleContactDetailsFieldDeleted"
+              @visibilityToggled="handleContactDetailsVisibilityToggled"
+            />
+          </div>
+        </template>
+
         <template v-else-if="section.id === 'experience'">
           <div v-if="loading">
             <USkeleton class="h-24 w-full rounded-lg" />
@@ -145,6 +159,21 @@
   <!-- SkillsForm Modal -->
 <FormsSkillsForm v-if="showSkillsForm" @close="closeSkillsForm" @save="saveSkill" />
 
+  <!-- ContactDetailsForm Modal -->
+<FormsContactDetailsForm v-if="showContactDetailsForm" @close="closeContactDetailsForm" @save="saveContactDetails" />
+
+  <!-- ContactDetailsEditForm Modal (triggered from Add button when data exists) -->
+<FormsContactDetailsEditForm 
+  v-if="showContactDetailsEditForm && projectsBoardData?.userProfile" 
+  :contact-details="{
+    phone_number: projectsBoardData.userProfile.phone_number || '',
+    secondary_email: projectsBoardData.userProfile.secondary_email || '',
+    introduction: projectsBoardData.userProfile.introduction || ''
+  }"
+  @updated="saveContactDetailsFromEdit" 
+  @close="closeContactDetailsEditFormFromAdd" 
+/>
+
   <!-- ProjectsBoardModal -->
 <ModalsProjectsBoardModal v-if="showProjectsBoardModal" :section="projectsBoardSection" @close="closeProjectsBoardModal" />
 
@@ -162,6 +191,13 @@ const sections = computed(() => [
     itemCount: projectsBoardData.value?.userProfile ? 1 : 0,
     icon: 'i-heroicons-user',
     iconColor: 'blue'
+  },
+  {
+    id: 'contact-details',
+    title: 'Extra Details',
+    itemCount: projectsBoardData.value?.userProfile && (projectsBoardData.value.userProfile.phone_number || projectsBoardData.value.userProfile.secondary_email) ? 1 : 0,
+    icon: 'i-heroicons-squares-plus-16-solid',
+    iconColor: 'teal'
   },
   {
     id: 'experience',
@@ -223,6 +259,7 @@ const sections = computed(() => [
 
 const openSections = ref({
   'user-info': false,
+  'contact-details': false,
   'experience': false,
   'projects': false,
   'education': false,
@@ -251,6 +288,18 @@ const addItem = (section) => {
     showCertificationForm.value = true
   } else if (section === 'skills') {
     showSkillsForm.value = true
+  } else if (section === 'contact-details') {
+    // For contact details, if data exists, treat as edit
+    const hasContactData = projectsBoardData.value?.userProfile && 
+      (projectsBoardData.value.userProfile.phone_number || 
+       projectsBoardData.value.userProfile.secondary_email || 
+       projectsBoardData.value.userProfile.introduction)
+    
+    if (hasContactData) {
+      showContactDetailsEditForm.value = true
+    } else {
+      showContactDetailsForm.value = true
+    }
   } else if (section === 'projects' || section === 'user-info' || section === 'technologies') {
     projectsBoardSection.value = section
     showProjectsBoardModal.value = true
@@ -314,6 +363,84 @@ const saveSkill = (data) => {
   projectsBoardData.value.skills = projectsBoardData.value.skills || []
   projectsBoardData.value.skills.push(data)
   showSkillsForm.value = false
+}
+
+const closeContactDetailsForm = () => {
+  showContactDetailsForm.value = false
+}
+
+const closeContactDetailsEditFormFromAdd = () => {
+  showContactDetailsEditForm.value = false
+}
+
+const saveContactDetails = (data) => {
+  // Update userProfile with contact details
+  if (projectsBoardData.value?.userProfile) {
+    projectsBoardData.value.userProfile = {
+      ...projectsBoardData.value.userProfile,
+      phone_number: data.phone_number,
+      secondary_email: data.secondary_email,
+      introduction: data.introduction
+    }
+  }
+  showContactDetailsForm.value = false
+}
+
+const saveContactDetailsFromEdit = (data) => {
+  // Update userProfile with contact details (when edit is triggered from add button)
+  if (projectsBoardData.value?.userProfile) {
+    projectsBoardData.value.userProfile = {
+      ...projectsBoardData.value.userProfile,
+      phone_number: data.phone_number,
+      secondary_email: data.secondary_email,
+      introduction: data.introduction
+    }
+  }
+  showContactDetailsEditForm.value = false
+}
+
+const handleContactDetailsUpdated = (updatedProfile) => {
+  if (projectsBoardData.value?.userProfile) {
+    projectsBoardData.value.userProfile = {
+      ...projectsBoardData.value.userProfile,
+      phone_number: updatedProfile.phone_number,
+      secondary_email: updatedProfile.secondary_email,
+      introduction: updatedProfile.introduction
+    }
+  }
+}
+
+const handleContactDetailsFieldDeleted = (field) => {
+  if (projectsBoardData.value?.userProfile) {
+    if (field === 'phone') {
+      projectsBoardData.value.userProfile = {
+        ...projectsBoardData.value.userProfile,
+        phone_number: undefined
+      }
+    } else if (field === 'secondary_email') {
+      projectsBoardData.value.userProfile = {
+        ...projectsBoardData.value.userProfile,
+        secondary_email: undefined
+      }
+    } else if (field === 'introduction') {
+      projectsBoardData.value.userProfile = {
+        ...projectsBoardData.value.userProfile,
+        introduction: undefined
+      }
+    }
+  }
+}
+
+const handleContactDetailsVisibilityToggled = (updatedProfile) => {
+  if (projectsBoardData.value?.userProfile) {
+    projectsBoardData.value.userProfile = {
+      ...projectsBoardData.value.userProfile,
+      hide_phone_on_website: updatedProfile.hide_phone_on_website,
+      hide_secondary_email_on_website: updatedProfile.hide_secondary_email_on_website,
+      hide_introduction_on_website: updatedProfile.hide_introduction_on_website,
+      override_email: updatedProfile.override_email
+    }
+  }
 }
 
 const closeProjectsBoardModal = () => {
@@ -393,6 +520,8 @@ const showExperienceForm = ref(false)
 const showPublicationsForm = ref(false)
 const showCertificationForm = ref(false)
 const showSkillsForm = ref(false)
+const showContactDetailsForm = ref(false)
+const showContactDetailsEditForm = ref(false)
 const showProjectsBoardModal = ref(false)
 const projectsBoardSection = ref('')
 

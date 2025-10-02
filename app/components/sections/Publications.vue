@@ -21,7 +21,7 @@
                   • {{ formatDate(publication.published_date) }}
                 </span>
               </p>
-              <p v-if="publication.description" class="text-sm text-gray-700 dark:text-gray-300 mb-3">
+              <p v-if="publication.description" class="text-sm text-gray-700 dark:text-gray-300 mb-3 whitespace-pre-line">
                 {{ publication.description }}
               </p>
               <div class="flex space-x-2">

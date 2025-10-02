@@ -64,7 +64,7 @@
           </div>
 
           <!-- Description -->
-          <p v-if="experience.description" class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+          <p v-if="experience.description" class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">
             {{ experience.description }}
           </p>
         </div>
