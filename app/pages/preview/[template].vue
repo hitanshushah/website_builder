@@ -7,14 +7,14 @@ definePageMeta({
 })
 
 const route = useRoute()
-const templateIdentifier = route.params.template as string
-
 const { data: templateData, loading } = useFetchTemplateData()
 
+// Dynamically load template component
 const templateComponent = computed(() => {
-  if (!templateIdentifier) return null
-  const name = templateIdentifier.charAt(0).toUpperCase() + templateIdentifier.slice(1)
-  return defineAsyncComponent(() => import(`~/components/templates/${name}.vue`))
+  const identifier = route.params.template as string
+  if (!identifier) return null
+  const name = identifier.charAt(0).toUpperCase() + identifier.slice(1)
+  return defineAsyncComponent(() => import(`../../components/templates/${name}.vue`))
 })
 </script>
 
@@ -46,4 +46,3 @@ const templateComponent = computed(() => {
     </div>
   </div>
 </template>
-
