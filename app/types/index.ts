@@ -185,3 +185,16 @@ export interface ProjectsBoardData {
   technologies: string[];
   education: Education[];
 }
+
+export interface Template {
+  id: number
+  name: string
+  identifier: string
+  description: string | null
+  is_active: boolean
+  is_premium: boolean
+  thumbnail: string | null
+  created_at: string
+  updated_at: string
+  deleted_at: string | null
+}
