@@ -53,7 +53,7 @@ const selectTemplate = (identifier: string) => {
     <div v-else-if="error" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 text-center">
       <UIcon name="i-lucide-alert-circle" class="w-12 h-12 text-red-600 dark:text-red-400 mx-auto mb-4" />
       <p class="text-red-700 dark:text-red-400 mb-4">{{ error }}</p>
-      <UButton @click="fetchTemplates" color="red" variant="outline">
+      <UButton @click="fetchTemplates" color="error" variant="outline">
         Try Again
       </UButton>
     </div>

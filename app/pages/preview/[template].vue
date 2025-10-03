@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineAsyncComponent } from 'vue'
+import { useFetchTemplateData } from '~/composables/useTemplateData'
 
-// Disable default layout - render as standalone page
 definePageMeta({
   layout: false
 })
@@ -9,7 +9,6 @@ definePageMeta({
 const route = useRoute()
 const { data: templateData, loading } = useFetchTemplateData()
 
-// Dynamically load template component
 const templateComponent = computed(() => {
   const identifier = route.params.template as string
   if (!identifier) return null
@@ -19,9 +18,7 @@ const templateComponent = computed(() => {
 </script>
 
 <template>
-  <!-- No wrapping div, no layout, no navbar - pure template rendering -->
-  
-  <!-- Loading State -->
+
   <div v-if="loading" class="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
     <div class="text-center">
       <div class="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
@@ -29,10 +26,8 @@ const templateComponent = computed(() => {
     </div>
   </div>
 
-  <!-- Pure Template Content - renders as standalone website -->
   <component v-else-if="templateData && templateComponent" :is="templateComponent" :data="templateData" />
   
-  <!-- Error State -->
   <div v-else class="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
     <div class="text-center max-w-md mx-auto px-6">
       <div class="w-24 h-24 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
