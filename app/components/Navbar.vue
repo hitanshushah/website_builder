@@ -15,20 +15,24 @@
       <!-- Nav Buttons -->
       <div class="flex items-center space-x-1">
         <UButton 
-          variant="solid" 
-          class="px-4 py-2 rounded-lg text-white dark:text-black"
-          :class="{ 'bg-blue-600': true, 'dark:bg-white': true }"
+          :variant="currentRoute === '/' ? 'solid' : 'ghost'"
+          :color="currentRoute === '/' ? 'neutral' : 'gray'"
+          class="px-4 py-2 rounded-lg cursor-pointer"
+          :class="currentRoute === '/' ? 'text-white dark:text-black' : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'"
+          @click="navigateTo('/')"
         >
-          <UIcon name="i-heroicons-home" class="w-4 h-4 mr-2 text-white dark:text-black" />
+          <UIcon name="i-heroicons-home" class="w-4 h-4 mr-2" :class="currentRoute === '/' ? 'text-white dark:text-black' : ''" />
           Dashboard
         </UButton>
         
         <UButton 
-          variant="ghost" 
-          color="gray" 
-          class="px-4 py-2 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+          :variant="currentRoute === '/settings' ? 'solid' : 'ghost'"
+          :color="currentRoute === '/settings' ? 'neutral' : 'gray'"
+          class="px-4 py-2 rounded-lg cursor-pointer"
+          :class="currentRoute === '/settings' ? 'text-white dark:text-black' : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'"
+          @click="navigateTo('/settings')"
         >
-          <UIcon name="i-heroicons-cog-6-tooth" class="w-4 h-4 mr-2" />
+          <UIcon name="i-heroicons-cog-6-tooth" class="w-4 h-4 mr-2" :class="currentRoute === '/settings' ? 'text-white dark:text-black' : ''" />
           Website Settings
         </UButton>
         
@@ -71,5 +75,8 @@
 </template>
 
 <script setup>
-// No extra logic needed yet
+import { computed } from 'vue'
+
+const route = useRoute()
+const currentRoute = computed(() => route.path)
 </script>
