@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { defineAsyncComponent } from 'vue'
 import { useFetchTemplateData } from '~/composables/useTemplateData'
+import { useUserStore } from '../../../stores/user'
 
 definePageMeta({
   layout: false
 })
 
 const route = useRoute()
-const { data: templateData, loading } = useFetchTemplateData()
+const userStore = useUserStore()
+const { data: templateData, loading } = useFetchTemplateData(userStore.user?.id)
 
 const templateComponent = computed(() => {
   const identifier = route.params.template as string

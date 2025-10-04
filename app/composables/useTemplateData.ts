@@ -1,5 +1,4 @@
 import type { ProjectsBoardData, Skill } from '~/types'
-import { useUserStore } from '../../stores/user'
 
 export interface ProcessedTemplateData {
   userProfile: ProjectsBoardData['userProfile']
@@ -14,8 +13,21 @@ export interface ProcessedTemplateData {
 }
 
 // Fetch and process template data
-export function useFetchTemplateData() {
-  const userStore = useUserStore()
+export function useFetchTemplateData(userId: number | undefined) {
+  const config = useRuntimeConfig()
+  const logoutUrl = config.public.authentikLogoutUrl || '/logout'
+  
+  // If userId is undefined, logout
+  if (userId === undefined) {
+    navigateTo(logoutUrl, { external: true })
+    return {
+      data: ref(null),
+      loading: ref(false),
+      error: ref('User not authenticated'),
+      refetch: async () => {}
+    }
+  }
+
   const data = ref<ProcessedTemplateData | null>(null)
   const loading = ref(true)
   const error = ref<string | null>(null)
@@ -26,7 +38,7 @@ export function useFetchTemplateData() {
       error.value = null
       
       const response = await $fetch<ProjectsBoardData>('/api/projectsboard', {
-        query: { userId: userStore.user?.id }
+        query: { userId }
       })
       
       data.value = processTemplateData(response)

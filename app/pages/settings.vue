@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { TabsItem } from '@nuxt/ui'
 import { useFetchTemplateData } from '~/composables/useTemplateData'
+import { useUserStore } from '../../stores/user'
 
 const items = [
   {
@@ -17,8 +18,9 @@ const items = [
   }
 ] satisfies TabsItem[]
 
+const userStore = useUserStore()
 const selectedTemplateIdentifier = ref<string | null>(null)
-const { data: templateData } = useFetchTemplateData()
+const { data: templateData } = useFetchTemplateData(userStore.user?.id)
 
 const handleTemplateSelect = (identifier: string) => {
   selectedTemplateIdentifier.value = identifier
@@ -27,7 +29,7 @@ const handleTemplateSelect = (identifier: string) => {
 const selectedTemplateComponent = computed(() => {
   if (!selectedTemplateIdentifier.value) return null
   const name = selectedTemplateIdentifier.value.charAt(0).toUpperCase() + selectedTemplateIdentifier.value.slice(1)
-  return defineAsyncComponent(() => import(`~/components/templates/${name}.vue`))
+  return defineAsyncComponent(() => import(`../components/templates/${name}.vue`))
 })
 
 </script>
