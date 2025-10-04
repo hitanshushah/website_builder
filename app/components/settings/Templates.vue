@@ -6,6 +6,7 @@ const emit = defineEmits<{
 }>()
 
 const templates = ref<Template[]>([])
+const validTemplates = ref<Template[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
 
@@ -16,6 +17,17 @@ const fetchTemplates = async () => {
     
     const response = await $fetch<Template[]>('/api/templates')
     templates.value = response
+
+    const filtered = templates.value.filter(t => {
+      try {
+        const availableComponents = import.meta.glob('@/components/templates/*.vue', { eager: true })
+        return availableComponents[`/components/templates/${t.identifier}.vue`]
+      } catch (err) {
+        return false
+      }
+    })
+
+    validTemplates.value = filtered
   } catch (err) {
     console.error('Error fetching templates:', err)
     error.value = 'Failed to load templates. Please try again.'
@@ -40,7 +52,7 @@ const selectTemplate = (identifier: string) => {
       <p class="text-gray-600 dark:text-gray-400">Select a template for your website.</p>
     </div>
 
-    <!-- Loading State - 3 Skeletons -->
+    <!-- Loading State -->
     <div v-if="loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div v-for="i in 3" :key="i" class="animate-pulse">
         <div class="bg-gray-200 dark:bg-gray-700 rounded-lg h-64 mb-4"></div>
@@ -61,7 +73,7 @@ const selectTemplate = (identifier: string) => {
     <!-- Template Cards -->
     <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div 
-        v-for="template in templates" 
+        v-for="template in validTemplates" 
         :key="template.id"
         class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition group"
       >
@@ -77,7 +89,6 @@ const selectTemplate = (identifier: string) => {
             <UIcon name="i-lucide-image" class="w-16 h-16 text-gray-400" />
           </div>
           
-          <!-- Premium Badge -->
           <div v-if="template.is_premium" class="absolute top-2 right-2">
             <span class="px-3 py-1 bg-yellow-500 text-white text-xs font-semibold rounded-full">
               Premium
