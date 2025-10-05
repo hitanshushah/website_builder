@@ -1,7 +1,7 @@
 <template>
   <div class="max-w-6xl mx-auto p-8">
     <!-- Loading State -->
-    <div v-if="pending" class="flex flex-col items-center justify-center py-16">
+    <div v-if="pending" class="flex flex-col items-center justify-center py-16 h-screen">
         <div class="flex items-center gap-4">
           <USkeleton class="h-12 w-12 rounded-full" />
 
@@ -141,7 +141,7 @@ const { savePreferences } = useUserPreferences()
 
 const selectedColorId = computed(() => colorsStore.selectedColorScheme?.id || null)
 
-const { data: colorsResponse, pending, error, refresh } = await useFetch('/api/colors', {
+const { data: colorsResponse, pending, error, refresh } = useFetch('/api/colors', {
   query: {
     userId: userStore.user?.id || null
   }
