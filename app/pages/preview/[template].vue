@@ -3,6 +3,7 @@ import { defineAsyncComponent } from 'vue'
 import { useFetchTemplateData } from '~/composables/useTemplateData'
 import { useUserStore } from '../../../stores/user'
 import { useColorsStore } from '../../../stores/colors'
+import { useTemplatesStore } from '../../../stores/templates'
 
 definePageMeta({
   layout: false
@@ -11,6 +12,7 @@ definePageMeta({
 const route = useRoute()
 const userStore = useUserStore()
 const colorsStore = useColorsStore()
+const templatesStore = useTemplatesStore()
 
 const { data: templateData, loading } = useFetchTemplateData(userStore.user?.id)
 
@@ -23,10 +25,37 @@ const { data: colorsResponse } = await useFetch('/api/colors', {
 if (colorsResponse.value) {
   const colors = (colorsResponse.value as any)?.data || []
   colorsStore.setAvailableColors(colors)
+}
+
+const { data: templatesResponse } = await useFetch('/api/templates')
+
+if (templatesResponse.value) {
+  const templates = (templatesResponse.value as any) || []
+  templatesStore.setAvailableTemplates(templates)
+}
+
+const { data: userPreferencesResponse } = await useFetch('/api/user-preferences', {
+  query: {
+    userId: userStore.user?.id || null
+  }
+})
+
+if (userPreferencesResponse.value && (userPreferencesResponse.value as any)?.success && (userPreferencesResponse.value as any)?.data) {
+  const preferences = (userPreferencesResponse.value as any).data
   
+  const selectedTemplate = templatesStore.availableTemplates.find(t => t.id === preferences.template_id)
+  if (selectedTemplate) {
+    templatesStore.setSelectedTemplate(selectedTemplate)
+  }
+  
+  const selectedColor = colorsStore.availableColors.find(c => c.id === preferences.color_id)
+  if (selectedColor) {
+    colorsStore.setSelectedColorScheme(selectedColor)
+  }
+} else {
   const selectedColorSchemeId = route.query.colorSchemeId
   if (selectedColorSchemeId) {
-    const selectedColor = colors.find((color: { id: number }) => color.id === parseInt(selectedColorSchemeId as string))
+    const selectedColor = colorsStore.availableColors.find((color: { id: number }) => color.id === parseInt(selectedColorSchemeId as string))
     if (selectedColor) {
       colorsStore.setSelectedColorScheme(selectedColor)
     }

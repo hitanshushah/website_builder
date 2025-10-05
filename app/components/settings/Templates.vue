@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import type { Template } from '~/types'
+import { useTemplatesStore } from '../../../stores/templates'
+import { useUserPreferences } from '../../composables/useUserPreferences'
 
 const emit = defineEmits<{
   selectTemplate: [identifier: string]
 }>()
+
+const templatesStore = useTemplatesStore()
+const { savePreferences } = useUserPreferences()
 
 const templates = ref<Template[]>([])
 const validTemplates = ref<Template[]>([])
@@ -42,6 +47,41 @@ onMounted(() => {
 
 const selectTemplate = (identifier: string) => {
   emit('selectTemplate', identifier)
+  
+  // Also update the store
+  const template = validTemplates.value.find(t => t.identifier === identifier)
+  if (template) {
+    templatesStore.setSelectedTemplate(template)
+  }
+}
+
+const saveTemplate = async () => {
+  const toast = useToast()
+  
+  try {
+    await savePreferences()
+    toast.add({
+      title: 'Preferences Saved',
+      description: `Template and color preferences have been saved successfully`,
+      color: 'success'
+    })
+  } catch (error: any) {
+    toast.add({
+      title: 'Save Failed',
+      description: error.message || 'Failed to save preferences',
+      color: 'error'
+    })
+  }
+}
+
+const resetToDefault = () => {
+  templatesStore.clearSelection()
+  const toast = useToast()
+  toast.add({
+    title: 'Reset to Default',
+    description: `Restored to ${templatesStore.defaultTemplate?.name || 'default'} template`,
+    color: 'primary'
+  })
 }
 </script>
 
@@ -116,7 +156,7 @@ const selectTemplate = (identifier: string) => {
     </div>
     <div v-if="!loading" class="flex justify-center gap-4 mt-8">
         <UButton
-          @click=""
+          @click="saveTemplate"
           size="xl"
           color="success"
           variant="subtle"
@@ -125,7 +165,7 @@ const selectTemplate = (identifier: string) => {
           Save Template
         </UButton>
         <UButton
-          @click=""
+          @click="resetToDefault"
           color="neutral"
           size="xl"
           variant="subtle"

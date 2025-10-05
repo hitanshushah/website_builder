@@ -10,10 +10,10 @@ interface Props {
 }
 const props = defineProps<Props>()
 
-const primary = props.primary
-const secondary = props.secondary
-const background = props.background
-const fourth = props.fourth
+const primary = computed(() => props.primary)
+const secondary = computed(() => props.secondary)
+const background = computed(() => props.background)
+const fourth = computed(() => props.fourth)
 </script>
 
 <template>

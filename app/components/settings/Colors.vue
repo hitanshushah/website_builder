@@ -133,9 +133,11 @@
 import type { Color } from '../../types/index'
 import { useUserStore } from './../../../stores/user'
 import { useColorsStore } from './../../../stores/colors'
+import { useUserPreferences } from '~/composables/useUserPreferences'
 
 const userStore = useUserStore()
 const colorsStore = useColorsStore()
+const { savePreferences } = useUserPreferences()
 
 const selectedColorId = computed(() => colorsStore.selectedColorScheme?.id || null)
 
@@ -163,13 +165,23 @@ const selectColorScheme = (colorScheme: Color) => {
   })
 }
 
-const saveColorScheme = () => {
+const saveColorScheme = async () => {
   const toast = useToast()
-  toast.add({
-    title: 'Color Scheme Saved',
-    description: `${colorsStore.selectedColorScheme?.name || 'Selected'} color scheme has been applied`,
-    color: 'success'
-  })
+  
+  try {
+    await savePreferences()
+    toast.add({
+      title: 'Preferences Saved',
+      description: `Template and color preferences have been saved successfully`,
+      color: 'success'
+    })
+  } catch (error: any) {
+    toast.add({
+      title: 'Save Failed',
+      description: error.message || 'Failed to save preferences',
+      color: 'error'
+    })
+  }
 }
 
 const resetToDefault = () => {

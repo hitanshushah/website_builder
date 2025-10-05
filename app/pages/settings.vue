@@ -23,33 +23,59 @@ const items = [
 const userStore = useUserStore()
 const colorsStore = useColorsStore()
 const templatesStore = useTemplatesStore()
-const selectedTemplateIdentifier = ref<string | null>(null)
+const selectedTemplateIdentifier = computed({
+  get: () => templatesStore.selectedTemplate?.identifier || null,
+  set: (value: string | null) => {
+    if (value) {
+      const template = templatesStore.availableTemplates.find(t => t.identifier === value)
+      if (template) {
+        templatesStore.setSelectedTemplate(template)
+      }
+    }
+  }
+})
 const { data: templateData } = useFetchTemplateData(userStore.user?.id)
 
-// Fetch colors on page load to initialize the store
 const { data: colorsResponse } = await useFetch('/api/colors', {
   query: {
     userId: userStore.user?.id || null
   }
 })
 
-// Initialize colors store with fetched colors
 if (colorsResponse.value) {
   const colors = (colorsResponse.value as any)?.data || []
   colorsStore.setAvailableColors(colors)
 }
 
-// Fetch templates on page load to initialize the store
 const { data: templatesResponse } = await useFetch('/api/templates')
 
-// Initialize templates store with fetched templates
 if (templatesResponse.value) {
   const templates = (templatesResponse.value as any) || []
   templatesStore.setAvailableTemplates(templates)
+}
+
+const { data: userPreferencesResponse } = await useFetch('/api/user-preferences', {
+  query: {
+    userId: userStore.user?.id || null
+  }
+})
+
+if (userPreferencesResponse.value && (userPreferencesResponse.value as any)?.success && (userPreferencesResponse.value as any)?.data) {
+
+  const preferences = (userPreferencesResponse.value as any).data
   
-  // Auto-select default template
+  const selectedTemplate = templatesStore.availableTemplates.find(t => t.id === preferences.template_id)
+  if (selectedTemplate) {
+    templatesStore.setSelectedTemplate(selectedTemplate)
+  }
+  
+  const selectedColor = colorsStore.availableColors.find(c => c.id === preferences.color_id)
+  if (selectedColor) {
+    colorsStore.setSelectedColorScheme(selectedColor)
+  }
+} else {
   if (templatesStore.defaultTemplate) {
-    selectedTemplateIdentifier.value = templatesStore.defaultTemplate.identifier
+    templatesStore.setSelectedTemplate(templatesStore.defaultTemplate)
   }
 }
 
