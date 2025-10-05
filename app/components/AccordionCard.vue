@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg">
-    <UContainer class="hover:shadow-md transition-shadow cursor-pointer" style="padding: 16px 24px;" @click="$emit('toggle')">
+    <UContainer class="hover:shadow-md transition-shadow cursor-pointer p-4" @click="$emit('toggle')">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-3">
           <div 

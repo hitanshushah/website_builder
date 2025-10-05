@@ -7,6 +7,7 @@ export interface Template {
   description: string | null
   is_active: boolean
   is_premium: boolean
+  is_default: boolean
   thumbnail: string | null
   created_at: string
   updated_at: string
@@ -18,7 +19,7 @@ export async function getActiveTemplates(): Promise<Template[]> {
     SELECT * FROM templates 
     WHERE deleted_at IS NULL 
     AND is_active = TRUE
-    ORDER BY created_at DESC
+    ORDER BY is_default DESC, created_at DESC
   `
   
   const result = await query<Template>(sql)

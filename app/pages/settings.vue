@@ -2,6 +2,8 @@
 import type { TabsItem } from '@nuxt/ui'
 import { useFetchTemplateData } from '~/composables/useTemplateData'
 import { useUserStore } from '../../stores/user'
+import { useColorsStore } from '../../stores/colors'
+import { useTemplatesStore } from '../../stores/templates'
 
 const items = [
   {
@@ -19,8 +21,37 @@ const items = [
 ] satisfies TabsItem[]
 
 const userStore = useUserStore()
+const colorsStore = useColorsStore()
+const templatesStore = useTemplatesStore()
 const selectedTemplateIdentifier = ref<string | null>(null)
 const { data: templateData } = useFetchTemplateData(userStore.user?.id)
+
+// Fetch colors on page load to initialize the store
+const { data: colorsResponse } = await useFetch('/api/colors', {
+  query: {
+    userId: userStore.user?.id || null
+  }
+})
+
+// Initialize colors store with fetched colors
+if (colorsResponse.value) {
+  const colors = (colorsResponse.value as any)?.data || []
+  colorsStore.setAvailableColors(colors)
+}
+
+// Fetch templates on page load to initialize the store
+const { data: templatesResponse } = await useFetch('/api/templates')
+
+// Initialize templates store with fetched templates
+if (templatesResponse.value) {
+  const templates = (templatesResponse.value as any) || []
+  templatesStore.setAvailableTemplates(templates)
+  
+  // Auto-select default template
+  if (templatesStore.defaultTemplate) {
+    selectedTemplateIdentifier.value = templatesStore.defaultTemplate.identifier
+  }
+}
 
 const handleTemplateSelect = (identifier: string) => {
   selectedTemplateIdentifier.value = identifier
@@ -31,6 +62,15 @@ const selectedTemplateComponent = computed(() => {
   const name = selectedTemplateIdentifier.value.charAt(0).toUpperCase() + selectedTemplateIdentifier.value.slice(1)
   return defineAsyncComponent(() => import(`../components/templates/${name}.vue`))
 })
+
+// Computed props to pass to template preview
+const templatePreviewProps = computed(() => ({
+  data: templateData.value,
+  primary: colorsStore.selectedColors.primary,
+  secondary: colorsStore.selectedColors.secondary,
+  background: colorsStore.selectedColors.background,
+  fourth: colorsStore.selectedColors.fourth
+}))
 
 </script>
 
@@ -51,7 +91,7 @@ const selectedTemplateComponent = computed(() => {
         <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Template Preview</h2>
         <div class="flex gap-3">
           <UButton 
-            :to="`/preview/${selectedTemplateIdentifier}`"
+            :to="`/preview/${selectedTemplateIdentifier}?colorSchemeId=${colorsStore.selectedColorScheme?.id || ''}`"
             target="_blank"
             color="primary" 
             variant="outline"
@@ -71,8 +111,8 @@ const selectedTemplateComponent = computed(() => {
       </div>
       
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-        <div class="w-full overflow-auto" style="max-height: 80vh;">
-          <component :is="selectedTemplateComponent" :data="templateData" />
+        <div class="w-full overflow-auto max-h-[80vh]">
+          <component :is="selectedTemplateComponent" v-bind="templatePreviewProps" />
         </div>
       </div>
     </div>

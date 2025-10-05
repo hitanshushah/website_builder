@@ -6,6 +6,7 @@ CREATE TABLE templates (
     description TEXT,
     is_active BOOLEAN DEFAULT TRUE,
     is_premium BOOLEAN DEFAULT FALSE,
+    is_default BOOLEAN DEFAULT FALSE,
     thumbnail text,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -13,12 +14,11 @@ CREATE TABLE templates (
 );
 
 
-insert into templates (name, identifier, thumbnail) 
-values ('test', 'abcd', 'http://localhost:4810/projectsdashboard/akadmin/images/1757982824_1757035080_Screenshot 2025-09-04 at 9.17.28 PM.png');
+insert into templates (name, identifier, thumbnail, is_default) 
+values ('test', 'abcd', 'http://localhost:4810/projectsdashboard/akadmin/images/1757982824_1757035080_Screenshot 2025-09-04 at 9.17.28 PM.png', TRUE);
 -- Create index on is_active for filtering active templates
 CREATE INDEX idx_templates_is_active ON templates(is_active);
 
 -- migrate:down
 DROP INDEX IF EXISTS idx_templates_is_active;
 DROP TABLE IF EXISTS templates;
-

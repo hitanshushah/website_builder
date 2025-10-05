@@ -2,6 +2,7 @@
 import { defineAsyncComponent } from 'vue'
 import { useFetchTemplateData } from '~/composables/useTemplateData'
 import { useUserStore } from '../../../stores/user'
+import { useColorsStore } from '../../../stores/colors'
 
 definePageMeta({
   layout: false
@@ -9,7 +10,28 @@ definePageMeta({
 
 const route = useRoute()
 const userStore = useUserStore()
+const colorsStore = useColorsStore()
+
 const { data: templateData, loading } = useFetchTemplateData(userStore.user?.id)
+
+const { data: colorsResponse } = await useFetch('/api/colors', {
+  query: {
+    userId: userStore.user?.id || null
+  }
+})
+
+if (colorsResponse.value) {
+  const colors = (colorsResponse.value as any)?.data || []
+  colorsStore.setAvailableColors(colors)
+  
+  const selectedColorSchemeId = route.query.colorSchemeId
+  if (selectedColorSchemeId) {
+    const selectedColor = colors.find((color: { id: number }) => color.id === parseInt(selectedColorSchemeId as string))
+    if (selectedColor) {
+      colorsStore.setSelectedColorScheme(selectedColor)
+    }
+  }
+}
 
 const templateComponent = computed(() => {
   const identifier = route.params.template as string
@@ -17,6 +39,14 @@ const templateComponent = computed(() => {
   const name = identifier.charAt(0).toUpperCase() + identifier.slice(1)
   return defineAsyncComponent(() => import(`../../components/templates/${name}.vue`))
 })
+
+const templateProps = computed(() => ({
+  data: templateData.value,
+  primary: colorsStore.selectedColors.primary,
+  secondary: colorsStore.selectedColors.secondary,
+  background: colorsStore.selectedColors.background,
+  fourth: colorsStore.selectedColors.fourth
+}))
 </script>
 
 <template>
@@ -28,7 +58,7 @@ const templateComponent = computed(() => {
     </div>
   </div>
 
-  <component v-else-if="templateData && templateComponent" :is="templateComponent" :data="templateData" />
+  <component v-else-if="templateData && templateComponent" :is="templateComponent" v-bind="templateProps" />
   
   <div v-else class="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
     <div class="text-center max-w-md mx-auto px-6">

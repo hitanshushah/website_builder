@@ -6,14 +6,11 @@ interface Props {
   primary?: string
   secondary?: string
   background?: string
+  fourth?: string
 }
 
 const props = defineProps<Props>()
 
-// Default demo colors if user doesn’t provide
-const primary = props.primary || '#FF0000'     // blue-800
-const secondary = props.secondary || '#FFFF00' // purple-600
-const background = props.background || '#008000' // gray-50
 </script>
 
 <template>

@@ -193,8 +193,25 @@ export interface Template {
   description: string | null
   is_active: boolean
   is_premium: boolean
+  is_default: boolean
   thumbnail: string | null
   created_at: string
   updated_at: string
   deleted_at: string | null
+}
+
+export interface Color {
+  id: number
+  key: string
+  name: string
+  primary_color: string
+  secondary_color: string
+  background_color: string
+  fourth_color?: string
+  user_id?: number
+  is_active: boolean
+  is_default: boolean
+  created_at: string
+  updated_at: string
+  deleted_at?: string
 }

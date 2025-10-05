@@ -114,5 +114,25 @@ const selectTemplate = (identifier: string) => {
         </div>
       </div>
     </div>
+    <div v-if="!loading" class="flex justify-center gap-4 mt-8">
+        <UButton
+          @click=""
+          size="xl"
+          color="success"
+          variant="subtle"
+          icon="i-heroicons-check-circle"
+        >
+          Save Template
+        </UButton>
+        <UButton
+          @click=""
+          color="neutral"
+          size="xl"
+          variant="subtle"
+          icon="i-heroicons-arrow-path"
+        >
+          Reset to Default
+        </UButton>
+      </div>
   </div>
 </template>
