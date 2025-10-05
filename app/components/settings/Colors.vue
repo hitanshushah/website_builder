@@ -1,16 +1,44 @@
 <template>
   <div class="max-w-6xl mx-auto p-8">
     <!-- Loading State -->
-    <div v-if="pending" class="flex flex-col items-center justify-center py-16 h-screen">
-        <div class="flex items-center gap-4">
-          <USkeleton class="h-12 w-12 rounded-full" />
+      <div v-if="pending" class="flex flex-col items-center justify-center h-screen">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+      <UCard
+        v-for="n in 3"
+        :key="n"
+        class="cursor-pointer transition-all duration-200"
+      >
+        <template #header>
+          <div class="flex items-center justify-between">
+            <div class="flex gap-2">
+              <USkeleton class="w-8 h-8 rounded-full" />
+              <USkeleton class="w-8 h-8 rounded-full" />
+              <USkeleton class="w-8 h-8 rounded-full" />
+            </div>
+            <USkeleton class="w-6 h-6 rounded-full" />
+          </div>
+        </template>
 
-          <div class="grid gap-2">
-            <USkeleton class="h-4 w-[250px]" />
-            <USkeleton class="h-4 w-[200px]" />
+        <div class="space-y-4">
+          <USkeleton class="h-6 w-32 rounded" />
+
+          <div class="space-y-3">
+            <div class="flex items-center gap-3">
+              <USkeleton class="w-4 h-4 rounded" />
+              <USkeleton class="h-4 w-20 rounded" />
+            </div>
+            <div class="flex items-center gap-3">
+              <USkeleton class="w-4 h-4 rounded" />
+              <USkeleton class="h-4 w-24 rounded" />
+            </div>
+            <div class="flex items-center gap-3">
+              <USkeleton class="w-4 h-4 rounded" />
+              <USkeleton class="h-4 w-16 rounded" />
+            </div>
           </div>
         </div>
-      <p class="mt-4 text-gray-600">Loading color schemes...</p>
+      </UCard>
+    </div>
     </div>
 
     <!-- Error State -->
@@ -106,7 +134,7 @@
         </template>
       </UCard>
     </div>
-      <div class="flex justify-center gap-4 mt-8">
+      <div v-if="!pending" class="flex justify-center gap-4 mt-8">
         <UButton
           @click="saveColorScheme"
           size="xl"

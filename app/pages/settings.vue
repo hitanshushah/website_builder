@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TabsItem } from '@nuxt/ui'
-import { useFetchTemplateData } from '~/composables/useTemplateData'
+import { useFetchTemplateData } from '../composables/useTemplateData'
 import { useUserStore } from '../../stores/user'
 import { useColorsStore } from '../../stores/colors'
 import { useTemplatesStore } from '../../stores/templates'
