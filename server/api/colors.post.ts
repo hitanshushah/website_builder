@@ -1,0 +1,53 @@
+import { checkColorKeyExists, createCustomColor } from '../db/colors'
+
+export default defineEventHandler(async (event) => {
+  try {
+    const body = await readBody(event)
+    const { name, primary_color, secondary_color, background_color, fourth_color, user_id } = body
+
+    if (!name || !primary_color || !secondary_color || !background_color || !user_id) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Name, primary color, secondary color, background color, and user ID are required'
+      })
+    }
+
+    const key = name.toLowerCase().replace(/\s+/g, '')
+
+    const keyExists = await checkColorKeyExists(key)
+    if (keyExists) {
+      throw createError({
+        statusCode: 409,
+        statusMessage: 'A color scheme with this name already exists. Please choose a different name.'
+      })
+    }
+
+    const newColor = await createCustomColor({
+      key,
+      name,
+      primary_color,
+      secondary_color,
+      background_color,
+      fourth_color,
+      user_id: parseInt(user_id)
+    })
+
+    return {
+      success: true,
+      message: 'Custom color scheme created successfully',
+      data: newColor
+    }
+  } catch (error: any) {
+    console.error('Error creating custom color:', error)
+    
+    if (error.statusCode) {
+      throw error
+    }
+    
+    throw createError({
+      statusCode: 500,
+      statusMessage: error.message || 'Failed to create custom color scheme'
+    })
+  }
+})
+

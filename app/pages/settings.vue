@@ -137,7 +137,7 @@ const templatePreviewProps = computed(() => ({
       </div>
       
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-        <div class="w-full overflow-auto max-h-[80vh]">
+        <div class="w-full overflow-auto">
           <component :is="selectedTemplateComponent" v-bind="templatePreviewProps" />
         </div>
       </div>
