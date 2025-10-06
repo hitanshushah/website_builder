@@ -23,6 +23,10 @@ const items = [
 const userStore = useUserStore()
 const colorsStore = useColorsStore()
 const templatesStore = useTemplatesStore()
+
+onMounted(async () => {
+  await userStore.fetchUser()
+})
 const selectedTemplateIdentifier = computed({
   get: () => templatesStore.selectedTemplate?.identifier || null,
   set: (value: string | null) => {

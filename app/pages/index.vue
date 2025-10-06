@@ -13,11 +13,19 @@
 </template>
 
 <script setup>
+import { useUserStore } from '../../stores/user'
+
 // Page metadata
 useHead({
   title: 'Dashboard - Website Builder',
   meta: [
     { name: 'description', content: 'Manage your website and content with our professional dashboard.' }
   ]
+})
+
+const userStore = useUserStore()
+
+onMounted(async () => {
+  await userStore.fetchUser()
 })
 </script>

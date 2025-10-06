@@ -24,6 +24,9 @@ export async function getProjectsBoardData(userId: number): Promise<ProjectsBoar
             p.override_email,
             p.public_url,
             p.share_profile,
+            p.website_url,
+            p.personal_website_url,
+            p.share_website,
             -- Profile Photo
             (
                 SELECT a.filename
@@ -330,6 +333,9 @@ export async function getPublicWebsiteData(userId: number): Promise<ProjectsBoar
             p.override_email,
             p.public_url,
             p.share_profile,
+            p.website_url,
+            p.personal_website_url,
+            p.share_website,
             -- Profile Photo
             (
                 SELECT a.filename

@@ -3,6 +3,7 @@ export interface User {
   id: number;
   username: string;
   email: string;
+  website_premium?: boolean;
   created_at?: Date;
   updated_at?: Date;
 }
@@ -18,6 +19,10 @@ export interface Profile {
   hide_secondary_email_on_website?: boolean;
   hide_introduction_on_website?: boolean;
   override_email?: boolean;
+  website_url?: string;
+  personal_website_url?: string;
+  share_website?: boolean;
+  share_personal_website?: boolean;
   created_at?: Date;
   updated_at?: Date;
 }
@@ -88,6 +93,9 @@ export interface UserProfile {
   override_email?: boolean;
   public_url?: string;
   share_profile?: boolean;
+  website_url?: string;
+  personal_website_url?: string;
+  share_website?: boolean;
   profile_photo_url?: string;
   links: ProjectLink[];
   documents: ProjectAsset[];

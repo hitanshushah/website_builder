@@ -43,7 +43,8 @@ export default defineNuxtConfig({
     minioUseSSL: process.env.MINIO_USE_SSL === 'true',
     
     public: {
-      authentikLogoutUrl: process.env.AUTHENTIK_LOGOUT_URL
+      authentikLogoutUrl: process.env.AUTHENTIK_LOGOUT_URL,
+      domainUrl: process.env.DOMAIN_URL,
     }
   }
 })

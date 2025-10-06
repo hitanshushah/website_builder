@@ -37,11 +37,13 @@
         </UButton>
         
         <UButton 
-          variant="ghost" 
-          color="gray" 
-          class="px-4 py-2 text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+          :variant="currentRoute === '/website' ? 'solid' : 'ghost'"
+          :color="currentRoute === '/website' ? 'neutral' : 'gray'"
+          class="px-4 py-2 rounded-lg cursor-pointer"
+          :class="currentRoute === '/website' ? 'text-white dark:text-black' : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'"
+          @click="navigateTo('/website')"
         >
-          <UIcon name="i-heroicons-globe-alt" class="w-4 h-4 mr-2" />
+          <UIcon name="i-heroicons-globe-alt" class="w-4 h-4 mr-2" :class="currentRoute === '/website' ? 'text-white dark:text-black' : ''" />
           Live Website
         </UButton>
       </div>
