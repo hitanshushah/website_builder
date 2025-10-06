@@ -86,7 +86,7 @@ const resetToDefault = () => {
 </script>
 
 <template>
-  <div class="w-full">
+  <div class="w-full px-8">
     <div class="mb-6">
       <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Choose a Template</h2>
       <p class="text-gray-600 dark:text-gray-400">Select a template for your website.</p>
@@ -111,14 +111,17 @@ const resetToDefault = () => {
     </div>
 
     <!-- Template Cards -->
-    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div v-else class="flex flex-wrap gap-10">
       <div 
         v-for="template in validTemplates" 
         :key="template.id"
-        class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition group"
+        class="rounded-lg overflow-hiddentransition group w-sm"
+        :class="{
+          'ring-2 ring-primary-500 ring-offset-2': templatesStore.selectedTemplate?.identifier === template.identifier
+        }"
       >
         <!-- Thumbnail -->
-        <div class="relative h-64 bg-gray-200 dark:bg-gray-700 overflow-hidden">
+        <div class="rounded-lg relative h-64 bg-gray-200 dark:bg-gray-700 overflow-hidden">
           <img 
             v-if="template.thumbnail"
             :src="template.thumbnail" 
@@ -135,22 +138,31 @@ const resetToDefault = () => {
             </span>
           </div>
         </div>
-
         <!-- Content -->
-        <div class="p-6">
+        <div class="ml-1 p-2 flex flex-row gap-4">
+          <div>
           <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">{{ template.name }}</h3>
           <p v-if="template.description" class="text-sm text-gray-600 dark:text-gray-400 mb-4">
             {{ template.description }}
           </p>
-          
+          </div>
+          <div 
+          v-if="templatesStore.selectedTemplate?.identifier === template.identifier" class="mt-1">
+          <UIcon
+              name="i-heroicons-check-circle"
+              class="w-6 h-6 text-primary-500"
+            />
+          </div>
+          <div v-else>
           <UButton 
             @click="selectTemplate(template.identifier)"
-            color="primary"
-            variant="solid"
-            block
+            color="neutral"
+            variant="subtle"
+            class="cursor-pointer"
           >
-            Select Template
+            Select
           </UButton>
+          </div>
         </div>
       </div>
     </div>

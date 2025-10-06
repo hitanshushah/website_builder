@@ -408,6 +408,16 @@ const resetToDefault = () => {
 }
 
 const customize = (colorScheme: Color | null) => {
+  if (!templatesStore.selectedTemplate) {
+    const toast = useToast()
+    toast.add({
+      title: 'Template Required',
+      description: 'Please select a template first before customizing colors',
+      color: 'warning'
+    })
+    return
+  }
+
   if (colorScheme === null) {
     // Create new color scheme from scratch
     customColorScheme.value = {
