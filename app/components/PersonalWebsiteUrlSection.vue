@@ -14,12 +14,20 @@
           <div class="flex items-center gap-3">
             <UIcon name="i-heroicons-link" class="w-6 h-6 text-primary-500" />
             <a 
-              :href="websiteUrlData.personal_website_url" 
+              :href="fullPersonalUrl" 
               target="_blank"
               class="text-lg text-primary-600 dark:text-primary-400 hover:underline font-medium"
             >
               {{ websiteUrlData.personal_website_url }}
             </a>
+            <UButton
+              @click="copyToClipboard"
+              variant="ghost"
+              color="neutral"
+              size="sm"
+              class="cursor-pointer"
+              icon="i-heroicons-clipboard-document"
+            />
           </div>
           <div class="flex items-center gap-3">
             <div class="flex items-center gap-2 px-3 py-2 rounded-lg">
@@ -32,6 +40,7 @@
               <USwitch
                 :model-value="websiteUrlData?.share_personal_website || false"
                 @update:model-value="initiateToggleShare"
+                class="cursor-pointer"
               />
             </div>
             <UButton
@@ -39,6 +48,7 @@
               variant="outline"
               color="neutral"
               size="sm"
+              class="cursor-pointer"
             >
               Change URL
             </UButton>
@@ -47,6 +57,7 @@
               variant="outline"
               color="error"
               size="sm"
+              class="cursor-pointer"
             >
               Delete URL
             </UButton>
@@ -165,6 +176,15 @@ const showDeletePersonalModal = ref(false)
 const showVisibilityModal = ref(false)
 const pendingShareState = ref(false)
 
+const fullPersonalUrl = computed(() => {
+  if (!websiteUrlData.value?.personal_website_url) return undefined
+  const url = websiteUrlData.value.personal_website_url
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url
+  }
+  return `https://${url}`
+})
+
 const fetchWebsiteUrl = async () => {
   try {
     const data = await $fetch('/api/website-url', {
@@ -281,6 +301,26 @@ const handleVisibilityConfirm = async () => {
 
 const handleVisibilityCancel = () => {
   showVisibilityModal.value = false
+}
+
+const copyToClipboard = async () => {
+  if (!fullPersonalUrl.value) return
+  
+  try {
+    await navigator.clipboard.writeText(fullPersonalUrl.value)
+    toast.add({
+      title: 'Copied!',
+      description: 'URL copied to clipboard',
+      color: 'success'
+    })
+  } catch (error) {
+    console.error('Failed to copy:', error)
+    toast.add({
+      title: 'Error',
+      description: 'Failed to copy URL to clipboard',
+      color: 'error'
+    })
+  }
 }
 
 onMounted(() => {

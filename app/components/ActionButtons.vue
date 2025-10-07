@@ -8,6 +8,7 @@
       :color="item.hide_on_website ? 'warning' : 'success'"
       @click="openVisibilityModal"
       :title="item.hide_on_website ? 'Show on website' : 'Hide from website'"
+      class="cursor-pointer"
     >
       <UIcon :name="item.hide_on_website ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'" :class="iconClass" />
     </UButton>
@@ -19,6 +20,7 @@
       variant="ghost" 
       color="neutral" 
       @click="$emit('edit', item)"
+      class="cursor-pointer"
     >
       <UIcon name="i-heroicons-pencil" :class="iconClass" />
     </UButton>
@@ -30,7 +32,8 @@
       variant="ghost" 
       color="error" 
       @click="$emit('delete', item)"
-    >
+      class="cursor-pointer"
+      >
       <UIcon name="i-heroicons-trash" :class="iconClass" />
     </UButton>
   </div>

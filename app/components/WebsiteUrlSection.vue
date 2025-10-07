@@ -8,12 +8,20 @@
         <div class="flex items-center gap-3">
           <UIcon name="i-heroicons-globe-alt" class="w-6 h-6 text-primary-500" />
           <a 
-            :href="displayUrl" 
+            :href="fullUrl || undefined" 
             target="_blank"
             class="text-lg text-primary-600 dark:text-primary-400 hover:underline font-medium"
           >
             {{ displayUrl }}
           </a>
+          <UButton
+            @click="copyToClipboard"
+            variant="ghost"
+            color="neutral"
+            size="sm"
+            class="cursor-pointer"
+            icon="i-heroicons-clipboard-document"
+          />
         </div>
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-2 px-3 py-2 rounded-lg">
@@ -26,6 +34,7 @@
             <USwitch
               :model-value="websiteUrlData?.share_website || false"
               @update:model-value="initiateToggleShare"
+              class="cursor-pointer"
             />
           </div>
           <UButton
@@ -33,6 +42,7 @@
             variant="outline"
             color="neutral"
             size="sm"
+            class="cursor-pointer"
           >
             Change URL
           </UButton>
@@ -41,6 +51,7 @@
             variant="outline"
             color="error"
             size="sm"
+            class="cursor-pointer"
           >
             Delete URL
           </UButton>
@@ -160,6 +171,31 @@ const displayUrl = computed(() => {
   
   return null
 })
+
+const fullUrl = computed(() => {
+  if (!displayUrl.value) return null
+  return `https://${displayUrl.value}`
+})
+
+const copyToClipboard = async () => {
+  if (!fullUrl.value) return
+  
+  try {
+    await navigator.clipboard.writeText(fullUrl.value)
+    toast.add({
+      title: 'Copied!',
+      description: 'URL copied to clipboard',
+      color: 'success'
+    })
+  } catch (error) {
+    console.error('Failed to copy:', error)
+    toast.add({
+      title: 'Error',
+      description: 'Failed to copy URL to clipboard',
+      color: 'error'
+    })
+  }
+}
 
 const fetchWebsiteUrl = async () => {
   try {

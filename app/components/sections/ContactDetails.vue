@@ -62,7 +62,7 @@
                   @click="openOverrideEmailModal"
                   class="flex-shrink-0"
                 >
-                  <UIcon name="i-heroicons-arrow-path" class="w-3 h-3 mr-1" />
+                  <UIcon name="i-heroicons-arrow-path" class="w-3 h-3 mr-1 cursor-pointer" />
                   {{ userProfile.override_email ? 'Restore' : 'Override' }}
                 </UButton>
               </div>

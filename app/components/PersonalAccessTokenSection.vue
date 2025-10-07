@@ -25,6 +25,7 @@
               color="neutral"
               size="sm"
               :icon="copied ? 'i-heroicons-check' : 'i-heroicons-clipboard-document'"
+              class="cursor-pointer"
             >
               {{ copied ? 'Copied!' : 'Copy' }}
             </UButton>
@@ -53,6 +54,7 @@
             icon="i-heroicons-sparkles"
             :loading="generating"
             :disabled="generating"
+            class="cursor-pointer"
           >
             {{ generating ? 'Generating...' : 'Generate Access Token' }}
           </UButton>

@@ -51,12 +51,14 @@
           color="neutral" 
           variant="outline" 
           @click="emit('cancel')"
+          class="cursor-pointer"
         >
           Cancel
         </UButton>
         <UButton 
           :color="willHide ? 'warning' : 'success'"
           @click="emit('confirm')"
+          class="cursor-pointer"
         >
           {{ willHide ? 'Hide from Website' : 'Show on Website' }}
         </UButton>

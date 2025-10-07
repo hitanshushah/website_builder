@@ -38,6 +38,7 @@
           variant="outline" 
           @click="emit('cancel')"
           :disabled="loading"
+          class="cursor-pointer"
         >
           Cancel
         </UButton>
@@ -46,6 +47,7 @@
           @click="confirmDelete"
           :loading="loading"
           :disabled="loading"
+          class="cursor-pointer"
         >
           {{ loading ? 'Deleting...' : 'Delete' }}
         </UButton>

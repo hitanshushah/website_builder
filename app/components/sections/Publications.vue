@@ -29,6 +29,7 @@
                   v-if="publication.paper_link"
                   size="xs" 
                   variant="subtle" 
+                  class="cursor-pointer"
                   color="neutral"
                   @click="openLink(publication.paper_link)"
                 >
@@ -39,6 +40,7 @@
                   v-if="publication.paper_pdf"
                   size="xs" 
                   variant="subtle" 
+                  class="cursor-pointer"
                   color="neutral"
                   @click="downloadPaper(publication.paper_pdf, publication.paper_name)"
                 >

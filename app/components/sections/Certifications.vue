@@ -37,7 +37,7 @@
               variant="subtle"
               @click="downloadCertificate(cert.certificate_pdf, cert.name)"
             >
-              <UIcon name="i-heroicons-document-arrow-down" class="w-4 h-4 mr-1" />
+              <UIcon name="i-heroicons-document-arrow-down" class="w-4 h-4 mr-1 cursor-pointer" />
               Download Certificate
             </UButton>
           </div>

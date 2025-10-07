@@ -38,12 +38,14 @@
           color="neutral" 
           variant="outline" 
           @click="emit('close')"
+          class="cursor-pointer"
         >
           Close
         </UButton>
         <UButton 
           color="primary" 
           @click="goToProjectsBoard"
+          class="cursor-pointer"
         >
           Go to Projects Board
         </UButton>

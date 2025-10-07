@@ -38,14 +38,14 @@
         <UButton 
           color="neutral" 
           variant="outline"
-          class="flex-1"
+          class="flex-1 cursor-pointer"
           @click="$emit('cancel')"
         >
           Cancel
         </UButton>
         <UButton 
           :color="isCurrentlyOverridden ? 'primary' : 'warning'"
-          class="flex-1"
+          class="flex-1 cursor-pointer"
           @click="$emit('confirm')"
         >
           {{ isCurrentlyOverridden ? 'Restore Primary' : 'Override Email' }}

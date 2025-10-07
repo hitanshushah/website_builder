@@ -149,6 +149,7 @@
               variant="subtle"
               color="neutral"
               @click="customize(colorScheme)"
+              class="cursor-pointer"
             >
               Customize
             </UButton>

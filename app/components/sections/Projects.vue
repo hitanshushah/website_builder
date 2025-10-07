@@ -97,6 +97,7 @@
               :label="link.title"
               size="md"
               color="neutral"
+              class="cursor-pointer"
               variant="subtle"
               @click="openLink(link.url)"
             />

@@ -12,7 +12,7 @@ export async function handleSubdomainAccess(event: H3Event, headers: Record<stri
   }
 
   if (!subdomain) {
-    return { shouldLogout: true }
+    return { shouldLogout: true, show404: false }
   }
 
   try {
@@ -20,6 +20,7 @@ export async function handleSubdomainAccess(event: H3Event, headers: Record<stri
     const { getUserPreferences } = await import('../../server/db/userPreferences')
     const { getPublicWebsiteData } = await import('../../server/db/getProjectsBoardData')
     const { getColors } = await import('../../server/db/colors')
+    const { query } = await import('../../server/db/db')
 
     let profile = null
     let userId = null
@@ -31,7 +32,16 @@ export async function handleSubdomainAccess(event: H3Event, headers: Record<stri
     }
 
     if (!profile) {
-      return { shouldLogout: true }
+      const subdomainExists = await query(
+        'SELECT id FROM profiles WHERE website_url = $1 OR acess_token = $1',
+        [subdomain]
+      )
+      
+      if (subdomainExists.length > 0) {
+        return { shouldLogout: false, show404: true }
+      }
+      
+      return { shouldLogout: true, show404: false }
     }
 
     userId = profile.user_id
@@ -40,7 +50,7 @@ export async function handleSubdomainAccess(event: H3Event, headers: Record<stri
     
     if (!userPreferences) {
       console.error('No user preferences found for subdomain access')
-      return { shouldLogout: true }
+      return { shouldLogout: true, show404: false }
     }
 
     const websiteData = await getPublicWebsiteData(userId)
@@ -50,7 +60,7 @@ export async function handleSubdomainAccess(event: H3Event, headers: Record<stri
 
     if (!selectedColor) {
       console.error('Selected color not found for subdomain access')
-      return { shouldLogout: true }
+      return { shouldLogout: true, show404: false }
     }
 
     if (event.context) {
@@ -75,11 +85,12 @@ export async function handleSubdomainAccess(event: H3Event, headers: Record<stri
     
     return { 
       shouldLogout: false, 
+      show404: false,
       redirectTo: null
     }
   } catch (error) {
     console.error('Subdomain authentication error:', error)
-    return { shouldLogout: true }
+    return { shouldLogout: true, show404: false }
   }
 }
 
