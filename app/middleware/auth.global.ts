@@ -29,7 +29,15 @@ export default defineNuxtRouteMiddleware(async (to) => {
       return navigateTo(logoutUrl, { external: true })
     }
     
-    return
+    if (to.path === '/') {
+      return
+    }
+    
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Page Not Found',
+      fatal: true
+    })
   }
 
   try {
