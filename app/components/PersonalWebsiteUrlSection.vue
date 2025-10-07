@@ -141,7 +141,7 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-  userId: number
+  userId: number | string
   isPremium: boolean
 }>()
 

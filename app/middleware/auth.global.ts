@@ -1,12 +1,12 @@
 import { useUserStore } from '../../stores/user'
 import type { User } from '../types'
+import { handleSubdomainAccess } from './subdomain.internal'
 
 export default defineNuxtRouteMiddleware(async (to) => {
   if (to.path === '/logout') {
     return;
   }
   
-  // Only run on server side to avoid bundling database code for client
   if (!process.server) {
     return;
   }
@@ -20,14 +20,26 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const email = headers['x-authentik-email']
 
   const config = useRuntimeConfig()
-  const logoutUrl = config.public.authentikLogoutUrl || '/logout'
+  const logoutUrl = (config.public.authentikLogoutUrl as string) || '/logout'
 
   if (!username || !email) {
-    return navigateTo(logoutUrl, { external: true })
+    const result = await handleSubdomainAccess(event, headers, logoutUrl)
+    
+    if (result.shouldLogout) {
+      return navigateTo(logoutUrl, { external: true })
+    }
+    
+    const normalize = (url: string) => url.replace(/\/+$/, '')
+
+    if (result.redirectTo && normalize(to.fullPath) !== normalize(result.redirectTo)) {
+      return navigateTo(result.redirectTo, { external: false })
+    }
+
+    
+    return
   }
 
   try {
-    // Import database models only on server side
     const { UserModel, ProfileModel } = await import('../../server/db/models')
     
     const userDb = await UserModel.firstOrCreate(username, email)

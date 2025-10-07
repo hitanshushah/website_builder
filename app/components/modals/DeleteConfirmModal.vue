@@ -60,7 +60,7 @@ import { ref } from 'vue'
 const props = defineProps<{
   itemType: string
   itemName: string
-  itemId: number
+  itemId: number | string
   deleteApi: string
 }>()
 
