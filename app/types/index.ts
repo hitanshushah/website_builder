@@ -3,7 +3,7 @@ export interface User {
   id: number;
   username: string;
   email: string;
-  website_premium?: boolean;
+  premium_plan_id: number;
   created_at?: Date;
   updated_at?: Date;
 }

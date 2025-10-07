@@ -3,19 +3,17 @@
     <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Personal Access Token</h2>
-        <span v-if="!isPremium" class="px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 text-sm font-medium rounded-full">
-          Premium Subscription Needed
-        </span>
+        <UBadge v-if="!isPro" color="warning" variant="subtle">Pro Plan Required</UBadge>
       </div>
       
-      <!-- Premium Content -->
-      <div v-if="isPremium">
+      <!-- Pro Content -->
+      <div v-if="isPro">
         <div v-if="accessToken" class="space-y-4">
           <p class="text-sm text-gray-600 dark:text-gray-400">
             Your personal access token for API authentication
           </p>
           <div class="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-            <UIcon name="i-heroicons-key" class="w-5 h-5 text-primary-500 flex-shrink-0" />
+            <UIcon name="i-heroicons-key" class="w-5 h-5 text-black dark:text-white flex-shrink-0" />
             <code class="flex-1 text-sm font-mono text-gray-900 dark:text-white break-all">
               {{ accessToken }}
             </code>
@@ -23,7 +21,7 @@
               @click="copyToken"
               variant="outline"
               color="neutral"
-              size="sm"
+              size="md"
               :icon="copied ? 'i-heroicons-check' : 'i-heroicons-clipboard-document'"
               class="cursor-pointer"
             >
@@ -49,7 +47,7 @@
           </p>
           <UButton
             @click="generateToken"
-            color="primary"
+            color="neutral"
             size="lg"
             icon="i-heroicons-sparkles"
             :loading="generating"
@@ -61,14 +59,14 @@
         </div>
       </div>
 
-      <!-- Non-Premium Message -->
-      <div v-else class="text-center">
+      <!-- Non-Pro Message -->
+      <div v-else class="text-center py-8">
         <UIcon name="i-heroicons-lock-closed" class="w-12 h-12 text-gray-400 mx-auto mb-3" />
         <p class="text-gray-600 dark:text-gray-400 mb-2">
-          Upgrade to Premium to generate API access tokens
+          Upgrade to Pro to get your personal access token
         </p>
         <p class="text-sm text-gray-500 dark:text-gray-500">
-          Personal access tokens allow you to authenticate with our API
+          Use your access token to authenticate API requests and access your portfolio from custom domains
         </p>
       </div>
     </div>
@@ -78,7 +76,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   userId: number | string
-  isPremium: boolean
+  isPro: boolean
 }>()
 
 const toast = useToast()

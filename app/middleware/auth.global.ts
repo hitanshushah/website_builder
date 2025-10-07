@@ -62,7 +62,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
       id: userDb.id,
       username,
       email,
-      website_premium: userDb.website_premium || false,
+      premium_plan_id: userDb.premium_plan_id || 1,
       created_at: userDb.created_at,
       updated_at: userDb.updated_at,
     }

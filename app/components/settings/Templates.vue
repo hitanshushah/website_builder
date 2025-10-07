@@ -2,13 +2,19 @@
 import type { Template } from '~/types'
 import { useTemplatesStore } from '../../../stores/templates'
 import { useUserPreferences } from '../../composables/useUserPreferences'
+import { useUserStore } from '../../../stores/user'
 
 const emit = defineEmits<{
   selectTemplate: [identifier: string]
 }>()
 
+const userStore = useUserStore()
 const templatesStore = useTemplatesStore()
 const { savePreferences } = useUserPreferences()
+
+const isPremiumUser = computed(() => userStore.isPremium)
+const selectedTemplateIsPremium = computed(() => templatesStore.selectedTemplate?.is_premium || false)
+const needsUpgrade = computed(() => selectedTemplateIsPremium.value && !isPremiumUser.value)
 
 const templates = ref<Template[]>([])
 const validTemplates = ref<Template[]>([])
@@ -82,6 +88,10 @@ const resetToDefault = () => {
     description: `Restored to ${templatesStore.defaultTemplate?.name || 'default'} template`,
     color: 'primary'
   })
+}
+
+const handleUpgrade = () => {
+  navigateTo('/pricing')
 }
 </script>
 
@@ -167,7 +177,9 @@ const resetToDefault = () => {
       </div>
     </div>
     <div v-if="!loading" class="flex justify-center gap-4 mt-8">
+        <UBadge v-if="needsUpgrade" color="warning" variant="subtle">Plus Plan Required to Save</UBadge>
         <UButton
+          v-else
           @click="saveTemplate"
           size="xl"
           color="success"

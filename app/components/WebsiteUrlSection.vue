@@ -6,11 +6,11 @@
       <!-- Show URL if it exists -->
       <div v-if="displayUrl && !showUrlForm" class="flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <UIcon name="i-heroicons-globe-alt" class="w-6 h-6 text-primary-500" />
+          <UIcon name="i-heroicons-globe-alt" class="w-6 h-6 text-black dark:text-white" />
           <a 
             :href="fullUrl || undefined" 
             target="_blank"
-            class="text-lg text-primary-600 dark:text-primary-400 hover:underline font-medium"
+            class="text-lg hover:underline text-black dark:text-white dark:bg-gray-700 dark:hover:bg-gray-500 py-1 px-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium"
           >
             {{ displayUrl }}
           </a>
@@ -18,7 +18,7 @@
             @click="copyToClipboard"
             variant="ghost"
             color="neutral"
-            size="sm"
+            size="md"
             class="cursor-pointer"
             icon="i-heroicons-clipboard-document"
           />
@@ -66,9 +66,10 @@
           </p>
           <UButton
             @click="showUrlForm = true"
-            color="primary"
+            color="neutral"
             size="lg"
             icon="i-heroicons-plus-circle"
+            class="cursor-pointer"
           >
             Create Your Custom Domain
           </UButton>
@@ -94,9 +95,10 @@
           <div class="flex gap-3">
             <UButton
               @click="saveWebsiteUrl"
-              color="success"
+              color="neutral"
               :loading="saving"
               :disabled="!customUrl || saving"
+              class="cursor-pointer"
             >
               Submit
             </UButton>
@@ -105,6 +107,7 @@
               color="neutral"
               variant="outline"
               :disabled="saving"
+              class="cursor-pointer"
             >
               Cancel
             </UButton>

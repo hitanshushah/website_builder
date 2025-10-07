@@ -8,7 +8,8 @@ export const useUserStore = defineStore('user', {
   }),
   getters: {
     isLoggedIn: (state) => !!state.user,
-    isPremium: (state) => !!state.user?.website_premium,
+    isPremium: (state) => state.user ? state.user.premium_plan_id >= 2 : false,
+    isPro: (state) => state.user?.premium_plan_id === 3,
   },
   actions: {
     setUser(user: User) {
@@ -29,7 +30,7 @@ export const useUserStore = defineStore('user', {
           const userData = (response as any)[0]
           this.user = {
             ...this.user,
-            website_premium: userData.website_premium || false
+            premium_plan_id: userData.premium_plan_id || 1
           }
         }
       } catch (error) {

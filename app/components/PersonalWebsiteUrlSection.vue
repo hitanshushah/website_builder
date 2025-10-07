@@ -3,20 +3,18 @@
     <div class="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Personal Website URL</h2>
-        <span v-if="!isPremium" class="px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 text-sm font-medium rounded-full">
-          Premium Subscription Needed
-        </span>
+        <UBadge v-if="!isPro" color="warning" variant="subtle">Pro Plan Required</UBadge>
       </div>
       
-      <!-- Premium Content -->
-      <div v-if="isPremium">
+      <!-- Pro Content -->
+      <div v-if="isPro">
         <div v-if="websiteUrlData?.personal_website_url && !showPersonalUrlForm" class="flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <UIcon name="i-heroicons-link" class="w-6 h-6 text-primary-500" />
+            <UIcon name="i-heroicons-link" class="w-6 h-6 text-black dark:text-white" />
             <a 
               :href="fullPersonalUrl" 
               target="_blank"
-              class="text-lg text-primary-600 dark:text-primary-400 hover:underline font-medium"
+              class="text-lg hover:underline text-black dark:text-white dark:bg-gray-700 dark:hover:bg-gray-500 py-1 px-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium"
             >
               {{ websiteUrlData.personal_website_url }}
             </a>
@@ -24,7 +22,7 @@
               @click="copyToClipboard"
               variant="ghost"
               color="neutral"
-              size="sm"
+              size="md"
               class="cursor-pointer"
               icon="i-heroicons-clipboard-document"
             />
@@ -72,9 +70,10 @@
             </p>
             <UButton
               @click="showPersonalUrlForm = true"
-              color="primary"
+              color="neutral"
               size="lg"
               icon="i-heroicons-plus-circle"
+              class="cursor-pointer"
             >
               Add Personal Website URL
             </UButton>
@@ -96,9 +95,10 @@
             <div class="flex gap-3">
               <UButton
                 @click="savePersonalWebsiteUrl"
-                color="success"
+                color="neutral"
                 :loading="savingPersonal"
                 :disabled="!customPersonalUrl || savingPersonal"
+                class="cursor-pointer"
               >
                 Submit
               </UButton>
@@ -107,6 +107,7 @@
                 color="neutral"
                 variant="outline"
                 :disabled="savingPersonal"
+                class="cursor-pointer"
               >
                 Cancel
               </UButton>
@@ -115,14 +116,14 @@
         </div>
       </div>
 
-      <!-- Non-Premium Message -->
+      <!-- Non-Pro Message -->
       <div v-else class="text-center">
         <UIcon name="i-heroicons-lock-closed" class="w-12 h-12 text-gray-400 mx-auto mb-3" />
         <p class="text-gray-600 dark:text-gray-400 mb-2">
-          Upgrade to Premium to use your own custom domain
+          Upgrade to Pro to use your own custom domain
         </p>
         <p class="text-sm text-gray-500 dark:text-gray-500">
-          With Premium, you can use any domain name you own
+          With Pro plan, you can use any domain name you own
         </p>
       </div>
     </div>
@@ -153,7 +154,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   userId: number | string
-  isPremium: boolean
+  isPro: boolean
 }>()
 
 const emit = defineEmits<{

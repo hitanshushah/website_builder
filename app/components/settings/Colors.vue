@@ -266,7 +266,9 @@
             >
               Try
             </UButton>
+            <UBadge v-if="!isPremiumUser" color="warning" variant="subtle">Plus Plan Required to Save</UBadge>
             <UButton
+              v-else
               @click="saveCustomColors"
               size="lg"
               variant="subtle"
@@ -348,6 +350,7 @@ const templatesStore = useTemplatesStore()
 const { savePreferences } = useUserPreferences()
 
 const selectedColorId = computed(() => colorsStore.selectedColorScheme?.id || null)
+const isPremiumUser = computed(() => userStore.isPremium)
 
 const isCustomizing = ref(false)
 const customColorScheme = ref<Color | null>(null)
@@ -568,5 +571,9 @@ const handleDeleteConfirmed = async () => {
 const handleDeleteCancelled = () => {
   showDeleteModal.value = false
   colorToDelete.value = null
+}
+
+const handleUpgrade = () => {
+  navigateTo('/pricing')
 }
 </script>

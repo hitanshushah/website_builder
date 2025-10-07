@@ -51,21 +51,15 @@
       <!-- Right Side -->
       <div class="flex items-center space-x-4">
         <UButton 
-          variant="ghost" 
-          color="gray" 
-          size="sm"
-          class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
+          :variant="currentRoute === '/pricing' ? 'solid' : 'ghost'"
+          :color="currentRoute === '/pricing' ? 'neutral' : 'gray'"
+          size="md"
+          class="cursor-pointer"
+          :class="currentRoute === '/pricing' ? 'text-white dark:text-black' : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'"
+          icon="i-heroicons-credit-card"
+          @click="navigateTo('/pricing')"
         >
-          <UIcon name="i-heroicons-bell" class="w-5 h-5" />
-        </UButton>
-        
-        <UButton 
-          variant="ghost" 
-          color="gray" 
-          size="sm"
-          class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
-        >
-          <UIcon name="i-heroicons-cog-6-tooth" class="w-5 h-5" />
+          Pricing Plans
         </UButton>
         
         <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center dark:bg-white">

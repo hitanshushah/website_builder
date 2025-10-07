@@ -23,7 +23,7 @@ export class UserModel {
 
   static async findById(id: number): Promise<User | null> {
     const users = await query<User>(
-      'SELECT id, username, email, website_premium, created_at, updated_at FROM users WHERE id = $1',
+      'SELECT id, username, email, premium_plan_id, created_at, updated_at FROM users WHERE id = $1',
       [id]
     );
     return users.length > 0 ? users[0] : null;
@@ -31,7 +31,7 @@ export class UserModel {
 
   static async getAllUsers(): Promise<User[]> {
     const users = await query<User>(
-      'SELECT id, username, email, website_premium, created_at, updated_at FROM users ORDER BY created_at DESC'
+      'SELECT id, username, email, premium_plan_id, created_at, updated_at FROM users ORDER BY created_at DESC'
     );
     return users;
   }

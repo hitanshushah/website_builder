@@ -10,20 +10,20 @@
         @refresh="refreshPersonalSection"
       />
 
-      <!-- Personal Website URL Section -->
+      <!-- Personal Website URL Section (Pro only) -->
       <PersonalWebsiteUrlSection
         v-if="userStore.user?.id"
         ref="personalWebsiteUrlSectionRef"
         :userId="userStore.user.id"
-        :isPremium="userStore.isPremium"
+        :isPro="userStore.isPro"
         @refresh="refreshWebsiteSection"
       />
 
-      <!-- Personal Access Token Section -->
+      <!-- Personal Access Token Section (Pro only) -->
       <PersonalAccessTokenSection
         v-if="userStore.user?.id"
         :userId="userStore.user.id"
-        :isPremium="userStore.isPremium"
+        :isPro="userStore.isPro"
       />
     </UContainer>
   </div>
