@@ -75,7 +75,7 @@ export async function handleSubdomainAccess(event: H3Event, headers: Record<stri
     
     return { 
       shouldLogout: false, 
-      redirectTo: `/subdomain/${userPreferences.template_identifier}` 
+      redirectTo: null
     }
   } catch (error) {
     console.error('Subdomain authentication error:', error)

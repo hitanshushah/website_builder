@@ -29,13 +29,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
       return navigateTo(logoutUrl, { external: true })
     }
     
-    const normalize = (url: string) => url.replace(/\/+$/, '')
-
-    if (result.redirectTo && normalize(to.fullPath) !== normalize(result.redirectTo)) {
-      return navigateTo(result.redirectTo, { external: false })
-    }
-
-    
     return
   }
 
