@@ -40,6 +40,8 @@ const selectedTemplateIdentifier = computed({
 })
 const { data: templateData } = useFetchTemplateData(userStore.user?.id)
 
+console.log(templateData.value, 'templateData in settings.vue')
+
 const { data: colorsResponse } = await useFetch('/api/colors', {
   query: {
     userId: userStore.user?.id || null

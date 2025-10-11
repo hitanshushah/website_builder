@@ -42,6 +42,7 @@ export function useFetchTemplateData(userId: number | undefined) {
       })
       
       data.value = processTemplateData(response)
+      console.log('✅ Data fetched successfully:', data.value)
     } catch (err) {
       console.error('Error fetching projects board data:', err)
       error.value = 'Failed to load data. Please try again.'
@@ -53,7 +54,6 @@ export function useFetchTemplateData(userId: number | undefined) {
   onMounted(() => {
     fetchData()
   })
-
   return {
     data,
     loading,
@@ -109,7 +109,7 @@ function processTemplateData(data: ProjectsBoardData | null): ProcessedTemplateD
 
 // Utility functions for templates
 export function formatDateRange(startDate?: string | null, endDate?: string | null): string {
-  if (!startDate) return 'N/A'
+  if (!startDate) return ''
   const start = new Date(startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
   const end = endDate ? new Date(endDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : 'Present'
   return `${start} - ${end}`
