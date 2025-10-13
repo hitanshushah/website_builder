@@ -79,7 +79,7 @@ function processTemplateData(data: ProjectsBoardData | null): ProcessedTemplateD
   const skillsGrouped = new Map<string, Skill[]>()
   
   visibleSkills.forEach(skill => {
-    const categoryName = skill.category?.name || 'Uncategorized'
+    const categoryName = skill.category?.name || 'Other Skills'
     if (!skillsGrouped.has(categoryName)) {
       skillsGrouped.set(categoryName, [])
     }
@@ -116,7 +116,7 @@ export function formatDateRange(startDate?: string | null, endDate?: string | nu
 }
 
 export function formatPublishDate(date?: string | null): string {
-  if (!date) return 'N/A'
+  if (!date) return ''
   return new Date(date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
 }
 
