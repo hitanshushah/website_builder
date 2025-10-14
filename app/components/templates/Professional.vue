@@ -299,10 +299,10 @@ onUnmounted(() => {
                             </div>
                         </div>
                         <div class="flex-1">
-                            <h3 class="text-2xl font-bold mb-2" style="color: var(--fourth-color)">{{ exp.role }}</h3>
+                            <h3 class="text-2xl font-bold mb-2" style="color: var(--background-color)">{{ exp.role }}</h3>
                             <p class="font-semibold mb-2" style="color: var(--background-color)">{{ exp.company_name }}</p>
-                            <p class="mb-4" style="color: var(--fourth-color)">{{ exp.location || '' }} | {{ formatDateRange(exp.start_date, exp.end_date) }}</p>
-                            <p v-if="exp.description" class="mb-4" style="color: var(--fourth-color)">{{ exp.description }}</p>
+                            <p class="mb-4" style="color: var(--background-color)">{{ exp.location || '' }} | {{ formatDateRange(exp.start_date, exp.end_date) }}</p>
+                            <p v-if="exp.description" class="mb-4" style="color: var(--background-color)">{{ exp.description }}</p>
                             <div v-if="exp.skills?.length" class="flex flex-wrap gap-2">
                                 <span 
                                     v-for="skill in exp.skills" 
