@@ -939,7 +939,9 @@ const fourth = computed(() => props.fourth || '#10b981')
 
 <style scoped>
 .fullscreen-portfolio {
-  height: 100vh;
+  min-height: 100vh;
+  position: relative;
+  isolation: isolate;
 }
 
 .section {
@@ -948,14 +950,17 @@ const fourth = computed(() => props.fourth || '#10b981')
   left: 0;
   width: 100%;
   height: 100vh;
+  min-height: 100vh;
   opacity: 0;
   transition: opacity 0.8s ease-in-out;
   pointer-events: none;
+  z-index: 1;
 }
 
 .section.active {
   opacity: 1;
   pointer-events: auto;
+  z-index: 2;
 }
 
 .section-content {
@@ -981,9 +986,19 @@ const fourth = computed(() => props.fourth || '#10b981')
   background: rgba(255, 255, 255, 0.5);
 }
 
+.fullscreen-portfolio > .fixed {
+  position: fixed;
+  z-index: 100;
+}
+
 .nav-item {
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 50;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .nav-item:hover {
@@ -995,12 +1010,67 @@ const fourth = computed(() => props.fourth || '#10b981')
   transform: translateX(-8px);
 }
 
-/* Text wrapping utilities */
+/* Adjust navigation for smaller screens */
+@media (max-width: 1024px) {
+  .nav-item {
+    max-width: 120px;
+  }
+  
+  .nav-item span {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .fullscreen-portfolio > .fixed {
+    right: 1rem !important;
+  }
+  
+  .nav-item span {
+    display: none;
+  }
+  
+  .nav-item {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: currentColor;
+    opacity: 0.4;
+    max-width: none;
+  }
+  
+  .nav-item.active {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+  
+  .nav-item:hover {
+    transform: scale(1.2);
+  }
+}
+
 .overflow-wrap-anywhere {
   overflow-wrap: anywhere;
 }
 
 .max-w-full {
   max-width: 100%;
+}
+
+@media (min-width: 1px) {
+  .fullscreen-portfolio {
+    contain: layout;
+  }
+  
+  .fullscreen-portfolio > .fixed {
+    position: absolute !important;
+  }
+}
+
+@media (min-width: 1px) {
+  body:has(.fullscreen-portfolio:only-child) .fullscreen-portfolio > .fixed,
+  html:has(.fullscreen-portfolio:only-child) .fullscreen-portfolio > .fixed {
+    position: fixed !important;
+  }
 }
 </style>
