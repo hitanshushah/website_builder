@@ -95,7 +95,7 @@ const scrollToSection = (id: string) => {
       <div class="flex flex-row items-center justify-center">
 
       <!-- Main Portfolio Window -->
-      <div class="flex flex-col lg:flex-row bg-[var(--background-color-2)] h-auto lg:h-[80vh] w-[85vw] max-w-[1200px] rounded-[30px] shadow-lg my-8 lg:my-0">
+      <div class="flex flex-col lg:flex-row bg-[var(--background-color)] h-auto lg:h-[80vh] w-[85vw] max-w-[1200px] rounded-[30px] shadow-lg my-8 lg:my-0">
         <!-- Header Section -->
         <section class="justify-center flex flex-col items-center w-full lg:w-[500px] h-full rounded-[30px] text-white overflow-auto">
           <img 
