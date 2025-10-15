@@ -30,6 +30,7 @@ const {
 const currentSection = ref(0)
 const totalSections = 9
 const isScrolling = ref(false)
+const isMobileMenuOpen = ref(false)
 
 // Section names for navigation
 const sectionNames = [
@@ -172,9 +173,21 @@ const changeSection = (newIndex: number) => {
     navDots[currentSection.value].classList.add('active')
   }
   
+  // Close mobile menu when navigating
+  isMobileMenuOpen.value = false
+  
   setTimeout(() => {
     isScrolling.value = false
   }, 900)
+}
+
+// Mobile menu functions
+const toggleMobileMenu = () => {
+  isMobileMenuOpen.value = !isMobileMenuOpen.value
+}
+
+const closeMobileMenu = () => {
+  isMobileMenuOpen.value = false
 }
 
 // Event handlers
@@ -286,8 +299,9 @@ const fourth = computed(() => props.fourth || '#10b981')
 </script>
 
 <template>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
   <div class="fullscreen-portfolio bg-gray-900">
-    <!-- Navigation Section Names -->
+    <!-- Desktop Navigation -->
     <div class="fixed right-8 ml-8 top-1/2 transform -translate-y-1/2 z-50 flex flex-col gap-4">
       <div 
         v-for="(sectionName, index) in sectionNames" 
@@ -305,65 +319,146 @@ const fourth = computed(() => props.fourth || '#10b981')
       </div>
     </div>
 
+    <!-- Mobile Hamburger Menu -->
+    <div class="lg:hidden fixed top-4 right-4 z-50">
+      <!-- Hamburger Button -->
+      <button 
+        @click="toggleMobileMenu"
+        class="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 backdrop-blur-lg"
+        :style="{ 
+          backgroundColor: `${background}20`, 
+          color: background,
+          borderColor: `${background}40`
+        }"
+      >
+        <i 
+          :class="isMobileMenuOpen ? 'fas fa-times' : 'fas fa-bars'"
+          class="text-xl transition-transform duration-300"
+        ></i>
+      </button>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div 
+      v-if="isMobileMenuOpen"
+      class="lg:hidden fixed inset-0 z-40 w-screen h-screen"
+      :style="{ backgroundColor: 'rgba(0, 0, 0, 0.95)' }"
+      @click="closeMobileMenu"
+    >
+      <!-- Mobile Menu Content -->
+      <div 
+        class="absolute inset-0 w-full h-full backdrop-blur-lg"
+        :style="{ 
+          backgroundColor: `${background}95`
+        }"
+        @click.stop
+      >
+        <!-- Menu Header -->
+        <div class="flex items-center justify-between p-6 border-b" :style="{ borderColor: `${background}40` }">
+          <h3 class="text-2xl font-bold" :style="{ color: background }">Navigation</h3>
+          <button 
+            @click="closeMobileMenu"
+            class="w-10 h-10 rounded-full flex items-center justify-center transition hover:opacity-80"
+            :style="{ backgroundColor: `${background}20` }"
+          >
+            <i class="fas fa-times text-xl" :style="{ color: background }"></i>
+          </button>
+        </div>
+
+        <!-- Menu Items -->
+        <div class="p-8 space-y-6 flex-1 overflow-y-auto">
+          <div 
+            v-for="(sectionName, index) in sectionNames" 
+            :key="index"
+            :class="[
+              'nav-mobile-item cursor-pointer transition-all duration-300 p-2 rounded-xl',
+              { 'active': currentSection === index }
+            ]"
+            :style="{
+              backgroundColor: currentSection === index ? `${primary}20` : `${background}10`,
+              color: currentSection === index ? primary : background,
+              borderColor: currentSection === index ? primary : `${background}30`
+            }"
+            @click="changeSection(index)"
+          >
+            <div class="flex items-center gap-4">
+              <div 
+                class="w-3 h-3 rounded-full transition-all duration-300"
+                :style="{ 
+                  backgroundColor: currentSection === index ? primary : `${background}60`
+                }"
+              ></div>
+              <span class="text-xl font-semibold">{{ sectionName }}</span>
+              <i 
+                v-if="currentSection === index"
+                class="fas fa-check ml-auto text-xl"
+                :style="{ color: primary }"
+              ></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Section 1: Hero/About -->
     <div class="section active" data-index="0">
-      <div class="h-full flex items-center justify-center px-8" :style="{ background: `linear-gradient(135deg, ${primary} 0%, ${secondary} 100%)` }">
-        <div class="max-w-6xl w-full flex flex-col md:flex-row items-center gap-12">
-          <div class="flex-1 min-w-0" :style="{ color: background }">
-            <h1 class="text-6xl md:text-7xl font-bold mb-4">
+      <div class="h-full flex items-center justify-center px-4 md:px-8" :style="{ background: `linear-gradient(135deg, ${primary} 0%, ${secondary} 100%)` }">
+        <div class="max-w-6xl w-full flex flex-col md:flex-row items-center gap-6 md:gap-12">
+          <div class="flex-1 min-w-0 order-2 md:order-1" :style="{ color: background }">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 leading-tight">
               {{ userProfile?.name }}
             </h1>
-            <p v-if="userProfile?.designation" class="text-3xl mb-6" :style="{ color: background }">{{ userProfile.designation }}</p>
-            <p v-if="userProfile?.bio" class="text-xl mb-4 leading-relaxed break-words whitespace-pre-wrap overflow-wrap-anywhere max-w-full" :style="{ color: `${background}` }">
+            <p v-if="userProfile?.designation" class="text-xl sm:text-2xl md:text-3xl mb-6" :style="{ color: background }">{{ userProfile.designation }}</p>
+            <p v-if="userProfile?.bio" class="text-lg sm:text-xl mb-4 leading-relaxed break-words whitespace-pre-wrap overflow-wrap-anywhere max-w-full" :style="{ color: `${background}` }">
               {{ userProfile.bio }}
             </p>
-            <p v-if="userProfile?.introduction && !userProfile?.hide_introduction_on_website" class="text-xl mb-8 leading-relaxed break-words whitespace-pre-wrap overflow-wrap-anywhere max-w-full" :style="{ color: `${background}` }">
+            <p v-if="userProfile?.introduction && !userProfile?.hide_introduction_on_website" class="text-lg sm:text-xl mb-6 md:mb-8 leading-relaxed break-words whitespace-pre-wrap overflow-wrap-anywhere max-w-full" :style="{ color: `${background}` }">
               {{ userProfile.introduction }}
             </p>
-            <div v-if="userProfile?.links?.length" class="flex gap-4 mb-8">
+            <div v-if="userProfile?.links?.length" class="flex flex-wrap gap-3 mb-6 md:mb-8">
               <a 
                 v-for="link in userProfile.links.slice(0, 2)" 
                 :key="link.url"
                 :href="link.url" 
                 target="_blank" 
                 :style="{ backgroundColor: background, color: primary }"
-                class="px-6 py-3 rounded-lg font-semibold transition hover:opacity-90"
+                class="px-4 py-2 md:px-6 md:py-3 rounded-lg font-semibold transition hover:opacity-90 text-sm md:text-base"
               >
                 {{ link.title }}
               </a>
             </div>
             <!-- Documents -->
-            <div v-if="userProfile?.documents?.length" class="flex flex-wrap gap-3 mb-8">
+            <div v-if="userProfile?.documents?.length" class="flex flex-wrap gap-2 md:gap-3 mb-6 md:mb-8">
               <a 
                 v-for="doc in userProfile.documents" 
                 :key="doc.id"
                 :href="doc.url" 
                 target="_blank"
                 :style="{ backgroundColor: `${background}20`, color: background, borderColor: background }"
-                class="px-4 py-2 rounded-lg transition hover:opacity-90 border backdrop-blur-lg"
+                class="px-3 py-2 md:px-4 md:py-2 rounded-lg transition hover:opacity-90 border backdrop-blur-lg text-sm md:text-base"
               >
                 {{ doc.display_name || doc.name || 'Download' }}
               </a>
             </div>
-            <div class="flex flex-col gap-2" :style="{ color: `${background}CC` }">
+            <div class="flex flex-col gap-2 text-sm md:text-base" :style="{ color: `${background}CC` }">
               <span v-if="userProfile?.city || userProfile?.province || userProfile?.country"><i class="fas fa-map-marker-alt"></i> {{ [userProfile?.city, userProfile?.province, userProfile?.country].filter(Boolean).join(', ') }}</span>
               <span v-if="userProfile?.email"><i class="fas fa-envelope"></i> {{ userProfile.email }}</span>
               <span v-if="userProfile?.phone_number"><i class="fas fa-phone"></i> {{ userProfile.phone_number }}</span>
             </div>
           </div>
-          <div class="flex-shrink-0">
+          <div class="flex-shrink-0 order-1 md:order-2">
             <img 
               v-if="userProfile?.profile_photo_url"
               :src="userProfile.profile_photo_url" 
               alt="Profile" 
-              class="w-80 h-80 rounded-full object-cover shadow-2xl border-8" :style="{ borderColor: `${background}33` }"
+              class="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 rounded-full object-cover shadow-2xl border-4 md:border-8" :style="{ borderColor: `${background}33` }"
             >
             <div 
               v-else
-              class="w-80 h-80 rounded-full flex items-center justify-center shadow-2xl border-8"
+              class="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 rounded-full flex items-center justify-center shadow-2xl border-4 md:border-8"
               :style="{ backgroundColor: `${background}20`, borderColor: `${background}33` }"
             >
-              <span class="text-6xl font-bold" :style="{ color: background }">
+              <span class="text-3xl sm:text-4xl md:text-6xl font-bold" :style="{ color: background }">
                 {{ getUserInitials(userProfile) }}
               </span>
             </div>
@@ -392,7 +487,7 @@ const fourth = computed(() => props.fourth || '#10b981')
                   <p class="mb-4" :style="{ color: `${background}` }">
                     {{ experience.location }} | {{ formatDateRange(experience.start_date, experience.end_date) }}
                   </p>
-                  <p class="mb-4 leading-relaxed" :style="{ color: `${background}` }">{{ experience.description }}</p>
+                  <p class="mb-4 leading-relaxed break-words whitespace-pre-wrap overflow-wrap-anywhere max-w-full" :style="{ color: `${background}` }">{{ experience.description }}</p>
                   <div v-if="experience.skills?.length" class="flex flex-wrap gap-2">
                     <span 
                       v-for="skill in experience.skills" 
@@ -1010,6 +1105,46 @@ const fourth = computed(() => props.fourth || '#10b981')
   transform: translateX(-8px);
 }
 
+/* Mobile Navigation Styles */
+.nav-mobile-item {
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.nav-mobile-item:hover {
+  transform: translateX(4px);
+  opacity: 0.9;
+}
+
+.nav-mobile-item.active {
+  transform: translateX(8px);
+}
+
+/* Ensure mobile menu covers full screen */
+@media (max-width: 1023px) {
+  /* Mobile menu overlay - full screen */
+  .lg\:hidden.fixed[class*="inset"] {
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  /* Hamburger button - top right */
+  .lg\:hidden.fixed:not([class*="inset"]) {
+    top: 1rem !important;
+    right: 1rem !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: auto !important;
+    height: auto !important;
+  }
+}
+
 /* Adjust navigation for smaller screens */
 @media (max-width: 1024px) {
   .nav-item {
@@ -1046,6 +1181,12 @@ const fourth = computed(() => props.fourth || '#10b981')
   
   .nav-item:hover {
     transform: scale(1.2);
+  }
+  
+  /* Adjust hamburger menu position to not overlap with nav dots */
+  .lg\:hidden.fixed {
+    top: 1rem;
+    right: 1rem;
   }
 }
 

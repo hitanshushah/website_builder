@@ -163,16 +163,16 @@ onUnmounted(() => {
       }"
     >
       <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
-          <div class="text-2xl font-bold"
+          <div class="text-lg md:text-2xl font-bold"
           :style="scrolled ? { color: fourth } : { color: 'white' }"
           >{{data?.userProfile.name}}</div>
         
         <button 
-          class="lg:hidden"
+          class="lg:hidden p-2"
           :style="scrolled ? { color: fourth } : { color: 'white' }"
           @click="mobileMenuOpen = !mobileMenuOpen"
         >
-          <i class="fas fa-bars text-2xl"></i>
+          <i class="fas fa-bars text-xl md:text-2xl"></i>
         </button>
         
         <div class="hidden lg:flex items-center gap-8">
@@ -219,39 +219,43 @@ onUnmounted(() => {
     <!-- Hero Section -->
     <section 
       id="home"
-      class="min-h-screen flex items-center relative overflow-hidden"
+      class="min-h-[60vh] md:min-h-screen flex items-center relative overflow-hidden"
       :style="{ background: `linear-gradient(135deg, ${primary} 0%, ${secondary} 100%)`, color: background }"
     >
-      <div class="max-w-7xl mx-auto px-4 w-full">
-        <div class="grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <h1 class="text-5xl md:text-7xl font-bold mb-6">
-              Hey!, I'm {{ data?.userProfile.name?.split(' ')[0]}}
-            </h1>
-            <p class="text-xl md:text-2xl mb-8 opacity-90">
-              {{ data?.userProfile.designation }}
-            </p>
-            <button 
-              @click="scrollToSection('contact')"
-              class="bg-white rounded-full px-8 py-4 font-semibold hover:scale-105 transition-transform shadow-lg"
-              :style="{ color: primary }"
-            >
-              Get in Touch <i class="fas fa-arrow-right ml-2"></i>
-            </button>
-          </div>
-          <div class="flex justify-center">
+      <div class="max-w-7xl mx-auto px-4 w-full md:-mt-24">
+        <!-- Mobile Layout: Image first, then text -->
+        <div class="flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+          <!-- Profile Image - shown first on mobile -->
+          <div class="flex justify-center order-1 md:order-2">
             <div class="relative">
-              <div v-if="data?.userProfile.profile_photo_url" class="w-80 h-80 rounded-full border-8 border-white shadow-2xl overflow-hidden">
+              <div v-if="data?.userProfile.profile_photo_url" class="w-48 h-48 md:w-80 md:h-80 rounded-full border-4 md:border-8 border-white shadow-2xl overflow-hidden">
                 <img 
                   :src="data.userProfile.profile_photo_url" 
                   :alt="data.userProfile.name"
                   class="w-full h-full object-cover"
                 >
               </div>
-              <div v-else class="w-80 h-80 rounded-full border-8 border-white shadow-2xl flex items-center justify-center text-6xl font-bold bg-white bg-opacity-20" :style="{ color: background }">
+              <div v-else class="w-48 h-48 md:w-80 md:h-80 rounded-full border-4 md:border-8 border-white shadow-2xl flex items-center justify-center text-4xl md:text-6xl font-bold bg-white bg-opacity-20" :style="{ color: background }">
                 {{ getUserInitials }}
               </div>
             </div>
+          </div>
+          
+          <!-- Text Content - shown second on mobile -->
+          <div class="order-2 md:order-1 text-center md:text-left">
+            <h1 class="text-3xl md:text-5xl lg:text-7xl font-bold mb-4 md:mb-6">
+              Hey!, I'm {{ data?.userProfile.name?.split(' ')[0]}}
+            </h1>
+            <p class="text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 opacity-90">
+              {{ data?.userProfile.designation }}
+            </p>
+            <button 
+              @click="scrollToSection('contact')"
+              class="bg-white rounded-full px-6 md:px-8 py-3 md:py-4 font-semibold hover:scale-105 transition-transform shadow-lg text-sm md:text-base"
+              :style="{ color: primary }"
+            >
+              Get in Touch <i class="fas fa-arrow-right ml-2"></i>
+            </button>
           </div>
         </div>
       </div>
@@ -277,10 +281,10 @@ onUnmounted(() => {
         
         <div class="grid lg:grid-cols-2 gap-12 items-start">
           <!-- Left Column - Profile Photo and Documents -->
-          <div class="space-y-8">
+          <div class="space-y-8 hidden md:block">
             <!-- Profile Photo -->
             <div class="flex justify-center">
-              <div v-if="data?.userProfile.profile_photo_url" class="w-96 h-96 rounded-2xl shadow-2xl overflow-hidden">
+              <div v-if="data?.userProfile.profile_photo_url" class="w-64 h-64 md:w-96 md:h-96 rounded-2xl shadow-2xl overflow-hidden">
                 <img 
                   :src="data.userProfile.profile_photo_url" 
                   :alt="data.userProfile.name"
@@ -288,7 +292,7 @@ onUnmounted(() => {
                 >
               </div>
               <div v-else 
-                class="w-96 h-96 rounded-2xl shadow-2xl flex items-center justify-center text-7xl font-bold"
+                class="w-64 h-64 md:w-96 md:h-96 rounded-2xl shadow-2xl flex items-center justify-center text-5xl md:text-7xl font-bold"
                 :style="{ background: `linear-gradient(135deg, ${primary} 0%, ${secondary} 100%)`, color: background }"
               >
                 {{ getUserInitials }}
@@ -340,12 +344,27 @@ onUnmounted(() => {
             
             <!-- Bio and Introduction -->
             <div class="space-y-4 mb-6">
-              <p v-if="data?.userProfile.bio" class="text-lg leading-relaxed break-words" :style="{ color: fourth }">
+              <p v-if="data?.userProfile.bio" class="text-lg leading-relaxed break-all overflow-hidden" :style="{ color: fourth, wordBreak: 'break-all', overflowWrap: 'anywhere', hyphens: 'auto' }">
                 {{ data.userProfile.bio }}
               </p>
-              <p v-if="data?.userProfile.introduction" class="text-lg leading-relaxed break-words" :style="{ color: fourth }">
+              <p v-if="data?.userProfile.introduction" class="text-lg leading-relaxed break-all overflow-hidden" :style="{ color: fourth, wordBreak: 'break-all', overflowWrap: 'anywhere', hyphens: 'auto' }">
                 {{ data.userProfile.introduction }}
               </p>
+            </div>
+
+            <div v-if="data?.userProfile.links?.length" class="text-center block md:hidden mb-4">
+              <div class="flex justify-start gap-4">
+                <a 
+                  v-for="link in data.userProfile.links"
+                  :key="link.url"
+                  :href="link.url"
+                  target="_blank"
+                  class="text-3xl hover:scale-110 transition-transform"
+                  :style="{ color: primary }"
+                >
+                  <i :class="getSocialIcon(link.type)"></i>
+                </a>
+              </div>
             </div>
             
             <!-- Contact Information -->
@@ -372,6 +391,22 @@ onUnmounted(() => {
                 <i class="fas fa-globe text-xl" :style="{ color: primary }"></i>
                 <a :href="`https://${data.userProfile.website_url}`" target="_blank" class="text-lg hover:underline break-all" :style="{ color: fourth }">
                   {{ data.userProfile.website_url }}
+                </a>
+              </div>
+            </div>
+
+            <!-- Documents Section -->
+            <div v-if="data?.userProfile.documents?.length" class="text-center mt-4 mb-4 block md:hidden">
+              <div class="flex flex-wrap justify-start gap-3">
+                <a 
+                  v-for="doc in data.userProfile.documents" 
+                  :key="doc.id"
+                  :href="doc.url" 
+                  target="_blank"
+                  class="py-2.5 px-5 rounded-[30px] shadow-lg hover:opacity-90 transition-opacity duration-200 border-2"
+                  :style="{ background: background, color: primary, borderColor: primary }"
+                >
+                  {{ doc.display_name || doc.name || 'Download' }}
                 </a>
               </div>
             </div>
@@ -418,12 +453,12 @@ onUnmounted(() => {
         </div>
         
         <div class="relative">
-          <div class="absolute left-8 md:left-12 top-0 bottom-0 w-0.5" :style="{ backgroundColor: primary }"></div>
+          <div class="absolute hidden md:block left-8 md:left-12 top-0 bottom-0 w-0.5" :style="{ backgroundColor: primary }"></div>
           
           <div class="space-y-12">
-            <div v-for="exp in sortedExperiences" :key="exp.id" class="relative pl-20 md:pl-24">
+            <div v-for="exp in sortedExperiences" :key="exp.id" class="relative pl-2 md:pl-24">
               <div 
-                class="absolute left-8 top-0 w-8 h-8 rounded-full border-4 border-white shadow-lg"
+                class="absolute hidden md:block left-4 md:left-8 top-0 w-8 h-8 rounded-full border-4 border-white shadow-lg"
                 :style="{ backgroundColor: primary }"
               ></div>
               <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-shadow">
@@ -438,7 +473,7 @@ onUnmounted(() => {
                     </p>
                   </div>
                 </div>
-                <p v-if="exp.description" class="mb-4" :style="{ color: fourth }">{{ exp.description }}</p>
+                <p v-if="exp.description" class="mb-4 break-all overflow-hidden" :style="{ color: fourth, wordBreak: 'break-all', overflowWrap: 'anywhere', hyphens: 'auto' }">{{ exp.description }}</p>
                 <div v-if="exp.skills?.length" class="flex flex-wrap gap-2">
                   <span 
                     v-for="skill in exp.skills"
@@ -603,7 +638,7 @@ onUnmounted(() => {
             <div class="p-6">
               <h4 class="text-2xl font-bold mb-2" :style="{ color: fourth }">{{ project.name }}</h4>
               <p class="text-sm mb-3 opacity-60" :style="{ color: fourth }">{{ project.category }}</p>
-              <p v-if="project.description" class="mb-4" :style="{ color: fourth }">{{ project.description }}</p>
+              <p v-if="project.description" class="mb-4 break-all overflow-hidden" :style="{ color: fourth, wordBreak: 'break-all', overflowWrap: 'anywhere', hyphens: 'auto' }">{{ project.description }}</p>
               <div v-if="project.technologies?.length" class="flex flex-wrap gap-2 mb-4">
                 <span 
                   v-for="tech in project.technologies.slice(0, 3)"
@@ -987,7 +1022,7 @@ onUnmounted(() => {
           </form>
         </div>
       </div>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" class="absolute top-0 w-full" style="margin-top: -160px">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" class="absolute top-0 w-full">
         <defs>
             <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" :style="{ stopColor: accent, stopOpacity: 1 }" />

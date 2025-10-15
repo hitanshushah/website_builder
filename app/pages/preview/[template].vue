@@ -40,7 +40,13 @@ const { data: userPreferencesResponse } = await useFetch('/api/user-preferences'
   }
 })
 
-if (userPreferencesResponse.value && (userPreferencesResponse.value as any)?.success && (userPreferencesResponse.value as any)?.data) {
+const selectedColorSchemeId = route.query.colorSchemeId
+if (selectedColorSchemeId) {
+  const selectedColor = colorsStore.availableColors.find((color: { id: number }) => color.id === parseInt(selectedColorSchemeId as string))
+  if (selectedColor) {
+    colorsStore.setSelectedColorScheme(selectedColor)
+  }
+} else if (userPreferencesResponse.value && (userPreferencesResponse.value as any)?.success && (userPreferencesResponse.value as any)?.data) {
   const preferences = (userPreferencesResponse.value as any).data
   
   const selectedTemplate = templatesStore.availableTemplates.find(t => t.id === preferences.template_id)
@@ -51,14 +57,6 @@ if (userPreferencesResponse.value && (userPreferencesResponse.value as any)?.suc
   const selectedColor = colorsStore.availableColors.find(c => c.id === preferences.color_id)
   if (selectedColor) {
     colorsStore.setSelectedColorScheme(selectedColor)
-  }
-} else {
-  const selectedColorSchemeId = route.query.colorSchemeId
-  if (selectedColorSchemeId) {
-    const selectedColor = colorsStore.availableColors.find((color: { id: number }) => color.id === parseInt(selectedColorSchemeId as string))
-    if (selectedColor) {
-      colorsStore.setSelectedColorScheme(selectedColor)
-    }
   }
 }
 
@@ -79,6 +77,9 @@ const templateProps = computed(() => ({
 </script>
 
 <template>
+  <Head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  </Head>
 
   <div v-if="loading" class="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
     <div class="text-center">

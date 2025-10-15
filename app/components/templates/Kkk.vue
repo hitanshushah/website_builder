@@ -197,9 +197,9 @@ onUnmounted(() => {
     </nav>
     
     <!-- Hero Section / Profile Card -->
-    <section id="about" class="py-12 px-4" :style="{ background: `linear-gradient(to right, var(--color-primary) 40%, var(--color-background) 40%)` }">
+      <section id="about" class="py-12 px-4 gradient-section">
       <div class="container mx-auto max-w-6xl">
-        <div class="flex flex-col md:flex-row ml-12 rounded-lg overflow-hidden bg-transparent">
+        <div class="flex flex-col md:flex-row ml-0 md:ml-12 rounded-lg overflow-hidden bg-transparent">
           <!-- Left Side - Profile Image -->
           <div class="md:w-2/5 bg-[var(--color-secondary)] p-8 flex flex-col items-center text-center min-h-[600px] md:min-h-[700px]">
             <img 
@@ -233,10 +233,10 @@ onUnmounted(() => {
             <h1 class="text-4xl font-bold text-[var(--color-accent)] mb-6 min-h-[5rem] flex items-center">
               {{ typedText }}<span v-show="showCursor" class="animate-pulse">|</span>
             </h1>
-            <p v-if="data.userProfile.bio" class="text-2xl text-[var(--color-accent)] mb-8">{{ data.userProfile.bio }}</p>
+            <p v-if="data.userProfile.bio" class="text-2xl text-[var(--color-accent)] mb-8 break-words overflow-wrap-anywhere">{{ data.userProfile.bio }}</p>
             
             <div class="space-y-6 text-[var(--color-accent)]">
-              <p v-if="data.userProfile.introduction && !data.userProfile.hide_introduction_on_website" class="text-lg leading-relaxed whitespace-pre-line">{{ data.userProfile.introduction }}</p>
+              <p v-if="data.userProfile.introduction && !data.userProfile.hide_introduction_on_website" class="text-lg leading-relaxed whitespace-pre-line break-words overflow-wrap-anywhere">{{ data.userProfile.introduction }}</p>
               
               <div class="flex flex-col space-y-3 pt-6">
                 <p v-if="data.userProfile.city || data.userProfile.province || data.userProfile.country" class="text-lg">
@@ -261,7 +261,7 @@ onUnmounted(() => {
             </div>
             
             <!-- Documents -->
-            <div v-if="data.userProfile.documents?.length" class="flex flex-wrap gap-12 mt-24 justify-center">
+            <div v-if="data.userProfile.documents?.length" class="flex flex-wrap gap-12 mt-12 md:mt-24 justify-center">
               <a 
                 v-for="doc in data.userProfile.documents" 
                 :key="doc.id"
@@ -286,13 +286,13 @@ onUnmounted(() => {
         </div>
         <div class="pt-8">
           <!-- Timeline Container -->
-          <div class="relative ml-16">
+          <div class="relative md:ml-16">
             
             <!-- Experience Items -->
             <div class="space-y-16">
               <div v-for="exp in sortedExperiences" :key="exp.id" class="relative">
-                <!-- Timeline Circle -->
-                <div class="absolute left-[-4.5rem] top-0 w-24 h-24 bg-[var(--color-secondary)] rounded-full flex items-center justify-center z-10 border-4 border-[var(--color-primary)] shadow-lg">
+                <!-- Timeline Circle - Mobile: above card, Desktop: left of card -->
+                <div class="relative md:absolute md:left-[-4.5rem] md:top-0 w-24 h-24 bg-[var(--color-secondary)] rounded-full flex items-center justify-center z-10 border-4 border-[var(--color-primary)] shadow-lg mx-auto md:mx-0 mb-4 md:mb-0">
                   <img 
                     v-if="exp.company_logo"
                     :src="exp.company_logo" 
@@ -307,8 +307,18 @@ onUnmounted(() => {
                   
                   <div class="flex flex-col md:flex-row md:items-start md:justify-between mb-1">
                     <div class="flex-1">
-                      <h3 class="text-2xl font-bold text-[var(--color-accent)] mb-2">
-                        {{ exp.role }}<span class="text-[var(--color-accent)]">,</span> <span class="text-[var(--color-secondary)]">{{ exp.company_name }}</span>
+                      <!-- Mobile: Role and Company on separate lines, Desktop: Same line -->
+                      <div class="block md:hidden">
+                        <h3 class="text-2xl font-bold text-[var(--color-accent)] mb-1">
+                          {{ exp.role }}
+                        </h3>
+                        <h4 v-if="exp.company_name" class="text-xl font-semibold text-[var(--color-accent)] mb-2">
+                          {{ exp.company_name }}
+                        </h4>
+                      </div>
+                      <!-- Desktop: Role and Company on same line -->
+                      <h3 class="hidden md:block text-2xl font-bold text-[var(--color-accent)] mb-2">
+                        {{ exp.role }}<span class="text-[var(--color-accent)]">,</span> <span v-if="exp.company_name" class="text-[var(--color-accent)] text-xl">{{ exp.company_name }}</span>
                       </h3>
                       <p v-if="exp.location" class="text-[var(--color-accent)]">{{ exp.location }}</p>
                     </div>
@@ -321,7 +331,7 @@ onUnmounted(() => {
                   <div class="w-full h-0.5 bg-[var(--color-primary)] mb-2"></div>
                   
                   <div v-if="exp.description" class="text-[var(--color-accent)] mb-4 leading-relaxed">
-                    <p class="whitespace-pre-line">{{ exp.description }}</p>
+                    <p class="whitespace-pre-line break-words overflow-wrap-anywhere">{{ exp.description }}</p>
                   </div>
                   
                   <!-- Skills Tags -->
@@ -346,8 +356,35 @@ onUnmounted(() => {
           <h2 class="text-4xl font-light text-[var(--color-accent)]">Education</h2>
         </div>
         
-        <!-- Custom Horizontal Timeline -->
-        <div class="relative mt-4">
+        <!-- Mobile: Vertical Timeline -->
+        <div class="block md:hidden relative mt-8">
+          <div class="relative ml-8">
+            <!-- Vertical Line -->
+            <div class="absolute left-4 top-0 bottom-0 w-1 bg-[var(--color-background)]"></div>
+            
+            <!-- Timeline Items -->
+            <div class="space-y-8">
+              <div v-for="(edu, index) in sortedEducation" :key="edu.id" class="relative">
+                <!-- Circle/Year -->
+                <div class="absolute left-[-0.5rem] top-0 w-12 h-12 rounded-full bg-[var(--color-secondary)] border-4 border-[var(--color-primary)] shadow-lg flex items-center justify-center">
+                  <span class="text-xs font-bold text-[var(--color-accent)]">{{ edu.end_date ? getYear(edu.end_date) : getYear(edu.from_date) }}</span>
+                </div>
+                
+                <!-- Content without Card -->
+                <div class="ml-16">
+                  <h3 class="text-lg font-bold text-[var(--color-accent)] mb-2">{{ edu.degree }}</h3>
+                  <p class="text-sm text-[var(--color-accent)] mb-1">{{ edu.university_name }}</p>
+                  <p v-if="edu.cgpa" class="text-xs text-[var(--color-accent)] mb-1">CGPA: {{ edu.cgpa }}/10</p>
+                  <p v-if="edu.location" class="text-xs text-[var(--color-accent)] mb-2">{{ edu.location }}</p>
+                  <p class="text-xs font-semibold text-[var(--color-accent)]">{{ formatDateRange(edu.from_date, edu.end_date) }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Desktop: Horizontal Timeline -->
+        <div class="hidden md:block relative mt-4">
           <!-- Horizontal Line -->
           <div class="absolute top-8 left-0 right-0 h-1 bg-[var(--color-background)]"></div>
           
@@ -699,7 +736,7 @@ onUnmounted(() => {
   </div>
 
   <!-- Loader -->
-  <div v-else class="min-h-screen flex items-center justify-center bg-[var(--color-primary)]">
+  <div v-else class="min-h-screen flex items-center justify-center" :style="{ backgroundColor: primary || '#8B4513' }">
     <div class="text-center">
       <div class="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" :style="{ borderColor: primary || '#8B4513' }"></div>
       <p class="opacity-70 text-[var(--color-accent)]">Loading your data...</p>
@@ -708,7 +745,7 @@ onUnmounted(() => {
 
   <!-- Project Images Modal -->
   <div v-if="showProjectModal" class="fixed inset-0 z-50 flex items-center justify-center bg-[var(--color-secondary)]/80 p-4" @click.self="showProjectModal = false">
-    <div v-if="activeProject" class="bg-[var(--color-primary)] rounded-lg shadow-lg w-full max-w-5xl p-6 relative">
+    <div v-if="activeProject" class="rounded-lg shadow-lg w-full max-w-5xl p-6 relative" :style="{ backgroundColor: primary || '#8B4513' }">
       <!-- Close Button -->
       <button
         @click="showProjectModal = false"
@@ -745,6 +782,17 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+/* Gradient Section */
+.gradient-section {
+  background: linear-gradient(to top, var(--color-primary) 40%, var(--color-background) 40%);
+}
+
+@media (min-width: 768px) {
+  .gradient-section {
+    background: linear-gradient(to right, var(--color-primary) 40%, var(--color-background) 40%);
+  }
+}
+
 /* Internal CSS for Footer Animations */
 @keyframes myfirst {
   0% {

@@ -91,16 +91,16 @@ const scrollToSection = (id: string) => {
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
 
-    <div class="flex flex-col items-center justify-center min-h-screen py-5">
-      <div class="flex flex-row items-center justify-center">
+    <div class="flex flex-col items-center justify-center min-h-screen md:py-5">
+      <div class="flex flex-row items-center justify-center w-full">
 
       <!-- Main Portfolio Window -->
-      <div class="flex flex-col lg:flex-row bg-[var(--background-color-2)] h-auto lg:h-[80vh] w-[85vw] max-w-[1200px] rounded-[30px] shadow-lg my-8 lg:my-0">
+      <div class="flex flex-col lg:flex-row bg-[var(--background-color-2)] h-auto lg:h-[80vh] w-full md:w-[85vw] max-w-[1200px] rounded-none md:rounded-[30px] shadow-lg my-0 md:my-8 lg:my-0">
         <!-- Header Section -->
-        <section class="justify-center flex flex-col items-center w-full lg:w-[500px] h-full rounded-[30px] text-white overflow-auto">
+        <section class="justify-center flex flex-col items-center w-full lg:w-[500px] h-full rounded-none md:rounded-[30px] text-white overflow-auto">
           <img 
             v-if="data.userProfile.profile_photo_url"
-            class="w-[150px] h-[150px] rounded-full mb-2.5 mx-2.5 shadow-[0_0_10px_2px_rgba(0,0,0,0.5)] object-cover" 
+            class="w-[150px] h-[150px] mt-10 rounded-full mb-2.5 mx-2.5 shadow-[0_0_10px_2px_rgba(0,0,0,0.5)] object-cover" 
             :src="data.userProfile.profile_photo_url" 
             :alt="data.userProfile.name" 
           />
@@ -188,14 +188,14 @@ const scrollToSection = (id: string) => {
         </section>
 
         <!-- Content Section -->
-        <div class="rounded-[30px] bg-white w-full h-full overflow-auto scroll-smooth pb-24 lg:pb-0">
+        <div class="rounded-none md:rounded-[30px] bg-white w-full h-full overflow-auto scroll-smooth pb-0 lg:pb-0">
           <!-- Home -->
           <section class="flex flex-col items-center justify-center min-h-full mx-8 lg:mx-12 max-w-full break-words" id="welcome-section">
             <h1 class="text-3xl lg:text-[3.5rem] font-extrabold text-center my-5 leading-[2.5rem] lg:leading-[4rem] text-[var(--accent-color)]">Hello, I am {{ data.userProfile.name }}</h1>
           </section>
 
           <!-- About Me -->
-          <section class="flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-24 lg:pt-0" id="about">
+          <section class="flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-0 lg:pt-0" id="about">
             <h1 class="text-4xl leading-[4rem] text-[var(--accent-color)] self-start">About me</h1>
             <div class="w-full max-w-full my-2">
               <p v-if="data.userProfile.bio" class="text-[var(--accent-color)] whitespace-pre-wrap break-words max-w-full leading-6 mb-3">{{ data.userProfile.bio }}</p>
@@ -206,7 +206,7 @@ const scrollToSection = (id: string) => {
           </section>
 
           <!-- Experience -->
-          <section v-if="data.experiences.length" class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-24 lg:pt-0" id="experience">
+          <section v-if="data.experiences.length" class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-0 lg:pt-0" id="experience">
             <h1 class="text-4xl leading-[4rem] text-[var(--accent-color)] self-start">Experience</h1>
             <div class="relative w-full before:content-[''] before:absolute before:w-0.5 before:left-6 before:top-[55px] before:h-[calc(100%-100px)] before:bg-[var(--accent-color)] before:z-[1]">
               <div class="ml-14">
@@ -243,9 +243,39 @@ const scrollToSection = (id: string) => {
           </section>
 
           <!-- Education -->
-          <section v-if="data.education.length" class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-24 lg:pt-0" id="education">
+          <section v-if="data.education.length" class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-0 lg:pt-0" id="education">
             <h1 class="text-4xl leading-[4rem] text-[var(--accent-color)] self-start">Education</h1>
-            <div class="relative w-full max-w-4xl mx-auto mt-10">
+            
+            <!-- Mobile: All items on right side -->
+            <div class="block md:hidden relative w-full mt-10">
+              <div class="relative ml-8">
+                <!-- Vertical Line -->
+                <div class="absolute -left-6 top-0 bottom-0 w-0.5 bg-[var(--accent-color)] z-[1]"></div>
+                
+                <div class="space-y-8">
+                  <div v-for="(edu, index) in sortedEducation" :key="edu.id" class="relative">
+                    <!-- Timeline Circle -->
+                    <div class="absolute left-[-2rem] top-0 w-4 h-4 rounded-full bg-[var(--accent-color)] z-10"></div>
+                    
+                    <!-- Education Card -->
+                    <div class="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-md ml-4">
+                      <h2 class="text-sm text-[var(--accent-color)]">{{ formatDateRange(edu.from_date, edu.end_date) }}</h2>
+                      <div class="flex flex-wrap gap-1">
+                        <h3 class="text-xl font-bold text-[var(--accent-color)]">{{ edu.degree }},</h3>
+                        <p class="text-lg text-[var(--accent-color)] mb-2">{{ edu.university_name }}</p>
+                      </div>
+                      <div v-if="edu.location" class="flex items-center gap-1 text-gray-600 text-sm mb-2">
+                        <span class="text-[var(--accent-color)]">{{ edu.location }}</span>
+                      </div>
+                      <p v-if="edu.cgpa" class="text-[var(--accent-color)] text-sm">CGPA: {{ edu.cgpa }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Tablet/Desktop: Alternating layout -->
+            <div class="hidden md:block relative w-full max-w-4xl mx-auto mt-10">
               <!-- Center Timeline Line -->
               <div class="absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-[var(--accent-color)] z-[1]"></div>
               
@@ -279,7 +309,7 @@ const scrollToSection = (id: string) => {
           </section>
 
           <!-- Projects -->
-          <section v-if="data.projects.length" class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-24 lg:pt-0" id="projects">
+          <section v-if="data.projects.length" class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-0 lg:pt-0" id="projects">
             <h1 class="text-4xl leading-[4rem] text-[var(--accent-color)] self-start">Projects</h1>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 w-full max-w-full overflow-hidden my-5">
               <div 
@@ -348,7 +378,7 @@ const scrollToSection = (id: string) => {
           </section>
 
           <!-- Skills -->
-          <section v-if="data.skillsByCategory.length" class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-24 lg:pt-0" id="skills">
+          <section v-if="data.skillsByCategory.length" class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-0 lg:pt-0" id="skills">
             <h1 class="text-4xl leading-[4rem] text-[var(--accent-color)] self-start">Skills</h1>
             <div class="w-full max-w-full my-5">
               <div 
@@ -374,7 +404,7 @@ const scrollToSection = (id: string) => {
           </section>
 
           <!-- Certifications -->
-          <section v-if="data.certifications.length" class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-24 lg:pt-0" id="certifications">
+            <section v-if="data.certifications.length" class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-0 lg:pt-0" id="certifications">
             <h1 class="text-4xl leading-[4rem] text-[var(--accent-color)] self-start">Certifications</h1>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 w-full max-w-full overflow-hidden my-5">
               <div 
@@ -404,7 +434,7 @@ const scrollToSection = (id: string) => {
           </section>
 
           <!-- Achievements -->
-          <section v-if="data.achievements.length" class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-24 lg:pt-0" id="achievements">
+          <section v-if="data.achievements.length" class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-0 lg:pt-0" id="achievements">
             <h1 class="text-4xl leading-[4rem] text-[var(--accent-color)] self-start">Achievements</h1>
             <ul class="list-disc list-inside text-[var(--accent-color)] mt-4 pl-4 w-full">
               <li v-for="achievement in data.achievements" :key="achievement.id" class="mb-3 leading-6">
@@ -414,7 +444,7 @@ const scrollToSection = (id: string) => {
           </section>
 
           <!-- Publications -->
-          <section v-if="data.publications.length" class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-24 lg:pt-0" id="publications">
+          <section v-if="data.publications.length" class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-0 lg:pt-0" id="publications">
             <h1 class="text-4xl leading-[4rem] text-[var(--accent-color)] self-start">Publications</h1>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 w-full max-w-full overflow-hidden my-5">
               <div 
@@ -454,7 +484,7 @@ const scrollToSection = (id: string) => {
           </section>
 
           <!-- Contact -->
-          <section class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-24 lg:pt-0" id="contact">
+          <section class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-0 lg:pt-0" id="contact">
             <h1 class="text-4xl leading-[4rem] text-[var(--accent-color)] self-start">Contact</h1>
             <form class="w-full max-w-[600px]" @submit.prevent>
               <div class="flex items-center">
@@ -483,15 +513,15 @@ const scrollToSection = (id: string) => {
         </div>
       </div>
             <!-- Navigation Menu -->
-            <div class="flex flex-row lg:flex-col items-center justify-center bg-white w-auto lg:w-[70px] h-[70px] lg:h-auto ml-0 lg:ml-5 rounded-[50px] lg:rounded-[35px] py-0 lg:py-4 px-4 lg:px-0 shadow-lg fixed lg:static bottom-4 z-[1000]">
-        <a href="#welcome-section" @click.prevent="scrollToSection('welcome-section')" class="text-2xl lg:text-3xl text-[var(--light-grey)] my-0 lg:my-4 mx-4 lg:mx-0 hover:text-[var(--accent-color)] transition-colors duration-200 fa-solid fa-house"></a>
-        <a href="#about" @click.prevent="scrollToSection('about')" class="text-2xl lg:text-3xl text-[var(--light-grey)] my-0 lg:my-4 mx-4 lg:mx-0 hover:text-[var(--accent-color)] transition-colors duration-200 fa-solid fa-user"></a>
-        <a v-if="data.experiences.length" href="#experience" @click.prevent="scrollToSection('experience')" class="text-2xl lg:text-3xl text-[var(--light-grey)] my-0 lg:my-4 mx-4 lg:mx-0 hover:text-[var(--accent-color)] transition-colors duration-200 fa-solid fa-briefcase"></a>
-        <a v-if="data.education.length" href="#education" @click.prevent="scrollToSection('education')" class="text-2xl lg:text-3xl text-[var(--light-grey)] my-0 lg:my-4 mx-4 lg:mx-0 hover:text-[var(--accent-color)] transition-colors duration-200 fa-solid fa-graduation-cap"></a>
-        <a v-if="data.projects.length" href="#projects" @click.prevent="scrollToSection('projects')" class="text-2xl lg:text-3xl text-[var(--light-grey)] my-0 lg:my-4 mx-4 lg:mx-0 hover:text-[var(--accent-color)] transition-colors duration-200 fa-solid fa-code"></a>
-        <a v-if="data.skillsByCategory.length" href="#skills" @click.prevent="scrollToSection('skills')" class="text-2xl lg:text-3xl text-[var(--light-grey)] my-0 lg:my-4 mx-4 lg:mx-0 hover:text-[var(--accent-color)] transition-colors duration-200 fa-solid fa-lightbulb"></a>
-        <a v-if="data.certifications.length || data.achievements.length || data.publications.length" href="#certifications" @click.prevent="scrollToSection('certifications')" class="text-2xl lg:text-3xl text-[var(--light-grey)] my-0 lg:my-4 mx-4 lg:mx-0 hover:text-[var(--accent-color)] transition-colors duration-200 fa-solid fa-award"></a>
-        <a href="#contact" @click.prevent="scrollToSection('contact')" class="text-2xl lg:text-3xl text-[var(--light-grey)] my-0 lg:my-4 mx-4 lg:mx-0 hover:text-[var(--accent-color)] transition-colors duration-200 fa-solid fa-envelope"></a>
+            <div class="flex flex-row lg:flex-col items-center justify-center bg-white w-auto lg:w-[70px] h-[50px] md:h-[70px] lg:h-auto ml-0 lg:ml-5 rounded-[25px] md:rounded-[50px] lg:rounded-[35px] py-0 lg:py-4 px-2 md:px-4 lg:px-0 shadow-lg fixed lg:static bottom-4 z-[1000]">
+        <a href="#welcome-section" @click.prevent="scrollToSection('welcome-section')" class="text-lg md:text-2xl lg:text-3xl text-[var(--light-grey)] my-0 lg:my-4 mx-2 md:mx-4 lg:mx-0 hover:text-[var(--accent-color)] transition-colors duration-200 fa-solid fa-house"></a>
+        <a href="#about" @click.prevent="scrollToSection('about')" class="text-lg md:text-2xl lg:text-3xl text-[var(--light-grey)] my-0 lg:my-4 mx-2 md:mx-4 lg:mx-0 hover:text-[var(--accent-color)] transition-colors duration-200 fa-solid fa-user"></a>
+        <a v-if="data.experiences.length" href="#experience" @click.prevent="scrollToSection('experience')" class="text-lg md:text-2xl lg:text-3xl text-[var(--light-grey)] my-0 lg:my-4 mx-2 md:mx-4 lg:mx-0 hover:text-[var(--accent-color)] transition-colors duration-200 fa-solid fa-briefcase"></a>
+        <a v-if="data.education.length" href="#education" @click.prevent="scrollToSection('education')" class="text-lg md:text-2xl lg:text-3xl text-[var(--light-grey)] my-0 lg:my-4 mx-2 md:mx-4 lg:mx-0 hover:text-[var(--accent-color)] transition-colors duration-200 fa-solid fa-graduation-cap"></a>
+        <a v-if="data.projects.length" href="#projects" @click.prevent="scrollToSection('projects')" class="text-lg md:text-2xl lg:text-3xl text-[var(--light-grey)] my-0 lg:my-4 mx-2 md:mx-4 lg:mx-0 hover:text-[var(--accent-color)] transition-colors duration-200 fa-solid fa-code"></a>
+        <a v-if="data.skillsByCategory.length" href="#skills" @click.prevent="scrollToSection('skills')" class="text-lg md:text-2xl lg:text-3xl text-[var(--light-grey)] my-0 lg:my-4 mx-2 md:mx-4 lg:mx-0 hover:text-[var(--accent-color)] transition-colors duration-200 fa-solid fa-lightbulb"></a>
+        <a v-if="data.certifications.length || data.achievements.length || data.publications.length" href="#certifications" @click.prevent="scrollToSection('certifications')" class="text-lg md:text-2xl lg:text-3xl text-[var(--light-grey)] my-0 lg:my-4 mx-2 md:mx-4 lg:mx-0 hover:text-[var(--accent-color)] transition-colors duration-200 fa-solid fa-award"></a>
+        <a href="#contact" @click.prevent="scrollToSection('contact')" class="text-lg md:text-2xl lg:text-3xl text-[var(--light-grey)] my-0 lg:my-4 mx-2 md:mx-4 lg:mx-0 hover:text-[var(--accent-color)] transition-colors duration-200 fa-solid fa-envelope"></a>
       </div>
       </div>
       

@@ -316,7 +316,7 @@ const colorVars = computed(() => ({
                 </div>
                 
                 <div class="text">{{ project.name }}</div>
-                <p v-if="project.description" class="project-desc">{{ project.description }}</p>
+                <p v-if="project.description" class="project-desc break-words overflow-wrap-anywhere whitespace-pre-line">{{ project.description }}</p>
                 
                 <div v-if="project.technologies?.length" class="project-technologies">
                   <span 
@@ -369,7 +369,7 @@ const colorVars = computed(() => ({
                   <h4 class="red">{{ formatDateRange(exp.start_date, exp.end_date) }}</h4>
                 </div>
               </div>
-              <p v-if="exp.description">{{ exp.description }}</p>
+              <p v-if="exp.description" class="break-words overflow-wrap-anywhere whitespace-pre-line">{{ exp.description }}</p>
               <p v-if="exp.location" class="exp-location">
                 <i class="fas fa-map-marker-alt"></i> {{ exp.location }}
               </p>
@@ -394,7 +394,7 @@ const colorVars = computed(() => ({
                   <h4 class="red">{{ formatDateRange(exp.start_date, exp.end_date) }}</h4>
                 </div>
               </div>
-              <p v-if="exp.description">{{ exp.description }}</p>
+              <p v-if="exp.description" class="break-words overflow-wrap-anywhere whitespace-pre-line">{{ exp.description }}</p>
               <p v-if="exp.location" class="exp-location">
                 <i class="fas fa-map-marker-alt"></i> {{ exp.location }}
               </p>
@@ -620,7 +620,7 @@ const colorVars = computed(() => ({
         @click="showProjectModal = false"
         class="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 transition-colors"
       >
-        <span class="text-xl">✕</span>
+        <span class="text-xl text-black">✕</span>
       </button>
 
       <!-- Carousel -->
@@ -1062,6 +1062,20 @@ section .title {
   transition: all 0.3s ease;
 }
 
+/* Mobile: Single column layout */
+@media (max-width: 768px) {
+  .project .card {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  .project-grid {
+    gap: 20px;
+    justify-content: center;
+  }
+}
+
 
 .project .card .box {
   display: flex;
@@ -1208,6 +1222,9 @@ section .title {
   font-size: 14px;
   line-height: 1.5;
   text-align: left;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 .project-technologies {
@@ -1363,7 +1380,7 @@ section .title {
 }
 
 .skills .skills-content .left p {
-  text-align: justify;
+  text-align: unset;
 }
 
 .skills .skills-content .left a {
@@ -1612,6 +1629,22 @@ footer span a:hover {
 @media (max-width: 991px) {
   .max-width {
     padding: 0 50px;
+  }
+}
+
+/* Tablet responsive navbar */
+@media (max-width: 1024px) and (min-width: 768px) {
+  .navbar .menu li a {
+    font-size: 16px;
+    margin-left: 15px;
+  }
+  
+  .navbar .logo a {
+    font-size: 30px;
+  }
+  
+  .navbar {
+    padding: 20px 0;
   }
 }
 
