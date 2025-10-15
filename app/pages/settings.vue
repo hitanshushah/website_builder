@@ -131,14 +131,6 @@ const templatePreviewProps = computed(() => ({
           >
             Open in New Tab
           </UButton>
-          <UButton 
-            @click="selectedTemplateIdentifier = null" 
-            color="neutral" 
-            variant="outline"
-            icon="i-lucide-x"
-          >
-            Close Preview
-          </UButton>
         </div>
       </div>
       

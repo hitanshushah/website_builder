@@ -62,8 +62,17 @@
           Pricing Plans
         </UButton>
         
-        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center dark:bg-white">
-          <span class="text-white font-medium text-sm dark:text-black">JD</span>
+        <UAvatar
+          v-if="templateData?.userProfile?.profile_photo_url"
+          :src="templateData.userProfile.profile_photo_url"
+          size="2xl"
+          rounded
+        />
+        <div 
+          v-else
+          class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center dark:bg-white"
+        >
+          <span class="text-white font-medium text-sm dark:text-black">{{ userInitials }}</span>
         </div>
       </div>
     </div>
@@ -72,7 +81,22 @@
 
 <script setup>
 import { computed } from 'vue'
+import { useFetchTemplateData } from '../composables/useTemplateData'
+import { useUserStore } from '../../stores/user'
 
 const route = useRoute()
 const currentRoute = computed(() => route.path)
+
+const userStore = useUserStore()
+const { data: templateData } = useFetchTemplateData(userStore.user?.id)
+
+// Compute initials if no photo
+const userInitials = computed(() => {
+  const userProfile = templateData.value?.userProfile
+  if (!userProfile) return 'U'
+  
+  return userProfile.name
+    ? userProfile.name.split(' ').map((n) => n[0]).join('').toUpperCase()
+    : userProfile.username?.charAt(0).toUpperCase() || 'U'
+})
 </script>
