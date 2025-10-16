@@ -9,6 +9,8 @@ interface Props {
   secondary?: string
   background?: string
   fourth?: string
+  isPremiumUser?: boolean | false
+  brandName?: string
 }
 
 const props = defineProps<Props>()
@@ -530,6 +532,7 @@ const scrollToSection = (id: string) => {
         <p class="text-sm opacity-70">
           © {{ new Date().getFullYear() }} {{ data.userProfile.name }}. All rights reserved.
         </p>
+        <p v-if="!isPremiumUser">Powered by <a href="https://www.{{ brandName }}.com" target="_blank" class="hover:underline">{{ brandName }}</a></p>
       </footer>
     </div>
   </div>

@@ -10,6 +10,8 @@ interface Props {
   secondary?: string
   background?: string
   fourth?: string
+  isPremiumUser?: boolean | false
+  brandName?: string
 }
 
 const props = defineProps<Props>()
@@ -730,6 +732,7 @@ onUnmounted(() => {
       <div class="bg-[var(--color-background)] bg-opacity-90 py-4">
         <div class="container mx-auto px-4">
           <p class="text-center text-[var(--color-accent)] text-sm">&copy; {{ new Date().getFullYear() }} - Developed by {{ data.userProfile.name }}</p>
+          <p class="text-center text-[var(--color-accent)] text-sm" v-if="!isPremiumUser">Powered by <a href="https://www.{{ brandName }}.com" target="_blank" class="hover:underline">{{ brandName }}</a></p>
         </div>
       </div>
     </footer>

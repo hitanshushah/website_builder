@@ -85,19 +85,21 @@ BEGIN
             RAISE NOTICE 'User % custom colors soft deleted, updated to default color %', 
                 NEW.id, default_color_id;
         END IF;
-        
-        -- Disable personal website URL if user has one (Pro plan feature)
+    END IF;
+
+    -- Disable personal website URL if user downgrades from Pro (3) to any lower plan (<3)
+    IF NEW.premium_plan_id < 3 AND OLD.premium_plan_id = 3 THEN
         UPDATE profiles 
-        SET personal_website_url = NULL, 
-            share_personal_website = false,
-            updated_at = NOW()
+        SET share_personal_website = false, 
+            updated_at = NOW(),
+            share_website = true
         WHERE user_id = NEW.id;
-        
+
         -- Log the change (optional)
         RAISE NOTICE 'User % personal website URL disabled due to plan downgrade', NEW.id;
         
     END IF;
-    
+
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;

@@ -137,7 +137,7 @@
                 class="w-4 h-4 rounded border border-gray-200"
                 :style="{ backgroundColor: colorScheme.fourth_color }"
               />
-              <span class="text-sm text-gray-700 dark:text-white">Accent</span>
+              <span class="text-sm text-gray-700 dark:text-white">Font</span>
             </div>
           </div>
         </div>
@@ -240,7 +240,7 @@
 
             <div v-if="customColorScheme.fourth_color">
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                Accent Color
+                Font Color
               </label>
               <div class="flex items-center gap-3">
                 <input

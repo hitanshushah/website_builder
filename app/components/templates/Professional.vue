@@ -9,6 +9,8 @@ interface Props {
   secondary?: string
   background?: string
   fourth?: string
+  isPremiumUser?: boolean | false
+  brandName?: string
 }
 
 const props = defineProps<Props>()
@@ -750,6 +752,7 @@ onUnmounted(() => {
     <footer class="py-6 sm:py-8 px-4" style="background-color: var(--fourth-color); color: var(--background-color)">
         <div class="max-w-7xl mx-auto text-center">
             <p class="text-sm sm:text-base">&copy; {{ new Date().getFullYear() }} {{ data.userProfile.name }}. All rights reserved.</p>
+            <p v-if="!isPremiumUser">Powered by <a href="https://www.{{ brandName }}.com" target="_blank" class="hover:underline">{{ brandName }}</a></p>
         </div>
     </footer>
 

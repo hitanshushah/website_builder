@@ -95,13 +95,26 @@ const selectedTemplateComponent = computed(() => {
   return defineAsyncComponent(() => import(`../components/templates/${name}.vue`))
 })
 
+const isPremiumUser = computed(() => {
+  const plan_id = userStore.user?.premium_plan_id
+  if (plan_id > 2) {
+    return true
+  }
+  return false
+})
+
+const config = useRuntimeConfig()
+const brandName = config.public.brandName
+
 // Computed props to pass to template preview
 const templatePreviewProps = computed(() => ({
   data: templateData.value,
   primary: colorsStore.selectedColors.primary,
   secondary: colorsStore.selectedColors.secondary,
   background: colorsStore.selectedColors.background,
-  fourth: colorsStore.selectedColors.fourth
+  fourth: colorsStore.selectedColors.fourth,
+  isPremiumUser: isPremiumUser.value,
+  brandName: brandName
 }))
 
 </script>

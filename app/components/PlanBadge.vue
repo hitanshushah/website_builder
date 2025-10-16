@@ -23,7 +23,7 @@ const planConfig = computed(() => {
     case 1:
       return {
         name: 'Basic',
-        color: 'primary',
+        color: 'error',
         variant: 'solid'
       }
     case 2:
@@ -35,13 +35,13 @@ const planConfig = computed(() => {
     case 3:
       return {
         name: 'Pro',
-        color: 'error',
+        color: 'primary',
         variant: 'solid'
       }
     default:
       return {
         name: 'Basic',
-        color: 'primary',
+        color: 'error',
         variant: 'solid'
       }
   }

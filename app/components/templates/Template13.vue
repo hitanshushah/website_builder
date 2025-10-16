@@ -9,6 +9,8 @@ interface Props {
   secondary?: string
   background?: string
   fourth?: string
+  isPremiumUser?: boolean | false
+  brandName?: string
 }
 
 const props = defineProps<Props>()
@@ -601,6 +603,7 @@ const colorVars = computed(() => ({
     <!-- Footer -->
     <footer>
       <span>© {{ new Date().getFullYear() }} {{ data.userProfile.name || 'Portfolio' }}. All rights reserved.</span>
+      <p v-if="!isPremiumUser">Powered by <a href="https://www.{{ brandName }}.com" target="_blank" class="hover:underline">{{ brandName }}</a></p>
     </footer>
   </div>
 
