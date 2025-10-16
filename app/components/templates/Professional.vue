@@ -101,7 +101,11 @@ const hideToast = () => {
 
 // Contact form handler
 const handleSubmit = async () => {
-  const success = await sendMessage(formData.value)
+  const formDataWithUserId = {
+    ...formData.value,
+    userId: props.data?.userProfile?.user_id
+  }
+  const success = await sendMessage(formDataWithUserId)
   
   if (success) {
     // Create mailto link with form data

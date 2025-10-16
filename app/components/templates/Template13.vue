@@ -154,7 +154,11 @@ const hideToast = () => {
 }
 
 const handleContactSubmit = async () => {
-  const success = await sendMessage(contactForm.value)
+  const formDataWithUserId = {
+    ...contactForm.value,
+    userId: props.data?.userProfile?.user_id
+  }
+  const success = await sendMessage(formDataWithUserId)
   
   if (success) {
     showToastMessage('Thank you for your message! I will get back to you soon.')

@@ -5,11 +5,42 @@ export interface ContactFormData {
   email: string
   subject?: string
   message?: string
+  userId?: number
+  userEmail?: string
 }
 
 export const useContactForm = () => {
   const isSubmitting = ref(false)
   const errors = ref<Record<string, string>>({})
+
+  // Fetch user email based on override_email logic
+  const fetchUserEmail = async (userId: number): Promise<string | null> => {
+    try {
+      const response = await $fetch<{
+        success: boolean
+        email: string | null
+        override_email: boolean | null
+        has_secondary_email: boolean
+      }>('/api/user-email', {
+        query: { userId }
+      })
+
+      if (response.success) {
+        console.log('📧 User email fetched:', {
+          userId,
+          email: response.email,
+          override_email: response.override_email,
+          has_secondary_email: response.has_secondary_email
+        })
+        return response.email
+      }
+      
+      return null
+    } catch (error) {
+      console.error('❌ Error fetching user email:', error)
+      return null
+    }
+  }
 
   // Validation function
   const validateForm = (data: ContactFormData): boolean => {
@@ -42,13 +73,21 @@ export const useContactForm = () => {
 
   // Send message function
   const sendMessage = async (formData: ContactFormData): Promise<boolean> => {
+    // Fetch user email if userId is provided
+    let userEmail = null
+    if (formData.userId) {
+      userEmail = await fetchUserEmail(formData.userId)
+    }
+
     console.log('📧 Contact form submission:', {
       timestamp: new Date().toISOString(),
       formData: {
         name: formData.name,
         email: formData.email,
         subject: formData.subject || 'No subject',
-        message: formData.message || 'No message'
+        message: formData.message || 'No message',
+        userId: formData.userId || 'Not provided',
+        userEmail: userEmail || 'Not provided'
       }
     })
 
@@ -68,7 +107,9 @@ export const useContactForm = () => {
         name: formData.name,
         email: formData.email,
         subject: formData.subject,
-        message: formData.message
+        message: formData.message,
+        userId: formData.userId,
+        userEmail: userEmail
       })
 
       // Clear errors on success
@@ -94,6 +135,7 @@ export const useContactForm = () => {
     errors,
     sendMessage,
     validateForm,
-    resetForm
+    resetForm,
+    fetchUserEmail
   }
 }
