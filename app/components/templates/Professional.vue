@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, onUnmounted, toRef } from 'vue'
 import type { ProcessedTemplateData } from '../../composables/useTemplateData'
 import { useTemplateFunctions } from '../../composables/useTemplateFunctions'
+import { useContactForm } from '../../composables/useContactForm'
 
 interface Props {
   data: ProcessedTemplateData | null
@@ -43,7 +44,6 @@ const formData = ref({
   subject: '',
   message: ''
 })
-const isSubmitting = ref(false)
 
 // Scroll tracking
 const handleScroll = () => {
@@ -76,11 +76,34 @@ const selectProjectImage = (i: number) => {
   carousel.value?.emblaApi?.scrollTo(i)
 }
 
+// Use contact form composable
+const { sendMessage, isSubmitting, errors, resetForm } = useContactForm()
+
+// Toast state
+const showToast = ref(false)
+const toastMessage = ref('')
+const toastType = ref('success') // 'success' or 'error'
+
+// Toast functions
+const showToastMessage = (message: string, type: 'success' | 'error' = 'success') => {
+  toastMessage.value = message
+  toastType.value = type
+  showToast.value = true
+  
+  setTimeout(() => {
+    showToast.value = false
+  }, 4000)
+}
+
+const hideToast = () => {
+  showToast.value = false
+}
+
 // Contact form handler
 const handleSubmit = async () => {
-  isSubmitting.value = true
+  const success = await sendMessage(formData.value)
   
-  try {
+  if (success) {
     // Create mailto link with form data
     const email = !props.data?.userProfile.override_email && props.data?.userProfile.email 
       ? props.data.userProfile.email 
@@ -102,15 +125,16 @@ const handleSubmit = async () => {
         subject: '',
         message: ''
       }
+      resetForm()
       
-      // Show success message (you can customize this)
-      alert('Your email client should open with the message pre-filled. If it doesn\'t, please copy the message and send it manually.')
+      // Show success message
+      showToastMessage('Thank you for your message! I will get back to you soon.')
     }
-  } catch (error) {
-    console.error('Error submitting form:', error)
-    alert('There was an error submitting the form. Please try again.')
-  } finally {
-    isSubmitting.value = false
+  } else {
+    // Show validation errors
+    if (errors.value.name) showToastMessage(`Name: ${errors.value.name}`, 'error')
+    if (errors.value.email) showToastMessage(`Email: ${errors.value.email}`, 'error')
+    if (errors.value.general) showToastMessage(errors.value.general, 'error')
   }
 }
 
@@ -183,7 +207,7 @@ onUnmounted(() => {
                 <!-- Mobile Menu Button -->
                 <button 
                     @click="isMobileMenuOpen = !isMobileMenuOpen"
-                    class="lg:hidden p-2 rounded-md transition-colors"
+                    class="lg:hidden block p-2 rounded-md transition-colors"
                     style="color: var(--fourth-color)"
                     :style="{ color: isMobileMenuOpen ? 'var(--primary-color)' : 'var(--fourth-color)' }"
                 >
@@ -809,6 +833,39 @@ onUnmounted(() => {
       <p class="opacity-70" :style="{ color: primary || '#2563eb' }">Loading your portfolio...</p>
     </div>
   </div>
+
+  <!-- Toast Notification -->
+  <div 
+    v-if="showToast"
+    class="fixed bottom-8 right-8 bg-gray-800 text-white px-5 py-4 rounded-lg shadow-lg opacity-0 pointer-events-none transform translate-y-5 transition-all duration-300 ease-in-out flex items-center gap-3 z-50"
+    :class="{ 'opacity-100 translate-y-0 pointer-events-auto': showToast }"
+    :style="{ 
+      boxShadow: toastType === 'success' ? '0 0 15px rgba(34, 197, 94, 0.3)' : '0 0 15px rgba(239, 68, 68, 0.3)',
+      borderLeft: toastType === 'success' ? '4px solid #22c55e' : '4px solid #ef4444'
+    }"
+  >
+    <div class="flex items-center gap-3">
+      <div v-if="toastType === 'success'" class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+        <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+        </svg>
+      </div>
+      <div v-else class="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center">
+        <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+        </svg>
+      </div>
+      <span class="text-sm font-medium">{{ toastMessage }}</span>
+    </div>
+    <button 
+      @click="hideToast"
+      class="ml-2 text-gray-300 hover:text-white transition-colors"
+    >
+      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+      </svg>
+    </button>
+  </div>
 </template>
 
 <style scoped>
@@ -838,7 +895,6 @@ html {
 /* Fix button text spacing globally */
 .professional-template button {
   line-height: 1;
-  display: inline-flex;
   align-items: center;
   justify-content: center;
 }

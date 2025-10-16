@@ -29,7 +29,7 @@
               <div class="flex-1">
                 <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Add a CNAME Record</h3>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                  Create a new CNAME record with the following details:
+                  Create new CNAME records with the following details:
                 </p>
                 <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-3 space-y-2">
                   <div class="flex items-center gap-2 text-sm">
@@ -38,7 +38,7 @@
                   </div>
                   <div class="flex items-center gap-2 text-sm">
                     <span class="font-medium text-gray-700 dark:text-gray-300 w-16">Name:</span>
-                    <span class="font-mono bg-white dark:bg-gray-800 px-2 py-1 rounded text-xs"><span class="font-bold">1.www</span> and <span class="font-bold">2.@</span></span>
+                    <span class="font-mono bg-white dark:bg-gray-800 px-2 py-1 rounded text-xs"><span class="font-bold">www</span> and <span class="font-bold">@</span></span>
                   </div>
                   <div class="flex items-center gap-2 text-sm">
                     <span class="font-medium text-gray-700 dark:text-gray-300 w-16">Value:</span>

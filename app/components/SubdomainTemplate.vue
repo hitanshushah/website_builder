@@ -11,6 +11,9 @@ const subdomainData = useState('subdomainAccess', () => {
 
 const templateData = computed(() => subdomainData.value?.websiteData)
 const selectedColors = computed(() => subdomainData.value?.colors)
+const isPremiumUser = computed(() => subdomainData.value?.isPremiumUser || false)
+const config = useRuntimeConfig()
+const brandName = config.public.brandName
 
 const templateComponent = computed(() => {
   if (!subdomainData.value?.templateIdentifier) return null
@@ -24,7 +27,9 @@ const templateProps = computed(() => ({
   primary: selectedColors.value?.primary,
   secondary: selectedColors.value?.secondary,
   background: selectedColors.value?.background,
-  fourth: selectedColors.value?.fourth
+  fourth: selectedColors.value?.fourth,
+  isPremiumUser: isPremiumUser.value,
+  brandName: brandName
 }))
 
 useHead(() => ({

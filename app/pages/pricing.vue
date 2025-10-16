@@ -187,6 +187,14 @@ const sections = computed(() => [
           plus: true,
           pro: true
         }
+      },
+      {
+        title: 'Contact Form in Website',
+        tiers: {
+          basic: true,
+          plus: true,
+          pro: true
+        }
       }
     ]
   },
@@ -211,6 +219,14 @@ const sections = computed(() => [
       },
       {
         title: 'Custom Domain',
+        tiers: {
+          basic: false,
+          plus: false,
+          pro: true
+        }
+      },
+      {
+        title: 'Remove Website Powered by Text',
         tiers: {
           basic: false,
           plus: false,

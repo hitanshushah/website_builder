@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, onUnmounted, toRef } from 'vue'
 import type { ProcessedTemplateData } from '../../composables/useTemplateData'
 import { useTemplateFunctions } from '../../composables/useTemplateFunctions'
+import { useContactForm } from '../../composables/useContactForm'
 
 interface Props {
   data: ProcessedTemplateData | null
@@ -40,7 +41,7 @@ const handleScroll = () => {
 // Typing animation
 const typedText = ref('')
 const typingPhrases = computed(() => {
-  const phrases = []
+  const phrases: string[] = []
   if (props.data?.userProfile.designation) {
     phrases.push(props.data.userProfile.designation)
   }
@@ -129,12 +130,34 @@ const contactForm = ref({
   message: ''
 })
 
+// Use contact form composable
+const { sendMessage, isSubmitting, errors, resetForm } = useContactForm()
+
+// Toast state
+const showToast = ref(false)
+const toastMessage = ref('')
+const toastType = ref('success') // 'success' or 'error'
+
+// Toast functions
+const showToastMessage = (message: string, type: 'success' | 'error' = 'success') => {
+  toastMessage.value = message
+  toastType.value = type
+  showToast.value = true
+  
+  setTimeout(() => {
+    showToast.value = false
+  }, 4000)
+}
+
+const hideToast = () => {
+  showToast.value = false
+}
+
 const handleContactSubmit = async () => {
-  try {
-    // Here you would typically send the form data to your backend
-    // For now, we'll just show a success message
-    alert('Thank you for your message! I will get back to you soon.')
-    
+  const success = await sendMessage(contactForm.value)
+  
+  if (success) {
+    showToastMessage('Thank you for your message! I will get back to you soon.')
     // Reset form
     contactForm.value = {
       name: '',
@@ -142,9 +165,12 @@ const handleContactSubmit = async () => {
       subject: '',
       message: ''
     }
-  } catch (error) {
-    console.error('Error sending message:', error)
-    alert('Sorry, there was an error sending your message. Please try again.')
+    resetForm()
+  } else {
+    // Show validation errors
+    if (errors.value.name) showToastMessage(`Name: ${errors.value.name}`, 'error')
+    if (errors.value.email) showToastMessage(`Email: ${errors.value.email}`, 'error')
+    if (errors.value.general) showToastMessage(errors.value.general, 'error')
   }
 }
 
@@ -177,7 +203,7 @@ const colorVars = computed(() => ({
   '--primary-color': props.primary || 'crimson',
   '--background-color': props.background || '#fff',
   '--secondary-color': props.secondary || '#111',
-  '--accent-color': props.fourth || '#f1f1f1',
+  '--fourth-color': props.fourth || '#f1f1f1',
 }))
 </script>
 
@@ -650,6 +676,39 @@ const colorVars = computed(() => ({
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div 
+    v-if="showToast"
+    class="fixed bottom-8 right-8 bg-gray-800 text-white px-5 py-4 rounded-lg shadow-lg opacity-0 pointer-events-none transform translate-y-5 transition-all duration-300 ease-in-out flex items-center gap-3 z-50"
+    :class="{ 'opacity-100 translate-y-0 pointer-events-auto': showToast }"
+    :style="{ 
+      boxShadow: toastType === 'success' ? '0 0 15px rgba(34, 197, 94, 0.3)' : '0 0 15px rgba(239, 68, 68, 0.3)',
+      borderLeft: toastType === 'success' ? '4px solid #22c55e' : '4px solid #ef4444'
+    }"
+  >
+    <div class="flex items-center gap-3">
+      <div v-if="toastType === 'success'" class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center p-4">
+        <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+        </svg>
+      </div>
+      <div v-else class="w-5 h-5 p-4 rounded-full bg-red-500 flex items-center justify-center">
+        <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+        </svg>
+      </div>
+      <span class="text-sm font-medium">{{ toastMessage }}</span>
+    </div>
+    <button 
+      @click="hideToast"
+      class="ml-2 text-gray-300 hover:text-white transition-colors"
+    >
+      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+      </svg>
+    </button>
   </div>
 </template>
 
@@ -1518,6 +1577,12 @@ section .title {
 .contact-form .field input:focus,
 .contact-form .field textarea:focus {
   border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.contact-form .field input,
+.contact-form .field textarea {
+  color: var(--primary-color);
 }
 
 .contact-form .field.textarea {

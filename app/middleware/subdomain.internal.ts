@@ -2,7 +2,6 @@ import type { H3Event } from 'h3'
 
 export async function handleSubdomainAccess(event: H3Event, headers: Record<string, string | undefined>, logoutUrl: string | null | undefined) {
   const host = headers['host']
-  
   if (!host) {
     return { shouldLogout: true, show404: false }
   }
@@ -64,6 +63,14 @@ export async function handleSubdomainAccess(event: H3Event, headers: Record<stri
       return { shouldLogout: true, show404: false }
     }
 
+    // Get user's premium plan info
+    const userQuery = await query(
+      'SELECT premium_plan_id FROM users WHERE id = $1',
+      [userId]
+    )
+    const user = userQuery[0]
+    const isPremiumUser = user?.premium_plan_id > 2
+
     if (event.context) {
       event.context.subdomainAccess = {
         userId: userId,
@@ -75,6 +82,7 @@ export async function handleSubdomainAccess(event: H3Event, headers: Record<stri
         templateName: userPreferences.template_name,
         isSubdomainAccess: true,
         websiteData: websiteData,
+        isPremiumUser: isPremiumUser,
         colors: {
           primary: selectedColor.primary_color,
           secondary: selectedColor.secondary_color,
