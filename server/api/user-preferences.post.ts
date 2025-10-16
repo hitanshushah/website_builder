@@ -1,4 +1,5 @@
 import { saveUserPreferences } from '../db/userPreferences'
+import { validateTemplateAccess } from '../utils/planValidation'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -19,9 +20,21 @@ export default defineEventHandler(async (event) => {
       })
     }
 
+    const userId = parseInt(user_id)
+    const templateId = parseInt(template_id)
+
+    // Validate template access (checks if premium template requires Plus plan)
+    const templateValidation = await validateTemplateAccess(templateId, userId)
+    if (!templateValidation.isValid) {
+      throw createError({
+        statusCode: 403,
+        statusMessage: templateValidation.message || 'Insufficient plan access for this template'
+      })
+    }
+
     const result = await saveUserPreferences({
-      user_id: parseInt(user_id),
-      template_id: parseInt(template_id),
+      user_id: userId,
+      template_id: templateId,
       color_id: parseInt(color_id)
     })
 

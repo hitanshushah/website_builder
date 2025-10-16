@@ -1,4 +1,5 @@
 import { deletePersonalWebsiteUrl } from '../db/websiteUrl'
+import { validateProPlan } from '../utils/planValidation'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -12,7 +13,18 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const data = await deletePersonalWebsiteUrl(parseInt(userId as string))
+    const userIdInt = parseInt(userId as string)
+
+    // Validate Pro plan for personal website URL deletion
+    const planValidation = await validateProPlan(userIdInt)
+    if (!planValidation.isValid) {
+      throw createError({
+        statusCode: 403,
+        statusMessage: planValidation.message || 'Personal website URL management requires a Pro plan'
+      })
+    }
+
+    const data = await deletePersonalWebsiteUrl(userIdInt)
 
     return {
       success: true,

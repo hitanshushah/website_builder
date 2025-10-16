@@ -42,7 +42,6 @@ export function useFetchTemplateData(userId: number | undefined) {
       })
       
       data.value = processTemplateData(response)
-      console.log('✅ Data fetched successfully:', data.value)
     } catch (err) {
       console.error('Error fetching projects board data:', err)
       error.value = 'Failed to load data. Please try again.'

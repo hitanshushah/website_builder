@@ -1,4 +1,5 @@
 import { savePersonalWebsiteUrl } from '../db/websiteUrl'
+import { validateProPlan } from '../utils/planValidation'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -12,7 +13,18 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const data = await savePersonalWebsiteUrl(userId, personalWebsiteUrl)
+    const userIdInt = parseInt(userId)
+
+    // Validate Pro plan for personal website URL
+    const planValidation = await validateProPlan(userIdInt)
+    if (!planValidation.isValid) {
+      throw createError({
+        statusCode: 403,
+        statusMessage: planValidation.message || 'Personal website URLs require a Pro plan'
+      })
+    }
+
+    const data = await savePersonalWebsiteUrl(userIdInt, personalWebsiteUrl)
 
     return {
       success: true,

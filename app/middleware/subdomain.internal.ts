@@ -2,60 +2,61 @@ import type { H3Event } from 'h3'
 
 export async function handleSubdomainAccess(event: H3Event, headers: Record<string, string | undefined>, logoutUrl: string | null | undefined) {
   const host = headers['host']
-  let subdomain = null
   
-  if (host) {
-    const parts = host.split('.')
-    if (parts.length > 2) {
-      subdomain = parts[0]
-    }
-  }
-
-  if (!subdomain) {
+  if (!host) {
     return { shouldLogout: true, show404: false }
   }
 
   try {
-    const { findProfileByWebsiteUrl, findProfileByAccessToken } = await import('../../server/db/profiles')
+    const { findProfileByHostUrl, findProfileByWebsiteUrl } = await import('../../server/db/profiles')
     const { getUserPreferences } = await import('../../server/db/userPreferences')
     const { getPublicWebsiteData } = await import('../../server/db/getProjectsBoardData')
     const { getColors } = await import('../../server/db/colors')
     const { query } = await import('../../server/db/db')
 
-    let profile = null
-    let userId = null
+    let profile: any = null
+    let userId: number | null = null
 
-    profile = await findProfileByWebsiteUrl(subdomain)
+    // First check for personal_website_url (full domain match)
+    profile = await findProfileByHostUrl(host)
     
+    // If not found, check for website_url (subdomain match)
     if (!profile) {
-      profile = await findProfileByAccessToken(subdomain)
+      const parts = host.split('.')
+      if (parts.length > 2) {
+        const subdomain = parts[0]
+        profile = await findProfileByWebsiteUrl(subdomain)
+        
+        // If still not found, check if subdomain exists in database
+        if (!profile) {
+          const subdomainExists = await query(
+            'SELECT id FROM profiles WHERE website_url = $1',
+            [subdomain]
+          )
+          
+          if (subdomainExists.length > 0) {
+            return { shouldLogout: false, show404: true }
+          }
+        }
+      }
     }
 
     if (!profile) {
-      const subdomainExists = await query(
-        'SELECT id FROM profiles WHERE website_url = $1 OR acess_token = $1',
-        [subdomain]
-      )
-      
-      if (subdomainExists.length > 0) {
-        return { shouldLogout: false, show404: true }
-      }
-      
       return { shouldLogout: true, show404: false }
     }
 
     userId = profile.user_id
 
-    const userPreferences = await getUserPreferences(userId)
+    const userPreferences = await getUserPreferences(userId as number)
     
     if (!userPreferences) {
       console.error('No user preferences found for subdomain access')
       return { shouldLogout: true, show404: false }
     }
 
-    const websiteData = await getPublicWebsiteData(userId)
+    const websiteData = await getPublicWebsiteData(userId as number)
 
-    const allColors = await getColors(userId)
+    const allColors = await getColors(userId as number)
     const selectedColor = allColors.find((c: any) => c.id === userPreferences.color_id)
 
     if (!selectedColor) {

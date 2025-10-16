@@ -1,8 +1,8 @@
 <template>
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
     <div class="flex items-center justify-between mb-6">
-      <div>
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Your Website</h2>
+      <div class="flex items-center gap-3">
+        <PlanBadge :plan-id="userStore.user?.premium_plan_id || 1" />
       </div>
       <UButton class="cursor-pointer" variant="subtle" color="neutral" @click="navigateTo('/settings')">
         <UIcon name="i-heroicons-arrow-path" class="w-4 h-4 mr-2" />
@@ -145,6 +145,7 @@ import { useFetchTemplateData } from '../composables/useTemplateData'
 import { useUserStore } from '../../stores/user'
 import { useColorsStore } from '../../stores/colors'
 import { useTemplatesStore } from '../../stores/templates'
+import PlanBadge from './PlanBadge.vue'
 
 const userStore = useUserStore()
 const colorsStore = useColorsStore()
