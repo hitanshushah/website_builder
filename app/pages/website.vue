@@ -19,11 +19,12 @@
         @refresh="refreshWebsiteSection"
       />
 
-      <!-- Personal Access Token Section (Pro only) -->
-      <PersonalAccessTokenSection
+      <!-- Personal Website Connection Section (Pro only) -->
+      <PersonalWebsiteConnectionSection
         v-if="userStore.user?.id"
         :userId="userStore.user.id"
         :isPro="userStore.isPro"
+        :personalWebsiteUrl="personalWebsiteUrl"
       />
     </UContainer>
   </div>
@@ -47,8 +48,34 @@ const personalWebsiteUrlSectionRef = ref<any>(null)
 
 const domainUrl = computed(() => config.public.domainUrl)
 
+// Personal website URL data
+const personalWebsiteUrlData = ref<{
+  personal_website_url: string | null
+  share_personal_website: boolean
+} | null>(null)
+
+const personalWebsiteUrl = computed(() => {
+  if (!personalWebsiteUrlData.value?.personal_website_url) return undefined
+  const url = personalWebsiteUrlData.value.personal_website_url
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url
+  }
+  return `https://${url}`
+})
+
 const fetchUserData = async () => {
   await userStore.fetchUser()
+}
+
+const fetchPersonalWebsiteUrl = async () => {
+  try {
+    const data = await $fetch('/api/website-url', {
+      query: { userId: userStore.user?.id }
+    })
+    personalWebsiteUrlData.value = data as any
+  } catch (error) {
+    console.error('Error fetching personal website URL:', error)
+  }
 }
 
 const refreshWebsiteSection = () => {
@@ -65,6 +92,7 @@ const refreshPersonalSection = () => {
 
 onMounted(async () => {
   await fetchUserData()
+  await fetchPersonalWebsiteUrl()
 })
 </script>
 

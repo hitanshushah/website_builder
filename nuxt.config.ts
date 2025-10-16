@@ -48,6 +48,8 @@ export default defineNuxtConfig({
     public: {
       authentikLogoutUrl: process.env.AUTHENTIK_LOGOUT_URL,
       domainUrl: process.env.DOMAIN_URL,
+      brandName: process.env.BRAND_NAME,
+      ddns: process.env.DDNS,
     }
   }
 })

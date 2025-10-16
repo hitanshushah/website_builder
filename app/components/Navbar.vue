@@ -62,18 +62,22 @@
           Pricing Plans
         </UButton>
         
-        <UAvatar
-          v-if="templateData?.userProfile?.profile_photo_url"
-          :src="templateData.userProfile.profile_photo_url"
-          size="2xl"
-          rounded
-        />
-        <div 
-          v-else
-          class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center dark:bg-white"
-        >
-          <span class="text-white font-medium text-sm dark:text-black">{{ userInitials }}</span>
-        </div>
+        <UDropdownMenu :items="items">
+          <UButton variant="ghost" color="neutral" class="cursor-pointer">
+          <UAvatar
+            v-if="templateData?.userProfile?.profile_photo_url"
+            :src="templateData.userProfile.profile_photo_url"
+            size="2xl"
+            rounded
+          />
+          <div 
+            v-else
+            class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center dark:bg-white"
+          >
+            <span class="text-white font-medium text-sm dark:text-black">{{ userInitials }}</span>
+          </div>
+        </UButton>
+        </UDropdownMenu>
       </div>
     </div>
   </nav>
@@ -99,4 +103,17 @@ const userInitials = computed(() => {
     ? userProfile.name.split(' ').map((n) => n[0]).join('').toUpperCase()
     : userProfile.username?.charAt(0).toUpperCase() || 'U'
 })
+
+const config = useRuntimeConfig()
+const logoutUrl = config.public.authentikLogoutUrl || '/logout'
+
+const items = ref([
+  [
+    {
+      label: 'Logout',
+      icon: 'i-lucide-log-out',
+      to: logoutUrl,
+    }
+  ]
+])
 </script>

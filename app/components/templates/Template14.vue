@@ -154,12 +154,17 @@ onUnmounted(() => {
 <template>
   <div class="min-h-screen" style="font-family: 'Poppins', sans-serif;">
     <!-- Navigation -->
-    <nav 
+    <nav
       class="sticky top-0 z-40 py-4 transition-all duration-300"
-      :class="{ 'shadow-lg': scrolled }"
-      :style="{ 
-        background: scrolled ? background : `linear-gradient(135deg, ${primary} 0%, ${secondary} 100%)`,
-        backdropFilter: scrolled ? 'blur(10px)' : 'none'
+      :class="[
+        scrolled 
+          ? 'shadow-lg bg-opacity-70 backdrop-blur-none lg:backdrop-blur-md' 
+          : 'bg-gradient-to-r',
+      ]"
+      :style="{
+        background: scrolled 
+          ? background 
+          : `linear-gradient(135deg, ${primary} 0%, ${secondary} 100%)`
       }"
     >
       <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
@@ -195,7 +200,7 @@ onUnmounted(() => {
       </div>
 
       <!-- Mobile Menu -->
-      <div v-if="mobileMenuOpen" class="lg:hidden fixed inset-0 bg-black bg-opacity-95 z-40 flex flex-col items-center justify-center gap-6">
+      <div v-if="mobileMenuOpen" :style="{ background: fourth }" class="lg:hidden fixed inset-0 bg-opacity-95 z-40 flex flex-col items-center justify-center gap-6">
         <button 
           class="absolute top-6 right-6 text-3xl"
           :style="{ color: background }"
@@ -247,7 +252,7 @@ onUnmounted(() => {
               Hey!, I'm {{ data?.userProfile.name?.split(' ')[0]}}
             </h1>
             <p class="text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 opacity-90">
-              {{ data?.userProfile.designation }}
+             I'm a {{ data?.userProfile.designation }}
             </p>
             <button 
               @click="scrollToSection('contact')"

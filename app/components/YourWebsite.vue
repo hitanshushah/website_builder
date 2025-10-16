@@ -21,10 +21,10 @@
           <span class="text-xs text-gray-600 dark:text-gray-300">Live Preview</span>
         </div>
         
-        <div class="bg-white dark:bg-gray-800" style="height: auto; overflow: hidden;">
+        <div class="bg-white dark:bg-gray-800" style="height: auto; min-height: 200px; overflow: hidden;">
           <div v-if="loading" class="flex items-center justify-center h-full">
             <div class="text-center">
-              <div class="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <div class="w-8 h-8 border-4 border-blue-600 mt-10 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
               <p class="text-gray-600 dark:text-gray-400 text-sm">Loading preview...</p>
             </div>
           </div>
