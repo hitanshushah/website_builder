@@ -739,9 +739,12 @@ onUnmounted(() => {
           <div class="flex justify-center">
             <button 
               type="submit"
-              class="cursor-pointer px-8 py-3 bg-[var(--color-primary)] text-[var(--color-background)] font-semibold rounded-lg hover:bg-[var(--color-background)] border-2 border-[var(--color-primary)] transition-all hover:text-[var(--color-fourth)]"
+              :disabled="isSubmitting"
+              class="cursor-pointer px-8 py-3 bg-[var(--color-primary)] text-[var(--color-background)] font-semibold rounded-lg hover:bg-[var(--color-background)] border-2 border-[var(--color-primary)] transition-all hover:text-[var(--color-fourth)] disabled:opacity-50"
             >
-              Send Message
+              <i v-if="isSubmitting" class="fas fa-spinner fa-spin mr-2"></i>
+              <i v-else class="fas fa-paper-plane mr-2"></i>
+              {{ isSubmitting ? 'Sending...' : 'Send Message' }}
             </button>
           </div>
         </form>

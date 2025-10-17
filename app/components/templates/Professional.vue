@@ -756,14 +756,13 @@ onUnmounted(() => {
                         </div>
                         <button 
                             type="submit"
-                            class="w-full py-2 sm:py-3 px-4 sm:px-6 rounded-lg font-semibold transition hover:opacity-90 text-sm sm:text-base"
+                            :disabled="isSubmitting"
+                            class="w-full py-2 sm:py-3 px-4 sm:px-6 rounded-lg font-semibold transition hover:opacity-90 text-sm sm:text-base disabled:opacity-50"
                             style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: var(--background-color)"
                         >
-                            <span v-if="!isSubmitting">Send Message</span>
-                            <span v-else class="flex items-center justify-center gap-2">
-                                <i class="fas fa-spinner fa-spin"></i>
-                                Sending...
-                            </span>
+                            <i v-if="isSubmitting" class="fas fa-spinner fa-spin mr-2"></i>
+                            <i v-else class="fas fa-paper-plane mr-2"></i>
+                            {{ isSubmitting ? 'Sending...' : 'Send Message' }}
                         </button>
                     </form>
                 </div>

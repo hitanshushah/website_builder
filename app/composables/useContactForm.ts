@@ -12,7 +12,7 @@ export interface ContactFormData {
 export const useContactForm = () => {
   const isSubmitting = ref(false)
   const errors = ref<Record<string, string>>({})
-
+  
   // Fetch user email based on override_email logic
   const fetchUserEmail = async (userId: number): Promise<string | null> => {
     try {
@@ -26,18 +26,11 @@ export const useContactForm = () => {
       })
 
       if (response.success) {
-        console.log('📧 User email fetched:', {
-          userId,
-          email: response.email,
-          override_email: response.override_email,
-          has_secondary_email: response.has_secondary_email
-        })
         return response.email
       }
       
       return null
     } catch (error) {
-      console.error('❌ Error fetching user email:', error)
       return null
     }
   }
@@ -73,50 +66,30 @@ export const useContactForm = () => {
 
   // Send message function
   const sendMessage = async (formData: ContactFormData): Promise<boolean> => {
-    // Fetch user email if userId is provided
-    let userEmail = null
-    if (formData.userId) {
-      userEmail = await fetchUserEmail(formData.userId)
-    }
-
-    console.log('📧 Contact form submission:', {
-      timestamp: new Date().toISOString(),
-      formData: {
-        name: formData.name,
-        email: formData.email,
-        subject: formData.subject || 'No subject',
-        message: formData.message || 'No message',
-        userId: formData.userId || 'Not provided',
-        userEmail: userEmail || 'Not provided'
-      }
-    })
-
     // Validate form
     if (!validateForm(formData)) {
-      console.error('❌ Form validation failed:', errors.value)
       return false
     }
 
     isSubmitting.value = true
 
     try {
-      // Simulate API call or email sending
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      console.log('✅ Message sent successfully:', {
-        name: formData.name,
-        email: formData.email,
-        subject: formData.subject,
-        message: formData.message,
-        userId: formData.userId,
-        userEmail: userEmail
+      // Send email via API endpoint
+      const result = await $fetch('/api/send-contact-email', {
+        method: 'POST',
+        body: {
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          userId: formData.userId
+        }
       })
 
       // Clear errors on success
       errors.value = {}
       return true
     } catch (error) {
-      console.error('❌ Error sending message:', error)
       errors.value.general = 'Failed to send message. Please try again.'
       return false
     } finally {

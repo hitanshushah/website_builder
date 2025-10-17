@@ -622,7 +622,16 @@ const colorVars = computed(() => ({
                 <textarea cols="30" rows="10" v-model="contactForm.message" placeholder="Message.." required></textarea>
               </div>
               <div class="button-area">
-                <button type="submit">Send message</button>
+                <button 
+                  type="submit" 
+                  :disabled="isSubmitting"
+                  class="disabled:opacity-50"
+                  style="width: auto; padding: 10px;"
+                >
+                  <i v-if="isSubmitting" class="fas fa-spinner fa-spin mr-2"></i>
+                  <i v-else class="fas fa-paper-plane mr-2"></i>
+                  {{ isSubmitting ? 'Sending...' : 'Send message' }}
+                </button>
               </div>
             </form>
           </div>

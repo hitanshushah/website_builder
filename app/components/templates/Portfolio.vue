@@ -582,7 +582,16 @@ const scrollToSection = (id: string) => {
                 ></textarea>
               </div>
               <div class="flex items-center">
-                <input type="submit" class="text-[var(--fourth-color)] bg-white py-2.5 px-5 my-12 mx-4 rounded-[30px] border-none shadow-[0_0_10px_2px_rgba(0,0,0,0.1)] cursor-pointer hover:text-white hover:bg-[var(--fourth-color)] transition-colors duration-200" id="submit" value="submit" />
+                <button 
+                  type="submit" 
+                  :disabled="isSubmitting"
+                  class="text-[var(--fourth-color)] bg-white py-2.5 px-5 my-12 mx-4 rounded-[30px] border-none shadow-[0_0_10px_2px_rgba(0,0,0,0.1)] cursor-pointer hover:text-white hover:bg-[var(--fourth-color)] transition-colors duration-200 disabled:opacity-50"
+                  id="submit"
+                >
+                  <i v-if="isSubmitting" class="fas fa-spinner fa-spin mr-2"></i>
+                  <i v-else class="fas fa-paper-plane mr-2"></i>
+                  {{ isSubmitting ? 'Sending...' : 'Send Message' }}
+                </button>
               </div>
             </form>
           </section>

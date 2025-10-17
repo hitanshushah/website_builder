@@ -8,7 +8,7 @@ const allowedHosts = process.env.VITE_ALLOWED_HOSTS
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  modules: ['@nuxt/ui','@pinia/nuxt','@nuxt/eslint'],
+  modules: ['@nuxt/ui','@pinia/nuxt','@nuxt/eslint','nuxt-nodemailer'],
   css: ['~/assets/css/main.css'],
   vite: {
     plugins: [
@@ -27,6 +27,16 @@ export default defineNuxtConfig({
   devServer: {
     host: '0.0.0.0',
     port: 3000
+  },
+  nodemailer: {
+  from: process.env.PURELYMAIL_EMAIL,
+  host: process.env.PURELYMAIL_SMTP,
+  port: process.env.PURELYMAIL_PORT,
+  secure: process.env.PURELYMAIL_SECURE === 'true',
+  auth: {
+    user: process.env.PURELYMAIL_EMAIL,
+    pass: process.env.PURELYMAIL_PASS,
+    },
   },
   runtimeConfig: {
     dbUsername: process.env.DB_USERNAME,
@@ -50,6 +60,7 @@ export default defineNuxtConfig({
       domainUrl: process.env.DOMAIN_URL,
       brandName: process.env.BRAND_NAME,
       ddns: process.env.DDNS,
+      brandUrl: process.env.BRAND_URL
     }
   }
 })

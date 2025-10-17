@@ -132,7 +132,7 @@ const templatePreviewProps = computed(() => ({
 
     <div v-if="selectedTemplateIdentifier && templateData" class="w-full md:px-16 md:py-8 p-8">
       <div class="mb-6 flex items-center justify-between flex-col md:flex-row gap-4 md:gap-0">
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Template Preview</h2>
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Template Preview: {{ templatesStore.selectedTemplate?.name }}</h2>
         <div class="flex gap-3">
           <UButton 
             :to="`/preview/${selectedTemplateIdentifier}?colorSchemeId=${colorsStore.selectedColorScheme?.id || ''}`"

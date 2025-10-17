@@ -1086,10 +1086,13 @@ onUnmounted(() => {
             ></textarea>
             <button 
               type="submit"
-              class="w-full rounded-full py-4 font-semibold hover:opacity-90 transition-opacity"
+              :disabled="isSubmitting"
+              class="w-full rounded-full py-4 font-semibold hover:opacity-90 transition-opacity cursor-pointer disabled:opacity-50"
               :style="{ background: `linear-gradient(135deg, ${primary} 0%, ${secondary} 100%)`, color: background }"
             >
-              Send Message <i class="fas fa-paper-plane ml-2"></i>
+              <i v-if="isSubmitting" class="fas fa-spinner fa-spin mr-2"></i>
+              <i v-else class="fas fa-paper-plane mr-2"></i>
+              {{ isSubmitting ? 'Sending...' : 'Send Message' }}
             </button>
           </form>
         </div>
