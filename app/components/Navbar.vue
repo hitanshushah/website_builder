@@ -84,7 +84,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useFetchTemplateData } from '../composables/useTemplateData'
 import { useUserStore } from '../../stores/user'
 
@@ -105,16 +105,42 @@ const userInitials = computed(() => {
     : userProfile.username?.charAt(0).toUpperCase() || 'U'
 })
 
-// Dropdown for all screens (responsive behavior inside)
-const dropdownItems = ref([
-  [
-    { label: 'Dashboard', icon: 'i-heroicons-home', to: '/' },
-    { label: 'Website Settings', icon: 'i-heroicons-cog-6-tooth', to: '/settings' },
-    { label: 'Live Website', icon: 'i-heroicons-globe-alt', to: '/website' },
-    { label: 'Pricing Plans', icon: 'i-heroicons-credit-card', to: '/pricing' }
-  ],
-  [
-    { label: 'Logout', icon: 'i-lucide-log-out', to: logoutUrl }
-  ]
-])
+// Reactive window width for responsive behavior
+const windowWidth = ref(0)
+
+onMounted(() => {
+  if (process.client) {
+    windowWidth.value = window.innerWidth
+    window.addEventListener('resize', () => {
+      windowWidth.value = window.innerWidth
+    })
+  }
+})
+
+// Dropdown items - conditional based on screen size
+const dropdownItems = computed(() => {
+  const isMobile = windowWidth.value < 1024
+  
+  if (isMobile) {
+    // On mobile, show all navigation items
+    return [
+      [
+        { label: 'Dashboard', icon: 'i-heroicons-home', to: '/' },
+        { label: 'Website Settings', icon: 'i-heroicons-cog-6-tooth', to: '/settings' },
+        { label: 'Live Website', icon: 'i-heroicons-globe-alt', to: '/website' },
+        { label: 'Pricing Plans', icon: 'i-heroicons-credit-card', to: '/pricing' }
+      ],
+      [
+        { label: 'Logout', icon: 'i-lucide-log-out', to: logoutUrl }
+      ]
+    ]
+  } else {
+    // On desktop, only show logout
+    return [
+      [
+        { label: 'Logout', icon: 'i-lucide-log-out', to: logoutUrl }
+      ]
+    ]
+  }
+})
 </script>
