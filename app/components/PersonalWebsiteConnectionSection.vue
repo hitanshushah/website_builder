@@ -24,7 +24,7 @@
               </div>
             </div>
 
-            <div class="flex items-start gap-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+            <div class="flex items-start gap-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg flex-col md:flex-row">
               <div class="flex-shrink-0 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-semibold text-sm">2</div>
               <div class="flex-1">
                 <h3 class="font-semibold text-gray-900 dark:text-white mb-2">Add a CNAME Record</h3>

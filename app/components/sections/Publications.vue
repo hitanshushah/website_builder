@@ -11,7 +11,7 @@
       class="bg-gray-50 dark:bg-gray-900 rounded-xl shadow-md border border-gray-200 dark:border-gray-700"
     >
       <div>
-        <div class="flex items-start justify-between">
+        <div class="flex items-start justify-between flex-col md:flex-row gap-4 md:gap-0">
           <div class="flex items-start space-x-3 flex-1">
             <div class="flex-1">
               <h4 class="font-semibold text-gray-900 dark:text-white mb-1">{{ publication.paper_name }}</h4>

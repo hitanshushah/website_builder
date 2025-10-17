@@ -37,7 +37,7 @@
         v-if="userProfile.secondary_email"
         class="bg-gray-50 dark:bg-gray-900 rounded-xl shadow-md border border-gray-200 dark:border-gray-700"
       >
-        <div class="flex justify-between items-start">
+        <div class="flex justify-between items-start flex-col md:flex-row gap-4">
           <div class="flex items-center gap-3 flex-1">
             <UIcon name="i-heroicons-envelope" class="text-primary-600 dark:text-primary-400 text-lg flex-shrink-0" />
             
@@ -87,21 +87,23 @@
         v-if="userProfile.introduction"
         class="bg-gray-50 dark:bg-gray-900 rounded-xl shadow-md border border-gray-200 dark:border-gray-700"
       >
-        <div class="flex justify-between items-start">
-          <div class="flex-1">
+        <div class="flex justify-between items-start gap-4 flex-col md:flex-row">
+          <div class="w-full md:flex-1 md:min-w-0">
             <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Introduction</p>
-            <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">{{ userProfile.introduction }}</p>
+            <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line break-words overflow-wrap-anywhere">{{ userProfile.introduction }}</p>
           </div>
 
           <!-- Action Buttons for Introduction -->
-          <ActionButtons 
-            :item="introductionItem"
-            item-type="Introduction"
-            item-name="introduction text"
-            @toggle-visibility="() => toggleFieldVisibility('introduction')"
-            @edit="editContactDetails"
-            @delete="() => deleteField('introduction')"
-          />
+          <div class="flex-shrink-0 self-start">
+            <ActionButtons 
+              :item="introductionItem"
+              item-type="Introduction"
+              item-name="introduction text"
+              @toggle-visibility="() => toggleFieldVisibility('introduction')"
+              @edit="editContactDetails"
+              @delete="() => deleteField('introduction')"
+            />
+          </div>
         </div>
       </UCard>
     </div>

@@ -1,6 +1,6 @@
 <template>
   <div class="fixed inset-0 z-50 flex items-start justify-center bg-black/50 overflow-y-auto">
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-fit p-6 my-8 mx-4">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full md:w-1/2 p-6 my-8 mx-4">
       <div class="mb-3">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Edit Details</h3>
         <p class="text-sm text-gray-600 dark:text-gray-400">Update your information</p>
@@ -31,7 +31,7 @@
           <UTextarea 
             v-model="state.introduction" 
             placeholder="Brief introduction about yourself..." 
-            :rows="4"
+            :rows="6"
             class="w-full"
           />
         </UFormField>

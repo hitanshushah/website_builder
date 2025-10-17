@@ -222,7 +222,7 @@ onUnmounted(() => {
       <div class="container mx-auto px-4 py-4">
         <div class="flex items-center justify-between">
           <div class="flex items-center">
-            <div class="w-3 h-3 bg-[var(--color-primary)] mr-2"></div>
+            <div class="w-3 h-3 bg-[var(--color-secondary)] mr-2"></div>
             <a href="#" class="text-xl font-bold text-[var(--color-fourth)]">
               {{ data.userProfile.name }} 
               <span v-if="data.userProfile.designation" class="font-light text-base ml-2">/ {{ data.userProfile.designation }}</span>
@@ -268,9 +268,9 @@ onUnmounted(() => {
               :alt="data.userProfile.name" 
               class="w-80 h-80 rounded-full border-10 border-[var(--color-background)] object-cover mb-8 shadow-lg"
             >
-            <h2 class="text-4xl font-bold text-[var(--color-fourth)] mb-2">{{ data.userProfile.name }}</h2>
+            <h2 class="text-4xl font-bold text-[var(--color-background)] mb-2">{{ data.userProfile.name }}</h2>
             <div class="w-24 h-1 bg-[var(--color-primary)] my-6"></div>
-            <p v-if="data.userProfile.designation" class="text-xl text-[var(--color-fourth)] mb-8">{{ data.userProfile.designation }}</p>
+            <p v-if="data.userProfile.designation" class="text-xl text-[var(--color-background)] mb-8">{{ data.userProfile.designation }}</p>
             
             <!-- Social Links -->
             <div v-if="data.userProfile.links?.length" class="flex flex-wrap gap-3 bg-[var(--color-background)] p-4 rounded-lg mt-auto justify-center">
@@ -352,14 +352,14 @@ onUnmounted(() => {
             <div class="space-y-16">
               <div v-for="exp in sortedExperiences" :key="exp.id" class="relative">
                 <!-- Timeline Circle - Mobile: above card, Desktop: left of card -->
-                <div class="relative md:absolute md:left-[-4.5rem] md:top-0 w-24 h-24 bg-[var(--color-secondary)] rounded-full flex items-center justify-center z-10 border-4 border-[var(--color-primary)] shadow-lg mx-auto md:mx-0 mb-4 md:mb-0">
+                <div class="relative md:absolute md:left-[-4.5rem] md:top-0 w-24 h-24 bg-[var(--color-secondary)] rounded-full flex items-center justify-center z-10 border-4 border-[var(--color-background)] shadow-lg mx-auto md:mx-0 mb-4 md:mb-0">
                   <img 
                     v-if="exp.company_logo"
                     :src="exp.company_logo" 
                     :alt="exp.company_name" 
                     class="w-20 h-20 object-contain rounded-full"
                   >
-                  <span v-else class="text-2xl font-bold text-[var(--color-fourth)]">{{ getInitials(exp.company_name) }}</span>
+                  <span v-else class="text-2xl font-bold text-[var(--color-background)]">{{ getInitials(exp.company_name) }}</span>
                 </div>
                 
                 <!-- Content Card -->
@@ -369,28 +369,28 @@ onUnmounted(() => {
                     <div class="flex-1">
                       <!-- Mobile: Role and Company on separate lines, Desktop: Same line -->
                       <div class="block md:hidden">
-                        <h3 class="text-2xl font-bold text-[var(--color-fourth)] mb-1">
+                        <h3 class="text-2xl font-bold text-[var(--color-background)] mb-1">
                           {{ exp.role }}
                         </h3>
-                        <h4 v-if="exp.company_name" class="text-xl font-semibold text-[var(--color-fourth)] mb-2">
+                        <h4 v-if="exp.company_name" class="text-xl font-semibold text-[var(--color-background)] mb-2">
                           {{ exp.company_name }}
                         </h4>
                       </div>
                       <!-- Desktop: Role and Company on same line -->
-                      <h3 class="hidden md:block text-2xl font-bold text-[var(--color-fourth)] mb-2">
-                        {{ exp.role }}<span class="text-[var(--color-fourth)]">,</span> <span v-if="exp.company_name" class="text-[var(--color-fourth)] text-xl">{{ exp.company_name }}</span>
+                      <h3 class="hidden md:block text-2xl font-bold text-[var(--color-background)] mb-2">
+                        {{ exp.role }}<span class="text-[var(--color-background)]">,</span> <span v-if="exp.company_name" class="text-[var(--color-background)] text-xl">{{ exp.company_name }}</span>
                       </h3>
-                      <p v-if="exp.location" class="text-[var(--color-fourth)]">{{ exp.location }}</p>
+                      <p v-if="exp.location" class="text-[var(--color-background)]">{{ exp.location }}</p>
                     </div>
                     <div class="mt-4 md:mt-0 md:text-right">
-                      <span class="text-sm font-semibold text-[var(--color-fourth)]">{{ formatDateRange(exp.start_date, exp.end_date) }}</span>
+                      <span class="text-sm font-semibold text-[var(--color-background)]">{{ formatDateRange(exp.start_date, exp.end_date) }}</span>
                     </div>
                   </div>
                   
                   <!-- Separator Line -->
                   <div class="w-full h-0.5 bg-[var(--color-primary)] mb-2"></div>
                   
-                  <div v-if="exp.description" class="text-[var(--color-fourth)] mb-4 leading-relaxed">
+                  <div v-if="exp.description" class="text-[var(--color-background)] mb-4 leading-relaxed">
                     <p class="whitespace-pre-line break-words overflow-wrap-anywhere">{{ exp.description }}</p>
                   </div>
                   
@@ -413,7 +413,7 @@ onUnmounted(() => {
       <div class="container mx-auto max-w-6xl">
         <div class="flex items-center">
           <div class="w-3 h-3 bg-[var(--color-background)] mr-3"></div>
-          <h2 class="text-4xl font-light text-[var(--color-fourth)]">Education</h2>
+          <h2 class="text-4xl font-light text-[var(--color-background)]">Education</h2>
         </div>
         
         <!-- Mobile: Vertical Timeline -->
@@ -426,17 +426,17 @@ onUnmounted(() => {
             <div class="space-y-8">
               <div v-for="(edu, index) in sortedEducation" :key="edu.id" class="relative">
                 <!-- Circle/Year -->
-                <div class="absolute left-[-0.5rem] top-0 w-12 h-12 rounded-full bg-[var(--color-secondary)] border-4 border-[var(--color-primary)] shadow-lg flex items-center justify-center">
-                  <span class="text-xs font-bold text-[var(--color-fourth)]">{{ edu.end_date ? getYear(edu.end_date) : getYear(edu.from_date) }}</span>
+                <div class="absolute left-[-0.5rem] top-0 w-12 h-12 rounded-full bg-[var(--color-secondary)] border-4 border-[var(--color-secondary)] shadow-lg flex items-center justify-center">
+                  <span class="text-xs font-bold text-[var(--color-background)]">{{ edu.end_date ? getYear(edu.end_date) : getYear(edu.from_date) }}</span>
                 </div>
                 
                 <!-- Content without Card -->
                 <div class="ml-16">
-                  <h3 class="text-lg font-bold text-[var(--color-fourth)] mb-2">{{ edu.degree }}</h3>
-                  <p class="text-sm text-[var(--color-fourth)] mb-1">{{ edu.university_name }}</p>
-                  <p v-if="edu.cgpa" class="text-xs text-[var(--color-fourth)] mb-1">CGPA: {{ edu.cgpa }}/10</p>
-                  <p v-if="edu.location" class="text-xs text-[var(--color-fourth)] mb-2">{{ edu.location }}</p>
-                  <p class="text-xs font-semibold text-[var(--color-fourth)]">{{ formatDateRange(edu.from_date, edu.end_date) }}</p>
+                  <h3 class="text-lg font-bold text-[var(--color-background)] mb-2">{{ edu.degree }}</h3>
+                  <p class="text-sm text-[var(--color-background)] mb-1">{{ edu.university_name }}</p>
+                  <p v-if="edu.cgpa" class="text-xs text-[var(--color-background)] mb-1">CGPA: {{ edu.cgpa }}/10</p>
+                  <p v-if="edu.location" class="text-xs text-[var(--color-background)] mb-2">{{ edu.location }}</p>
+                  <p class="text-xs font-semibold text-[var(--color-background)]">{{ formatDateRange(edu.from_date, edu.end_date) }}</p>
                 </div>
               </div>
             </div>
@@ -456,17 +456,17 @@ onUnmounted(() => {
               class="flex flex-col items-center flex-1"
             >
               <!-- Circle/Year -->
-              <div class="relative z-10 w-16 h-16 rounded-full bg-[var(--color-secondary)] border-4 border-[var(--color-primary)] shadow-lg flex items-center justify-center mb-2">
-                <span class="text-sm font-bold text-[var(--color-fourth)]">{{ edu.end_date ? getYear(edu.end_date) : getYear(edu.from_date) }}</span>
+              <div class="relative z-10 w-16 h-16 rounded-full bg-[var(--color-secondary)] border-4 border-[var(--color-secondary)] shadow-lg flex items-center justify-center mb-2">
+                <span class="text-sm font-bold text-[var(--color-background)]">{{ edu.end_date ? getYear(edu.end_date) : getYear(edu.from_date) }}</span>
               </div>
               
               <!-- Content Card -->
               <div class="text-center px-2 max-w-[200px]">
-                <h3 class="text-lg font-bold text-[var(--color-fourth)] mb-2">{{ edu.degree }}</h3>
-                <p class="text-sm text-[var(--color-fourth)] mb-1">{{ edu.university_name }}</p>
-                <p v-if="edu.cgpa" class="text-xs text-[var(--color-fourth)] mb-1">CGPA: {{ edu.cgpa }}/10</p>
-                <p v-if="edu.location" class="text-xs text-[var(--color-fourth)] mb-2">{{ edu.location }}</p>
-                <p class="text-xs font-semibold text-[var(--color-fourth)]">{{ formatDateRange(edu.from_date, edu.end_date) }}</p>
+                <h3 class="text-lg font-bold text-[var(--color-background)] mb-2">{{ edu.degree }}</h3>
+                <p class="text-sm text-[var(--color-background)] mb-1">{{ edu.university_name }}</p>
+                <p v-if="edu.cgpa" class="text-xs text-[var(--color-background)] mb-1">CGPA: {{ edu.cgpa }}/10</p>
+                <p v-if="edu.location" class="text-xs text-[var(--color-background)] mb-2">{{ edu.location }}</p>
+                <p class="text-xs font-semibold text-[var(--color-background)]">{{ formatDateRange(edu.from_date, edu.end_date) }}</p>
               </div>
             </div>
           </div>
@@ -490,7 +490,7 @@ onUnmounted(() => {
                   :alt="project.name" 
                   class="w-full h-full object-cover border-10 border-[var(--color-background)]"
                 >
-                <div v-if="getProjectImages(project.assets).length > 1" class="absolute bottom-2 right-2 bg-[var(--color-secondary)] bg-opacity-75 text-[var(--color-fourth)] px-2 py-1 rounded text-xs">
+                <div v-if="getProjectImages(project.assets).length > 1" class="absolute bottom-2 right-2 bg-[var(--color-secondary)] bg-opacity-75 text-[var(--color-background)] px-2 py-1 rounded text-xs">
                   +{{ getProjectImages(project.assets).length - 1 }} more
                 </div>
               </div>
@@ -511,7 +511,7 @@ onUnmounted(() => {
                 <div v-if="project.technologies?.length" class="mb-4">
                   <p class="text-sm text-[var(--color-fourth)] mb-2"><strong>Technologies:</strong></p>
                   <div class="flex flex-wrap gap-2">
-                    <span v-for="tech in project.technologies" :key="tech" class="px-2 py-1 bg-[var(--color-primary)] text-[var(--color-fourth)] text-xs rounded">
+                    <span v-for="tech in project.technologies" :key="tech" class="px-2 py-1 bg-[var(--color-primary)] text-[var(--color-background)] text-xs rounded">
                       {{ tech }}
                     </span>
                   </div>
@@ -540,25 +540,26 @@ onUnmounted(() => {
       <div class="container mx-auto max-w-6xl">
         <div class="flex items-center">
           <div class="w-3 h-3 bg-[var(--color-background)] mr-3"></div>
-          <h2 class="text-4xl font-light text-[var(--color-fourth)]">Technical Skills</h2>
+          <h2 class="text-4xl font-light text-[var(--color-background)]">Technical Skills</h2>
         </div>
         <div class="pt-8">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div v-for="[categoryName, skills] in data.skillsByCategory" :key="categoryName" class="mb-8 border-2 border-[var(--color-secondary)] rounded-lg p-6 bg-[var(--color-secondary)]">
-              <h3 class="text-2xl text-[var(--color-fourth)] mb-4">{{ categoryName }}</h3>
+              <h3 class="text-2xl text-[var(--color-background)] mb-4">{{ categoryName }}</h3>
               <div class="grid grid-cols-3 md:grid-cols-4 gap-4">
                 <div v-for="skill in skills" :key="skill.id" class="text-center">
                   <div class="relative w-20 h-20 mx-auto mb-2">
                     <!-- Circular Progress -->
-                    <svg class="w-20 h-20 transform -rotate-90" viewBox="0 0 36 36">
+                    <svg class="w-20 h-20 transform rotate-360" viewBox="0 0 36 36">
                       <!-- Background circle -->
                       <path
                         d="M18 2.0845
                           a 15.9155 15.9155 0 0 1 0 31.831
                           a 15.9155 15.9155 0 0 1 0 -31.831"
                         fill="none"
-                        stroke="var(--color-primary)"
-                        stroke-width="2"
+                        stroke="var(--color-background)"
+                        stroke-width="1"
+                        stroke-opacity="0.2"
                       />
                       <!-- Progress circle -->
                       <path
@@ -566,17 +567,17 @@ onUnmounted(() => {
                           a 15.9155 15.9155 0 0 1 0 31.831
                           a 15.9155 15.9155 0 0 1 0 -31.831"
                         fill="none"
-                        stroke="var(--color-fourth)"
-                        stroke-width="2"
+                        stroke="var(--color-background)"
+                        stroke-width="1"
                         :stroke-dasharray="`${getProficiencyPercentage(skill.proficiency_level)}, 100`"
                       />
                     </svg>
                     <!-- Percentage text -->
                     <div class="absolute inset-0 flex items-center justify-center">
-                      <span class="text-[var(--color-fourth)] font-bold text-sm">{{ getProficiencyPercentage(skill.proficiency_level) }}%</span>
+                      <span class="text-[var(--color-background)] font-bold text-sm">{{ getProficiencyPercentage(skill.proficiency_level) }}%</span>
                     </div>
                   </div>
-                  <p class="font-medium text-[var(--color-fourth)] text-xs">{{ skill.name }}</p>
+                  <p class="font-medium text-[var(--color-background)] text-xs">{{ skill.name }}</p>
                 </div>
               </div>
             </div>
@@ -598,17 +599,17 @@ onUnmounted(() => {
             <div class="flex flex-wrap justify-center gap-8">
               <div v-for="cert in data.certifications" :key="cert.id" class="bg-[var(--color-primary)] border-2 border-[var(--color-secondary)] rounded-lg p-4 shadow-md hover:shadow-xl transition min-w-0 flex-1" style="min-width: 300px; max-width: 500px;">
                 <div class="flex flex-col">
-                  <h3 class="text-lg font-bold text-[var(--color-fourth)] mb-2">
-                    {{ cert.name }}<span v-if="cert.institute_name" class="font-normal text-[var(--color-fourth)]">,</span> <span v-if="cert.institute_name" class="font-normal text-[var(--color-fourth)]">{{ cert.institute_name }}</span>
+                  <h3 class="text-lg font-bold text-[var(--color-background)] mb-2">
+                    {{ cert.name }}<span v-if="cert.institute_name" class="font-normal text-[var(--color-background)]">,</span> <span v-if="cert.institute_name" class="font-normal text-[var(--color-background)]">{{ cert.institute_name }}</span>
                   </h3>
-                  <p v-if="cert.description" class="text-[var(--color-fourth)] mb-3 text-sm">{{ cert.description }}</p>
+                  <p v-if="cert.description" class="text-[var(--color-background)] mb-3 text-sm">{{ cert.description }}</p>
                   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                    <p class="text-xs text-[var(--color-fourth)]">{{ formatDateRange(cert.start_date, cert.end_date) }}</p>
+                    <p class="text-xs text-[var(--color-background)]">{{ formatDateRange(cert.start_date, cert.end_date) }}</p>
                     <a 
                       v-if="cert.certificate_pdf"
                       :href="cert.certificate_pdf" 
                       target="_blank"
-                      class="px-3 py-1 bg-[var(--color-secondary)] text-[var(--color-fourth)] rounded hover:bg-opacity-90 transition text-xs whitespace-nowrap"
+                      class="px-3 py-1 bg-[var(--color-secondary)] text-[var(--color-background)] rounded hover:bg-opacity-90 transition text-xs whitespace-nowrap"
                     >
                       View Certificate
                     </a>
@@ -644,18 +645,18 @@ onUnmounted(() => {
             <div class="flex flex-wrap justify-center gap-8">
               <div v-for="pub in data.publications" :key="pub.id" class="bg-[var(--color-primary)] border-2 border-[var(--color-secondary)] rounded-lg p-4 shadow-md hover:shadow-xl transition min-w-0 flex-1" style="min-width: 300px; max-width: 500px;">
                 <div class="flex flex-col">
-                  <h3 class="text-lg font-bold text-[var(--color-fourth)] mb-2">
-                    {{ pub.paper_name }}<span v-if="pub.conference_name" class="font-normal text-[var(--color-fourth)]">,</span> <span v-if="pub.conference_name" class="font-normal text-[var(--color-fourth)]">{{ pub.conference_name }}</span>
+                  <h3 class="text-lg font-bold text-[var(--color-background)] mb-2">
+                    {{ pub.paper_name }}<span v-if="pub.conference_name" class="font-normal text-[var(--color-background)]">,</span> <span v-if="pub.conference_name" class="font-normal text-[var(--color-background)]">{{ pub.conference_name }}</span>
                   </h3>
-                  <p v-if="pub.description" class="text-[var(--color-fourth)] mb-3 text-sm">{{ pub.description }}</p>
+                  <p v-if="pub.description" class="text-[var(--color-background)] mb-3 text-sm">{{ pub.description }}</p>
                   <div class="flex flex-col gap-2">
-                    <p v-if="pub.published_date" class="text-xs text-[var(--color-fourth)]">Published: {{ formatDate(pub.published_date) }}</p>
+                    <p v-if="pub.published_date" class="text-xs text-[var(--color-background)]">Published: {{ formatDate(pub.published_date) }}</p>
                     <div class="flex flex-wrap gap-2 mt-2">
                       <a 
                         v-if="pub.paper_pdf"
                         :href="pub.paper_pdf" 
                         target="_blank"
-                        class="px-3 py-1 bg-[var(--color-secondary)] text-[var(--color-fourth)] rounded hover:bg-opacity-90 transition text-xs whitespace-nowrap"
+                        class="px-3 py-1 bg-[var(--color-secondary)] text-[var(--color-background)] rounded hover:bg-opacity-90 transition text-xs whitespace-nowrap"
                       >
                         View PDF
                       </a>
@@ -664,7 +665,7 @@ onUnmounted(() => {
                         :href="pub.paper_link.startsWith('http') ? pub.paper_link : `https://${pub.paper_link}`" 
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="px-3 py-1 bg-[var(--color-secondary)] text-[var(--color-fourth)] rounded hover:bg-opacity-90 transition text-xs whitespace-nowrap"
+                        class="px-3 py-1 bg-[var(--color-secondary)] text-[var(--color-background)] rounded hover:bg-opacity-90 transition text-xs whitespace-nowrap"
                       >
                         View Paper
                       </a>
@@ -683,13 +684,13 @@ onUnmounted(() => {
       <div class="container mx-auto max-w-4xl">
         <div class="flex items-center justify-center mb-12">
           <div class="w-3 h-3 bg-[var(--color-primary)] mr-3"></div>
-          <h2 class="text-4xl font-light text-[var(--color-fourth)]">Let's Connect</h2>
+          <h2 class="text-4xl font-light text-[var(--color-background)]">Let's Connect</h2>
         </div>
         
         <form @submit.prevent="handleContactSubmit" class="bg-[var(--color-secondary)] rounded-lg p-8 shadow-lg">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <label for="name" class="block text-sm font-medium text-[var(--color-fourth)] mb-2">Name</label>
+              <label for="name" class="block text-sm font-medium text-[var(--color-background)] mb-2">Name</label>
               <input 
                 type="text" 
                 id="name" 
@@ -700,7 +701,7 @@ onUnmounted(() => {
               >
             </div>
             <div>
-              <label for="email" class="block text-sm font-medium text-[var(--color-fourth)] mb-2">Email</label>
+              <label for="email" class="block text-sm font-medium text-[var(--color-background)] mb-2">Email</label>
               <input 
                 type="email" 
                 id="email" 
@@ -713,7 +714,7 @@ onUnmounted(() => {
           </div>
           
           <div class="mb-6">
-            <label for="subject" class="block text-sm font-medium text-[var(--color-fourth)] mb-2">Subject</label>
+            <label for="subject" class="block text-sm font-medium text-[var(--color-background)] mb-2">Subject</label>
             <input 
               type="text" 
               id="subject" 
@@ -724,7 +725,7 @@ onUnmounted(() => {
           </div>
           
           <div class="mb-6">
-            <label for="message" class="block text-sm font-medium text-[var(--color-fourth)] mb-2">Message</label>
+            <label for="message" class="block text-sm font-medium text-[var(--color-background)] mb-2">Message</label>
             <textarea 
               id="message" 
               v-model="contactForm.message"
@@ -738,7 +739,7 @@ onUnmounted(() => {
           <div class="flex justify-center">
             <button 
               type="submit"
-              class="cursor-pointer px-8 py-3 bg-[var(--color-primary)] text-[var(--color-fourth)] font-semibold rounded-lg hover:bg-[var(--color-background)] border-2 border-[var(--color-primary)] transition-all"
+              class="cursor-pointer px-8 py-3 bg-[var(--color-primary)] text-[var(--color-background)] font-semibold rounded-lg hover:bg-[var(--color-background)] border-2 border-[var(--color-primary)] transition-all hover:text-[var(--color-fourth)]"
             >
               Send Message
             </button>
@@ -748,8 +749,8 @@ onUnmounted(() => {
     </section>
     
     <!-- Footer -->
-    <footer class="bg-[var(--color-primary)] relative overflow-hidden footer-background">
-      <div class="relative pt-12 pb-64">
+    <footer class="bg-[var(--color-background)] relative overflow-hidden footer-background">
+      <div class="relative pt-12">
         <div class="container mx-auto px-4">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div v-if="data.userProfile.phone_number" class="text-center md:text-left">
@@ -779,13 +780,20 @@ onUnmounted(() => {
           </div>
         </div>
         
-        <!-- Animated Elements -->
-        <div class="absolute bottom-0 left-0 w-full h-40">
-          <img src="../templates/assets/robot.gif" alt="" class="footer-bg-one object-contain" />
+
+      </div>
+            <div>
+                      <!-- Animated Elements -->
+        <div class="absolute bottom-0 left-0 w-full h-40 z-10 mb-4">
+          <img src="../templates/assets/robot.gif" alt="" class="footer-bg-one object-contain z-12" />
           <img src="../templates/assets/car.gif" alt="" class="footer-bg-two object-contain" />
         </div>
+      <Background
+        :primaryColor="primary || '#8B4513'"
+        :secondaryColor="secondary || '#F4ECE6'"
+        :backgroundColor="background || '#E6D9CD'"
+      />
       </div>
-      
       <div class="bg-[var(--color-background)] bg-opacity-90 py-4">
         <div class="container mx-auto px-4">
           <p class="text-center text-[var(--color-fourth)] text-sm">&copy; {{ new Date().getFullYear() }} - Developed by {{ data.userProfile.name }}</p>
@@ -915,10 +923,23 @@ onUnmounted(() => {
 }
 
 .template-old .footer-background {
-  background-image: url('../templates/assets/background.png');
+  /* background-image: url('../templates/assets/background.png'); */
   background-repeat: no-repeat;
   background-position: center bottom;
   background-size: cover;
+}
+
+.footer-background {
+  position: relative;
+}
+
+.footer-background svg {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
 }
 
 @media (max-width: 768px) {

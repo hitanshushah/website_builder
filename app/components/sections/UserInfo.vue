@@ -9,9 +9,9 @@
       v-else
       class=" bg-gray-50 dark:bg-gray-900 rounded-xl shadow-md border border-gray-200 dark:border-gray-700"
     >
-      <div class="flex items-start justify-between">
+      <div class="flex items-start justify-between flex-col md:flex-row gap-4">
         <!-- Left: Avatar + Info -->
-      <div class="flex items-start gap-6">
+      <div class="flex items-start gap-6 flex-col md:flex-row">
         <!-- Avatar -->
          <div class="mt-1">
           <UAvatar
@@ -44,7 +44,7 @@
           </p>
 
           <!-- Location + Email -->
-          <div class="flex flex-wrap gap-6 text-gray-600 dark:text-gray-400 text-sm mb-3">
+          <div class="flex flex-wrap gap-2 md:gap-6 text-gray-600 dark:text-gray-400 text-sm mb-3">
             <div v-if="userProfile.city || userProfile.province || userProfile.country" class="flex items-center gap-2">
               <UIcon name="i-heroicons-map-pin" />
               <span>{{ [userProfile.city, userProfile.province, userProfile.country].filter(Boolean).join(', ') }}</span>

@@ -3,7 +3,7 @@
     :color="badgeColor" 
     :variant="badgeVariant"
     class="font-medium"
-    size="xl"
+    size="lg"
   >
     {{ planName }}
   </UBadge>

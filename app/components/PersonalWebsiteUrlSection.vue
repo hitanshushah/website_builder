@@ -8,7 +8,7 @@
       
       <!-- Pro Content -->
       <div v-if="isPro">
-        <div v-if="websiteUrlData?.personal_website_url && !showPersonalUrlForm" class="flex items-center justify-between">
+        <div v-if="websiteUrlData?.personal_website_url && !showPersonalUrlForm" class="flex items-center justify-between flex-col md:flex-row gap-4 md:gap-0">
           <div class="flex items-center gap-3">
             <UIcon name="i-heroicons-link" class="w-6 h-6 text-black dark:text-white" />
             <a 

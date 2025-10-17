@@ -121,7 +121,7 @@ const handleUpgrade = () => {
     </div>
 
     <!-- Template Cards -->
-    <div v-else class="flex flex-wrap gap-10">
+    <div v-else class="flex flex-wrap md:gap-10 gap-2 justify-center">
       <div 
         v-for="template in validTemplates" 
         :key="template.id"
@@ -176,7 +176,7 @@ const handleUpgrade = () => {
         </div>
       </div>
     </div>
-    <div v-if="!loading" class="flex justify-center gap-4 mt-8">
+    <div v-if="!loading" class="flex justify-center gap-4 mt-8 flex-col md:flex-row w-fit justify-self-center">
         <UBadge v-if="needsUpgrade" color="warning" variant="subtle">Plus Plan Required to Save</UBadge>
         <UButton
           v-else

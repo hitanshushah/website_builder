@@ -4,7 +4,7 @@
       <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Your Website URL</h2>
       
       <!-- Show URL if it exists -->
-      <div v-if="displayUrl && !showUrlForm" class="flex items-center justify-between">
+      <div v-if="displayUrl && !showUrlForm" class="flex items-center justify-between flex-col md:flex-row gap-4 md:gap-0">
         <div class="flex items-center gap-3">
           <UIcon name="i-heroicons-globe-alt" class="w-6 h-6 text-black dark:text-white" />
           <a 

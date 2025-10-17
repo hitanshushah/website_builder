@@ -486,15 +486,14 @@ onUnmounted(() => {
                         >
                             <div class="flex justify-between mb-2">
                                 <span class="font-semibold text-sm sm:text-base" style="color: var(--background-color)">{{ skill.name }}</span>
-                                <span class="text-xs sm:text-sm font-bold" style="color: var(--fourth-color)">{{ (skill.proficiency_level) }}</span>
+                                <span class="text-xs sm:text-sm font-bold" style="color: var(--background-color)">{{ (skill.proficiency_level) }}</span>
                             </div>
                             <div class="w-full rounded-full h-2" style="background-color: var(--secondary-color);">
                                 <div 
                                     class="h-2 rounded-full transition-all duration-1000"
                                     :style="{ 
                                         width: `${getProficiencyPercentage(skill.proficiency_level)}%`,
-                                        backgroundColor: 'var(--fourth-color)',
-                                        opacity: 0.3
+                                        backgroundColor: 'var(--background-color)',
                                     }"
                                 ></div>
                             </div>
@@ -516,7 +515,7 @@ onUnmounted(() => {
                     class="p-6 sm:p-8 rounded-lg shadow-md hover:shadow-lg transition"
                     style="background-color: var(--background-color)"
                 >
-                    <h3 class="text-xl sm:text-2xl font-bold mb-2 break-words" style="color: var(--fourth-color)">{{ edu.degree }}</h3>
+                    <h3 class="text-xl sm:text-2xl font-bold mb-2 break-words" style="color: var(--secondary-color)">{{ edu.degree }}</h3>
                     <p class="font-semibold mb-2 text-sm sm:text-base" style="color: var(--primary-color)">{{ edu.university_name }}</p>
                     <p v-if="edu.location" class="mb-2 text-sm sm:text-base" style="color: var(--fourth-color)">{{ edu.location }}</p>
                     <p class="mb-2 text-sm sm:text-base" style="color: var(--fourth-color)">{{ formatDateRange(edu.from_date, edu.end_date) }}</p>
@@ -560,7 +559,7 @@ onUnmounted(() => {
                 >
                     <div class="flex items-start gap-4 mb-4">
                         <div class="flex-1">
-                            <h3 class="text-xl sm:text-2xl font-bold mb-2 break-words" style="color: var(--fourth-color)">{{ cert.name }}</h3>
+                            <h3 class="text-xl sm:text-2xl font-bold mb-2 break-words" style="color: var(--secondary-color)">{{ cert.name }}</h3>
                             <p v-if="cert.institute_name" class="text-base sm:text-lg font-semibold mb-3" style="color: var(--primary-color)">{{ cert.institute_name }}</p>
                         </div>
                     </div>
@@ -574,7 +573,7 @@ onUnmounted(() => {
                             class="px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition self-start sm:self-auto"
                             style="background-color: var(--primary-color); color: var(--background-color)"
                         >
-                            <i class="fas fa-download mr-1"></i>View Certificate
+                            <i class="fas fa-download mr-1!"></i>View Certificate
                         </a>
                     </div>
                 </div>
@@ -594,9 +593,6 @@ onUnmounted(() => {
                     style="background-color: var(--secondary-color);"
                 >
                     <div class="flex items-start gap-4 mb-4">
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-file-alt text-2xl sm:text-3xl" style="color: var(--background-color)"></i>
-                        </div>
                         <div class="flex-1">
                             <h3 class="text-xl sm:text-2xl font-bold mb-2 break-words" style="color: var(--background-color)">{{ pub.paper_name }}</h3>
                             <p v-if="pub.conference_name" class="text-base sm:text-lg font-semibold mb-2 uppercase" style="color: var(--background-color)">{{ pub.conference_name }}</p>
@@ -605,7 +601,6 @@ onUnmounted(() => {
                     <p v-if="pub.description" class="mb-4 text-sm sm:text-base break-words" style="color: var(--background-color)">{{ pub.description }}</p>
                     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
                         <div class="flex items-center gap-2">
-                            <i class="fas fa-calendar text-xs sm:text-sm" style="color: var(--background-color)"></i>
                             <span class="text-xs sm:text-sm" style="color: var(--background-color)">{{ formatYear(pub.published_date) }}</span>
                         </div>
                         <div class="flex gap-2">
@@ -613,19 +608,19 @@ onUnmounted(() => {
                                 v-if="pub.paper_pdf"
                                 :href="pub.paper_pdf" 
                                 target="_blank"
-                                class="px-2 sm:px-3 py-1 rounded-full text-xs font-medium transition"
+                                class="px-2 sm:px-3 py-1 rounded-full text-sm font-medium transition"
                                 style="background-color: var(--background-color); color: var(--primary-color)"
                             >
-                                <i class="fas fa-file-pdf mr-1"></i>PDF
+                                <i class="fas fa-download mr-1!"></i>View Paper
                             </a>
                             <a 
                                 v-if="pub.paper_link"
                                 :href="pub.paper_link.startsWith('http') ? pub.paper_link : `https://${pub.paper_link}`" 
                                 target="_blank"
-                                class="px-2 sm:px-3 py-1 rounded-full text-xs font-medium transition"
-                                style="background-color: var(--secondary-color); color: var(--background-color)"
+                                class="px-2 sm:px-3 py-1 rounded-full text-sm font-medium transition"
+                                style="background-color: var(--background-color); color: var(--primary-color)"
                             >
-                                <i class="fas fa-external-link-alt mr-1"></i>Link
+                                <i class="fas fa-external-link-alt mr-1!"></i>Link
                             </a>
                         </div>
                     </div>

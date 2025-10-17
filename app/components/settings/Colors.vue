@@ -256,7 +256,7 @@
             </div>
           </div>
 
-          <div class="flex justify-center gap-4 pt-4">
+          <div class="flex justify-center gap-4 pt-4 flex-col md:flex-row w-fit justify-self-center">
             <UButton
               @click="tryCustomColors"
               size="lg"
@@ -291,7 +291,7 @@
       </UCard>
     </div>
 
-      <div v-if="!pending" class="flex justify-center gap-4 mt-8">
+      <div v-if="!pending" class="flex justify-center gap-4 mt-8 flex-col md:flex-row w-fit justify-self-center">
         <UButton
           @click="saveColorScheme"
           size="xl"

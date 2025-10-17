@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 md:p-6 p-4">
     <div class="flex items-center justify-between mb-6">
       <div class="flex items-center gap-3">
         <PlanBadge :plan-id="userStore.user?.premium_plan_id || 1" />
@@ -10,7 +10,7 @@
       </UButton>
     </div>
 
-    <div class="mb-6">
+    <div class="md:mb-6 mb-2">
       <UCard class="overflow-hidden">
         <div class="bg-gray-100 dark:bg-gray-700 px-4 py-2 flex items-center justify-between">
           <div class="flex items-center space-x-2">
@@ -18,7 +18,7 @@
             <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
             <div class="w-3 h-3 bg-green-500 rounded-full"></div>
           </div>
-          <span class="text-xs text-gray-600 dark:text-gray-300">Live Preview</span>
+          <span class="text-xs text-gray-600 dark:text-gray-300">{{selectedTemplate?.name || 'Template'}}</span>
         </div>
         
         <div class="bg-white dark:bg-gray-800" style="height: auto; min-height: 200px; overflow: hidden;">
@@ -73,8 +73,8 @@
       </UCard>
     </div>
 
-    <div class="flex justify-start mb-6">
-      <div v-if="selectedColorScheme" class="rounded-lg p-4 flex items-center gap-4">
+    <div class="flex justify-start md:mb-6 mb-2">
+      <div v-if="selectedColorScheme" class="rounded-lg md:p-4 p-2 flex items-center gap-4">
         <div class="flex gap-8">
         <div>
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ selectedColorScheme.name }}</h3>
@@ -156,6 +156,9 @@ const { data: templateData, refetch: refetchTemplateData } = useFetchTemplateDat
 const selectedTemplate = computed(() => templatesStore.selectedTemplate)
 const loading = computed(() => !selectedTemplate.value && templatesStore.availableTemplates.length === 0)
 
+const config = useRuntimeConfig()
+const domainUrl = config.public.domainUrl
+
 const userProfile = computed(() => templateData.value?.userProfile)
 
 const selectedColorScheme = computed(() => colorsStore.selectedColorScheme)
@@ -187,7 +190,7 @@ const activeWebsiteUrl = computed(() => {
   let url = null
   
   if (userProfile.value.share_website === true && userProfile.value.website_url) {
-    url = userProfile.value.website_url
+    url = userProfile.value.website_url + (domainUrl ? `.${domainUrl}` : '')
   } else if (userProfile.value.share_personal_website === true && userProfile.value.personal_website_url) {
     url = userProfile.value.personal_website_url
   }

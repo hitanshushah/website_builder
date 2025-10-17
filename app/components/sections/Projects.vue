@@ -65,7 +65,7 @@
           <!-- Description -->
           <p
             v-if="project.description"
-            class="text-sm text-gray-700 dark:text-gray-300 mb-4 leading-relaxed whitespace-pre-line"
+            class="text-sm text-gray-700 dark:text-gray-300 mb-4 leading-relaxed whitespace-pre-line break-words overflow-wrap-anywhere"
           >
             {{ project.description }}
           </p>

@@ -10,7 +10,7 @@
     :key="edu.id"
     class="bg-gray-50 dark:bg-gray-900 rounded-xl shadow-md border border-gray-200 dark:border-gray-700"
   >
-    <div class="flex justify-between items-start">
+    <div class="flex justify-between items-start flex-col md:flex-row gap-4 md:gap-0">
       <!-- Education Info -->
       <div class="flex-1 space-y-1">
         <!-- Degree and University on same line -->

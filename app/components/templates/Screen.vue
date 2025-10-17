@@ -495,7 +495,7 @@ const fourth = computed(() => props.fourth || '#10b981')
               <div class="flex items-start gap-6">
                 <div class="flex-1">
                   <h3 class="text-3xl font-bold mb-2" :style="{ color: background }">{{ experience.role }}</h3>
-                  <p class="text-xl font-semibold mb-2" :style="{ color: primary }">{{ experience.company_name }}</p>
+                  <p class="text-xl font-semibold mb-2" :style="{ color: background }">{{ experience.company_name }}</p>
                   <p class="mb-4" :style="{ color: `${background}` }">
                     {{ experience.location }} | {{ formatDateRange(experience.start_date, experience.end_date) }}
                   </p>
@@ -504,7 +504,7 @@ const fourth = computed(() => props.fourth || '#10b981')
                     <span 
                       v-for="skill in experience.skills" 
                       :key="skill"
-                      :style="{ backgroundColor: `${primary}20`, color: primary }"
+                      :style="{ backgroundColor: `${primary}20`, color: background }"
                       class="px-4 py-2 rounded-full"
                     >
                       {{ skill }}

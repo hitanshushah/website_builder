@@ -11,8 +11,8 @@
       class="bg-gray-50 dark:bg-gray-900 rounded-xl shadow-md border border-gray-200 dark:border-gray-700"
     >
     <div>
-      <div class="flex items-start justify-between">
-        <div class="flex-1">
+      <div class="flex items-start justify-between flex-col md:flex-row gap-4">
+        <div class="w-full md:flex-1 md:min-w-0">
           <div class="flex items-start gap-4 mb-3">
             <!-- Company Logo or Initials -->
             <div class="flex-shrink-0">
@@ -33,14 +33,14 @@
             <div class="flex-1">
               <!-- Role + Company -->
               <div class="flex flex-wrap items-center gap-x-1">
-                <h2 class="font-semibold text-gray-900 dark:text-white text-lg">
+                <h2 class="font-semibold text-gray-900 dark:text-white text-sm md:text-lg">
                   {{ experience.company_name }},
                 </h2>
-                <h4 class="font-semibold text-gray-900 dark:text-white text-md italic">
+                <h4 class="font-semibold text-gray-900 dark:text-white text-sm md:text-md italic">
                   {{ experience.role }}
                 </h4>
               </div>
-              <div class="flex gap-2">
+              <div class="flex md:gap-2 gap-0 flex-col md:flex-row">
               <!-- Date -->
               <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
                 {{ formatDateRange(experience.start_date, experience.end_date) }},
@@ -64,20 +64,22 @@
           </div>
 
           <!-- Description -->
-          <p v-if="experience.description" class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">
+          <p v-if="experience.description" class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line break-words overflow-wrap-anywhere">
             {{ experience.description }}
           </p>
         </div>
 
         <!-- Actions -->
-        <ActionButtons 
-          :item="experience"
-          item-type="Experience"
-          :item-name="`${experience.role} at ${experience.company_name}`"
-          @toggle-visibility="toggleVisibility"
-          @edit="editExperience"
-          @delete="deleteExperience"
-        />
+        <div class="flex-shrink-0 self-start">
+          <ActionButtons 
+            :item="experience"
+            item-type="Experience"
+            :item-name="`${experience.role} at ${experience.company_name}`"
+            @toggle-visibility="toggleVisibility"
+            @edit="editExperience"
+            @delete="deleteExperience"
+          />
+        </div>
       </div>
     </div>
     </UCard>

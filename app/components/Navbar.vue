@@ -12,8 +12,8 @@
         </div>
       </div>
 
-      <!-- Nav Buttons -->
-      <div class="flex items-center space-x-1">
+      <!-- Nav Buttons (Desktop only) -->
+      <div class="hidden lg:flex items-center space-x-1">
         <UButton 
           :variant="currentRoute === '/' ? 'solid' : 'ghost'"
           :color="currentRoute === '/' ? 'neutral' : 'gray'"
@@ -21,7 +21,7 @@
           :class="currentRoute === '/' ? 'text-white dark:text-black' : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'"
           @click="navigateTo('/')"
         >
-          <UIcon name="i-heroicons-home" class="w-4 h-4 mr-2" :class="currentRoute === '/' ? 'text-white dark:text-black' : ''" />
+          <UIcon name="i-heroicons-home" class="w-4 h-4 mr-2" />
           Dashboard
         </UButton>
         
@@ -32,10 +32,10 @@
           :class="currentRoute === '/settings' ? 'text-white dark:text-black' : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'"
           @click="navigateTo('/settings')"
         >
-          <UIcon name="i-heroicons-cog-6-tooth" class="w-4 h-4 mr-2" :class="currentRoute === '/settings' ? 'text-white dark:text-black' : ''" />
+          <UIcon name="i-heroicons-cog-6-tooth" class="w-4 h-4 mr-2" />
           Website Settings
         </UButton>
-        
+
         <UButton 
           :variant="currentRoute === '/website' ? 'solid' : 'ghost'"
           :color="currentRoute === '/website' ? 'neutral' : 'gray'"
@@ -43,13 +43,10 @@
           :class="currentRoute === '/website' ? 'text-white dark:text-black' : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'"
           @click="navigateTo('/website')"
         >
-          <UIcon name="i-heroicons-globe-alt" class="w-4 h-4 mr-2" :class="currentRoute === '/website' ? 'text-white dark:text-black' : ''" />
+          <UIcon name="i-heroicons-globe-alt" class="w-4 h-4 mr-2" />
           Live Website
         </UButton>
-      </div>
 
-      <!-- Right Side -->
-      <div class="flex items-center space-x-4">
         <UButton 
           :variant="currentRoute === '/pricing' ? 'solid' : 'ghost'"
           :color="currentRoute === '/pricing' ? 'neutral' : 'gray'"
@@ -61,22 +58,25 @@
         >
           Pricing Plans
         </UButton>
-        
-        <UDropdownMenu :items="items">
+      </div>
+
+      <!-- Profile Dropdown (visible on all screens) -->
+      <div class="flex items-center space-x-4">
+        <UDropdownMenu :items="dropdownItems">
           <UButton variant="ghost" color="neutral" class="cursor-pointer">
-          <UAvatar
-            v-if="templateData?.userProfile?.profile_photo_url"
-            :src="templateData.userProfile.profile_photo_url"
-            size="2xl"
-            rounded
-          />
-          <div 
-            v-else
-            class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center dark:bg-white"
-          >
-            <span class="text-white font-medium text-sm dark:text-black">{{ userInitials }}</span>
-          </div>
-        </UButton>
+            <UAvatar
+              v-if="templateData?.userProfile?.profile_photo_url"
+              :src="templateData.userProfile.profile_photo_url"
+              size="2xl"
+              rounded
+            />
+            <div 
+              v-else
+              class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center dark:bg-white"
+            >
+              <span class="text-white font-medium text-sm dark:text-black">{{ userInitials }}</span>
+            </div>
+          </UButton>
         </UDropdownMenu>
       </div>
     </div>
@@ -84,7 +84,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useFetchTemplateData } from '../composables/useTemplateData'
 import { useUserStore } from '../../stores/user'
 
@@ -94,26 +94,27 @@ const currentRoute = computed(() => route.path)
 const userStore = useUserStore()
 const { data: templateData } = useFetchTemplateData(userStore.user?.id)
 
-// Compute initials if no photo
-const userInitials = computed(() => {
-  const userProfile = templateData.value?.userProfile
-  if (!userProfile) return 'U'
-  
-  return userProfile.name
-    ? userProfile.name.split(' ').map((n) => n[0]).join('').toUpperCase()
-    : userProfile.username?.charAt(0).toUpperCase() || 'U'
-})
-
 const config = useRuntimeConfig()
 const logoutUrl = config.public.authentikLogoutUrl || '/logout'
 
-const items = ref([
+const userInitials = computed(() => {
+  const userProfile = templateData.value?.userProfile
+  if (!userProfile) return 'U'
+  return userProfile.name
+    ? userProfile.name.split(' ').map(n => n[0]).join('').toUpperCase()
+    : userProfile.username?.charAt(0).toUpperCase() || 'U'
+})
+
+// Dropdown for all screens (responsive behavior inside)
+const dropdownItems = ref([
   [
-    {
-      label: 'Logout',
-      icon: 'i-lucide-log-out',
-      to: logoutUrl,
-    }
+    { label: 'Dashboard', icon: 'i-heroicons-home', to: '/' },
+    { label: 'Website Settings', icon: 'i-heroicons-cog-6-tooth', to: '/settings' },
+    { label: 'Live Website', icon: 'i-heroicons-globe-alt', to: '/website' },
+    { label: 'Pricing Plans', icon: 'i-heroicons-credit-card', to: '/pricing' }
+  ],
+  [
+    { label: 'Logout', icon: 'i-lucide-log-out', to: logoutUrl }
   ]
 ])
 </script>

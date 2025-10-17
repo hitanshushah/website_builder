@@ -40,7 +40,6 @@ const selectedTemplateIdentifier = computed({
 })
 const { data: templateData } = useFetchTemplateData(userStore.user?.id)
 
-console.log(templateData.value, 'templateData in settings.vue')
 
 const { data: colorsResponse } = await useFetch('/api/colors', {
   query: {
@@ -121,7 +120,7 @@ const templatePreviewProps = computed(() => ({
 
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
-    <UTabs :items="items" color="neutral" variant="link" :ui="{ trigger: 'grow' }" class="gap-4 w-full py-8 px-16">
+    <UTabs :items="items" color="neutral" variant="link" :ui="{ trigger: 'grow' }" class="gap-4 w-full md:py-8 md:px-16 p-2">
       <template #templates="{ item }">
         <settingsTemplates @select-template="handleTemplateSelect" />
       </template>
@@ -131,8 +130,8 @@ const templatePreviewProps = computed(() => ({
       </template>
     </UTabs>
 
-    <div v-if="selectedTemplateIdentifier && templateData" class="w-full px-16 py-8">
-      <div class="mb-6 flex items-center justify-between">
+    <div v-if="selectedTemplateIdentifier && templateData" class="w-full md:px-16 md:py-8 p-8">
+      <div class="mb-6 flex items-center justify-between flex-col md:flex-row gap-4 md:gap-0">
         <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Template Preview</h2>
         <div class="flex gap-3">
           <UButton 
@@ -148,10 +147,25 @@ const templatePreviewProps = computed(() => ({
       </div>
       
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-        <div class="w-full overflow-auto">
+        <div class="flex justify-center sm:hidden">
+          <div
+            class="relative overflow-hidden border border-gray-300 dark:border-gray-700 rounded-3xl shadow-md"
+            style="width: 375px; height: 750px;"
+          >
+            <div class="absolute top-0 left-0 right-0 h-6 bg-gray-900 rounded-t-3xl flex justify-center items-center">
+              <div class="w-24 h-1 bg-gray-700 rounded-full"></div>
+            </div>
+            <div class="w-full h-full overflow-auto mt-6">
+              <component :is="selectedTemplateComponent" v-bind="templatePreviewProps" />
+            </div>
+          </div>
+        </div>
+
+        <div class="hidden sm:block w-full overflow-auto">
           <component :is="selectedTemplateComponent" v-bind="templatePreviewProps" />
         </div>
       </div>
+
     </div>
   </div>
 </template>
