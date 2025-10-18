@@ -64,7 +64,8 @@
         :key="colorScheme.id"
         class="cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 w-72"
         :class="{
-          'ring-2 ring-primary-500 ring-offset-2': selectedColorId === colorScheme.id
+          'ring-2 ring-primary-500 ring-offset-2': selectedColorId === colorScheme.id,
+          'opacity-50': colorScheme.disable_color_scheme
         }"
         @click="selectColorScheme(colorScheme)"
       >
@@ -101,6 +102,7 @@
               variant="subtle"
               color="neutral"
               class="cursor-pointer"
+              :disabled="colorScheme.disable_color_scheme"
             >
               Select
             </UButton>
@@ -150,6 +152,7 @@
               color="neutral"
               @click="customize(colorScheme)"
               class="cursor-pointer"
+              :disabled="colorScheme.disable_color_scheme"
             >
               Customize
             </UButton>

@@ -12,6 +12,7 @@ interface Props {
   fourth?: string
   isPremiumUser?: boolean | false
   brandName?: string
+  brandUrl?: string
 }
 
 const props = defineProps<Props>()
@@ -285,7 +286,11 @@ const colorVars = computed(() => ({
             </div>
           </div>
           <div class="column right">
+            <h2 class="text-2xl font-bold text-[var(--secondary-color)] mb-2">{{ data.userProfile.name }}</h2>
+            <p v-if="data.userProfile.designation" class="text-xl text-[var(--secondary-color)] mb-8">{{ data.userProfile.designation }}</p>
+            <br />
             <p v-if="data.userProfile.bio">{{ data.userProfile.bio }}</p>
+            <br />
             <p v-if="data.userProfile.introduction && !data.userProfile.hide_introduction_on_website">{{ data.userProfile.introduction }}</p>
             <div v-if="data.userProfile.documents?.length" class="documents-container">
               <a 
@@ -642,7 +647,7 @@ const colorVars = computed(() => ({
     <!-- Footer -->
     <footer>
       <span>© {{ new Date().getFullYear() }} {{ data.userProfile.name || 'Portfolio' }}. All rights reserved.</span>
-      <p v-if="!isPremiumUser">Powered by <a href="https://www.{{ brandName }}.com" target="_blank" class="hover:underline">{{ brandName }}</a></p>
+      <p v-if="!isPremiumUser">Powered by <a :href="brandUrl" target="_blank" class="hover:underline">{{ brandName }}</a></p>
     </footer>
   </div>
 
@@ -656,7 +661,7 @@ const colorVars = computed(() => ({
 
   <!-- Project Images Modal -->
   <div v-if="showProjectModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80" @click.self="showProjectModal = false">
-    <div v-if="activeProject" class="rounded-lg shadow-lg w-full max-w-5xl p-6 relative bg-white">
+    <div v-if="activeProject" class="rounded-lg shadow-lg w-full max-w-5xl p-6 relative" :style="{ backgroundColor: background || '#111' }">
       <!-- Close Button -->
       <button
         @click="showProjectModal = false"

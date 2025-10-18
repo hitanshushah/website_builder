@@ -12,6 +12,7 @@ interface Props {
   fourth?: string
   isPremiumUser?: boolean | false
   brandName?: string
+  brandUrl?: string
 }
 
 const props = defineProps<Props>()
@@ -704,7 +705,7 @@ onUnmounted(() => {
                 </div>
 
                 <!-- Contact Form -->
-                <div class="bg-white rounded-2xl p-6 sm:p-8 shadow-lg">
+                <div class="rounded-2xl p-6 sm:p-8 shadow-lg" style="background-color: var(--background-color)">
                     <h3 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6" style="color: var(--fourth-color)">Send Message</h3>
                     <form @submit.prevent="handleSubmit" class="space-y-4 sm:space-y-6">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -777,7 +778,7 @@ onUnmounted(() => {
     <footer class="py-6 sm:py-8 px-4" style="background-color: var(--fourth-color); color: var(--background-color)">
         <div class="max-w-7xl mx-auto text-center">
             <p class="text-sm sm:text-base">&copy; {{ new Date().getFullYear() }} {{ data.userProfile.name }}. All rights reserved.</p>
-            <p v-if="!isPremiumUser">Powered by <a href="https://www.{{ brandName }}.com" target="_blank" class="hover:underline">{{ brandName }}</a></p>
+            <p v-if="!isPremiumUser">Powered by <a :href=brandUrl target="_blank" class="hover:underline">{{ brandName }}</a></p>
         </div>
     </footer>
 

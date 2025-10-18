@@ -77,6 +77,7 @@ const isPremiumUser = computed(() => {
 
 const config = useRuntimeConfig()
 const brandName = config.public.brandName
+const brandUrl = config.public.brandUrl
 const templateProps = computed(() => ({
   data: templateData.value,
   primary: colorsStore.selectedColors.primary,
@@ -84,7 +85,8 @@ const templateProps = computed(() => ({
   background: colorsStore.selectedColors.background,
   fourth: colorsStore.selectedColors.fourth,
   isPremiumUser: isPremiumUser.value,
-  brandName: brandName
+  brandName: brandName,
+  brandUrl: brandUrl
 }))
 </script>
 

@@ -12,6 +12,7 @@ interface Props {
   fourth?: string
   isPremiumUser?: boolean | false
   brandName?: string
+  brandUrl?: string
 }
 
 const props = defineProps<Props>()
@@ -129,7 +130,7 @@ function selectProjectImage(i: number) {
 const colorVars = computed(() => ({
   '--fourth-color': props.primary || '#a8858f',
   '--background-color': props.background || '#302729',
-  '--background-color-2': props.secondary || '#362b2e',
+  '--secondary-color': props.secondary || '#362b2e',
   '--light-grey': props.fourth || 'rgb(194, 194, 194)',
 }))
 
@@ -155,9 +156,9 @@ const scrollToSection = (id: string) => {
       <div class="flex flex-row items-center justify-center w-full">
 
       <!-- Main Portfolio Window -->
-      <div class="flex flex-col lg:flex-row bg-[var(--background-color-2)] h-auto lg:h-[80vh] w-full md:w-[85vw] max-w-[1200px] rounded-none md:rounded-[30px] shadow-lg my-0 md:my-8 lg:my-0">
+      <div class="flex flex-col lg:flex-row bg-[var(--secondary-color)] h-auto lg:h-[80vh] w-full md:w-[85vw] max-w-[1200px] rounded-none md:rounded-[30px] shadow-lg my-0 md:my-8 lg:my-0">
         <!-- Header Section -->
-        <section class="justify-center flex flex-col items-center w-full lg:w-[500px] h-full rounded-none md:rounded-[30px] text-white overflow-auto">
+        <section class="justify-center flex flex-col items-center w-full lg:w-[500px] h-full rounded-none md:rounded-[30px] text-[var(--background-color)] overflow-auto">
           <img 
             v-if="data.userProfile.profile_photo_url"
             class="w-[150px] h-[150px] mt-10 rounded-full mb-2.5 mx-2.5 shadow-[0_0_10px_2px_rgba(0,0,0,0.5)] object-cover" 
@@ -166,7 +167,7 @@ const scrollToSection = (id: string) => {
           />
           <div 
             v-else
-            class="w-[150px] h-[150px] rounded-full mb-2.5 mx-2.5 shadow-[0_0_10px_2px_rgba(0,0,0,0.5)] bg-[var(--fourth-color)] flex items-center justify-center text-white text-5xl font-bold" 
+            class="w-[150px] h-[150px] rounded-full mb-2.5 mx-2.5 shadow-[0_0_10px_2px_rgba(0,0,0,0.5)] bg-[var(--fourth-color)] flex items-center justify-center text-[var(--background-color)] text-5xl font-bold" 
           >
             {{ getUserInitials }}
           </div>
@@ -179,7 +180,7 @@ const scrollToSection = (id: string) => {
               :key="link.url"
               :href="link.url" 
               target="_blank" 
-              class="text-white text-xl mx-2.5 hover:text-[var(--fourth-color)] transition-colors duration-200 fa-brands"
+              class="text-[var(--background-color)] text-xl mx-2.5 hover:text-[var(--fourth-color)] transition-colors duration-200 fa-brands"
               :class="{
                 'fa-linkedin-in': link.type.toLowerCase().includes('linkedin'),
                 'fa-github': link.type.toLowerCase().includes('github'),
@@ -189,17 +190,17 @@ const scrollToSection = (id: string) => {
           </div>
           
           <!-- Contact Information -->
-          <div class="flex flex-wrap justify-center gap-2 mt-2 text-white text-center text-sm">
+          <div class="flex flex-wrap justify-center gap-2 mt-2 text-[var(--background-color)] text-center text-sm">
             <!-- Email -->
             <div v-if="!data.userProfile.override_email && data.userProfile.email" class="flex items-center justify-center gap-2">
               <i class="fas fa-envelope text-[var(--background-color)]"></i>
-              <a :href="`mailto:${data.userProfile.email}`" class="text-white hover:text-[var(--fourth-color)] transition-colors duration-200 break-all">
+              <a :href="`mailto:${data.userProfile.email}`" class="text-[var(--background-color)] hover:text-[var(--fourth-color)] transition-colors duration-200 break-all">
                 {{ data.userProfile.email }}
               </a>
             </div>
             <div v-else-if="data.userProfile.override_email && !data.userProfile.hide_secondary_email_on_website && data.userProfile.secondary_email" class="flex items-center justify-center gap-2">
               <i class="fas fa-envelope text-[var(--background-color)]"></i>
-              <a :href="`mailto:${data.userProfile.secondary_email}`" class="text-white hover:text-[var(--fourth-color)] transition-colors duration-200 break-all">
+              <a :href="`mailto:${data.userProfile.secondary_email}`" class="text-[var(--background-color)] hover:text-[var(--fourth-color)] transition-colors duration-200 break-all">
                 {{ data.userProfile.secondary_email }}
               </a>
             </div>
@@ -207,7 +208,7 @@ const scrollToSection = (id: string) => {
             <!-- Phone -->
             <div v-if="data.userProfile.phone_number && !data.userProfile.hide_phone_on_website" class="flex items-center justify-center gap-2">
               <i class="fas fa-phone text-[var(--background-color)]"></i>
-              <a :href="`tel:${data.userProfile.phone_number}`" class="text-white hover:text-[var(--fourth-color)] transition-colors duration-200">
+              <a :href="`tel:${data.userProfile.phone_number}`" class="text-[var(--background-color)] hover:text-[var(--fourth-color)] transition-colors duration-200">
                 {{ data.userProfile.phone_number }}
               </a>
             </div>
@@ -215,7 +216,7 @@ const scrollToSection = (id: string) => {
             <!-- Location -->
             <div v-if="data.userProfile.city || data.userProfile.province || data.userProfile.country" class="flex items-center justify-center gap-2">
               <i class="fas fa-location-dot text-[var(--background-color)]"></i>
-              <span class="text-white">
+              <span class="text-[var(--background-color)]">
                 {{ [data.userProfile.city, data.userProfile.province, data.userProfile.country].filter(Boolean).join(', ') }}
               </span>
             </div>
@@ -226,7 +227,7 @@ const scrollToSection = (id: string) => {
               <a 
                 :href="data.userProfile.website_url.startsWith('http') ? data.userProfile.website_url : `https://${data.userProfile.website_url}`" 
                 target="_blank"
-                class="text-white hover:text-[var(--fourth-color)] transition-colors duration-200 break-all"
+                class="text-[var(--background-color)] hover:text-[var(--fourth-color)] transition-colors duration-200 break-all"
               >
                 {{ data.userProfile.website_url }}
               </a>
@@ -240,7 +241,7 @@ const scrollToSection = (id: string) => {
               :key="doc.id"
               :href="doc.url" 
               target="_blank"
-              class="text-white bg-white/[0.274] py-2.5 px-5 rounded-[30px] shadow-[0_0_10px_2px_rgba(0,0,0,0.1)] hover:text-[var(--fourth-color)] hover:bg-white transition-colors duration-200"
+              class="text-[var(--background-color)] bg-[var(--background-color)]/[0.274] py-2.5 px-5 rounded-[30px] shadow-[0_0_10px_2px_rgba(0,0,0,0.1)] hover:text-[var(--fourth-color)] hover:bg-[var(--background-color)] transition-colors duration-200"
             >
               {{ doc.display_name || doc.name || 'Download' }}
             </a>
@@ -248,7 +249,7 @@ const scrollToSection = (id: string) => {
         </section>
 
         <!-- Content Section -->
-        <div class="rounded-none md:rounded-[30px] bg-white w-full h-full overflow-auto scroll-smooth pb-0 lg:pb-0">
+        <div class="rounded-none md:rounded-[30px] bg-[var(--background-color)] w-full h-full overflow-auto scroll-smooth pb-0 lg:pb-0">
           <!-- Home -->
           <section class="flex flex-col items-center justify-center min-h-full mx-8 lg:mx-12 max-w-full break-words" id="welcome-section">
             <h1 class="text-3xl lg:text-[3.5rem] font-extrabold text-center my-5 leading-[2.5rem] lg:leading-[4rem] text-[var(--fourth-color)]">Hello, I am {{ data.userProfile.name }}</h1>
@@ -256,7 +257,7 @@ const scrollToSection = (id: string) => {
 
           <!-- About Me -->
           <section class="flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-0 lg:pt-0" id="about">
-            <h1 class="text-4xl leading-[4rem] text-[var(--fourth-color)] self-start">About me</h1>
+            <h1 class="text-4xl leading-[4rem] text-[var(--secondary-color)] self-start">About me</h1>
             <div class="w-full max-w-full my-2">
               <p v-if="data.userProfile.bio" class="text-[var(--fourth-color)] whitespace-pre-wrap break-words max-w-full leading-6 mb-3">{{ data.userProfile.bio }}</p>
               <p v-if="data.userProfile.introduction && !data.userProfile.hide_introduction_on_website" class="text-[var(--fourth-color)] whitespace-pre-wrap break-words max-w-full leading-6 mb-3">
@@ -267,12 +268,12 @@ const scrollToSection = (id: string) => {
 
           <!-- Experience -->
           <section v-if="data.experiences?.length" class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-0 lg:pt-0" id="experience">
-            <h1 class="text-4xl leading-[4rem] text-[var(--fourth-color)] self-start">Experience</h1>
+            <h1 class="text-4xl leading-[4rem] text-[var(--secondary-color)] self-start">Experience</h1>
             <div class="relative w-full before:content-[''] before:absolute before:w-0.5 before:left-6 before:top-[55px] before:h-[calc(100%-100px)] before:bg-[var(--fourth-color)] before:z-[1]">
               <div class="ml-14">
                 <div v-for="exp in sortedExperiences.slice(0, 3)" :key="exp.id" class="my-12 relative">
                   <!-- Company Logo or Initials -->
-                  <div class="absolute -left-[3.5rem] top-0 w-12 h-12 rounded-full shadow-lg z-10 overflow-hidden border-2 border-[var(--fourth-color)] bg-white">
+                  <div class="absolute -left-[3.5rem] top-0 w-12 h-12 rounded-full shadow-lg z-10 overflow-hidden border-2 border-[var(--fourth-color)] bg-[var(--background-color)]">
                     <img 
                       v-if="exp.company_logo"
                       :src="exp.company_logo" 
@@ -281,7 +282,7 @@ const scrollToSection = (id: string) => {
                     />
                     <div 
                       v-else
-                      class="w-full h-full flex items-center justify-center bg-[var(--fourth-color)] text-white font-bold text-sm"
+                      class="w-full h-full flex items-center justify-center bg-[var(--fourth-color)] text-[var(--background-color)] font-bold text-sm"
                     >
                       {{ getCompanyInitials(exp.company_name) }}
                     </div>
@@ -304,7 +305,7 @@ const scrollToSection = (id: string) => {
 
           <!-- Education -->
           <section v-if="data.education?.length" class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-0 lg:pt-0" id="education">
-            <h1 class="text-4xl leading-[4rem] text-[var(--fourth-color)] self-start">Education</h1>
+            <h1 class="text-4xl leading-[4rem] text-[var(--secondary-color)] self-start">Education</h1>
             
             <!-- Mobile: All items on right side -->
             <div class="block md:hidden relative w-full mt-10">
@@ -318,7 +319,7 @@ const scrollToSection = (id: string) => {
                     <div class="absolute left-[-2rem] top-0 w-4 h-4 rounded-full bg-[var(--fourth-color)] z-10"></div>
                     
                     <!-- Education Card -->
-                    <div class="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-md ml-4">
+                    <div class="bg-[var(--background-color)] border border-gray-200 rounded-lg px-4 py-3 shadow-md ml-4">
                       <h2 class="text-sm text-[var(--fourth-color)]">{{ formatDateRange(edu.from_date, edu.end_date) }}</h2>
                       <div class="flex flex-wrap gap-1">
                         <h3 class="text-xl font-bold text-[var(--fourth-color)]">{{ edu.degree }},</h3>
@@ -351,7 +352,7 @@ const scrollToSection = (id: string) => {
                   
                   <!-- Education Card -->
                   <div 
-                    class="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-md w-5/12"
+                    class="bg-[var(--background-color)] border border-gray-200 rounded-lg px-4 py-3 shadow-md w-5/12"
                   >
                     <h2 class="text-sm text-[var(--fourth-color)]">{{ formatDateRange(edu.from_date, edu.end_date) }}</h2>
                     <div class="flex flex-wrap gap-1">
@@ -370,12 +371,12 @@ const scrollToSection = (id: string) => {
 
           <!-- Projects -->
           <section v-if="data.projects?.length" class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-0 lg:pt-0" id="projects">
-            <h1 class="text-4xl leading-[4rem] text-[var(--fourth-color)] self-start">Projects</h1>
+            <h1 class="text-4xl leading-[4rem] text-[var(--secondary-color)] self-start">Projects</h1>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 w-full max-w-full overflow-hidden my-5">
               <div 
                 v-for="project in data.projects" 
                 :key="project.id" 
-                class="flex flex-col bg-white shadow-lg border border-[var(--fourth-color)] rounded-lg overflow-hidden"
+                class="flex flex-col bg-[var(--background-color)] shadow-lg border border-[var(--fourth-color)] rounded-lg overflow-hidden"
               >
                 <!-- Project Image with Hover Overlay -->
                 <div 
@@ -399,7 +400,7 @@ const scrollToSection = (id: string) => {
                     v-if="getProjectImages(project.assets)?.length"
                     class="absolute inset-0 bg-[var(--fourth-color)]/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                   >
-                    <span class="text-white text-xl font-semibold">See More</span>
+                    <span class="text-[var(--background-color)] text-xl font-semibold">See More</span>
                   </div>
                 </div>
 
@@ -427,7 +428,7 @@ const scrollToSection = (id: string) => {
                       :key="link.url"
                       :href="link.url" 
                       target="_blank"
-                      class="text-xs py-1.5 px-3 bg-[var(--fourth-color)] text-white rounded-[15px] no-underline hover:opacity-80 transition-opacity duration-200"
+                      class="text-xs py-1.5 px-3 bg-[var(--fourth-color)] text-[var(--background-color)] rounded-[15px] no-underline hover:opacity-80 transition-opacity duration-200"
                     >
                       {{ link.title }}
                     </a>
@@ -439,7 +440,7 @@ const scrollToSection = (id: string) => {
 
           <!-- Skills -->
           <section v-if="data.skillsByCategory?.length" class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-0 lg:pt-0" id="skills">
-            <h1 class="text-4xl leading-[4rem] text-[var(--fourth-color)] self-start">Skills</h1>
+            <h1 class="text-4xl leading-[4rem] text-[var(--secondary-color)] self-start">Skills</h1>
             <div class="w-full max-w-full my-5">
               <div 
                 v-for="[categoryName, skills] in data.skillsByCategory" 
@@ -465,12 +466,12 @@ const scrollToSection = (id: string) => {
 
           <!-- Certifications -->
             <section v-if="data.certifications?.length" class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-0 lg:pt-0" id="certifications">
-            <h1 class="text-4xl leading-[4rem] text-[var(--fourth-color)] self-start">Certifications</h1>
+            <h1 class="text-4xl leading-[4rem] text-[var(--secondary-color)] self-start">Certifications</h1>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 w-full max-w-full overflow-hidden my-5">
               <div 
                 v-for="cert in data.certifications" 
                 :key="cert.id" 
-                class="flex flex-col bg-white shadow-lg border border-[var(--fourth-color)] rounded-lg overflow-hidden"
+                class="flex flex-col bg-[var(--background-color)] shadow-lg border border-[var(--fourth-color)] rounded-lg overflow-hidden"
               >
                 <div class="p-4">
                   <h3 class="text-[var(--fourth-color)] text-lg font-semibold mb-1">{{ cert.name }}</h3>
@@ -483,7 +484,7 @@ const scrollToSection = (id: string) => {
                       v-if="cert.certificate_pdf"
                       :href="cert.certificate_pdf" 
                       target="_blank"
-                      class="text-xs py-1.5 px-3 bg-[var(--fourth-color)] text-white rounded-[15px] no-underline hover:opacity-80 transition-opacity duration-200"
+                      class="text-xs py-1.5 px-3 bg-[var(--fourth-color)] text-[var(--background-color)] rounded-[15px] no-underline hover:opacity-80 transition-opacity duration-200"
                     >
                       View Certificate
                     </a>
@@ -495,7 +496,7 @@ const scrollToSection = (id: string) => {
 
           <!-- Achievements -->
           <section v-if="data.achievements?.length" class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-0 lg:pt-0" id="achievements">
-            <h1 class="text-4xl leading-[4rem] text-[var(--fourth-color)] self-start">Achievements</h1>
+            <h1 class="text-4xl leading-[4rem] text-[var(--secondary-color)] self-start">Achievements</h1>
             <ul class="list-disc list-inside text-[var(--fourth-color)] mt-4 pl-4 w-full">
               <li v-for="achievement in data.achievements" :key="achievement.id" class="mb-3 leading-6">
                 {{ achievement.description }}
@@ -505,12 +506,12 @@ const scrollToSection = (id: string) => {
 
           <!-- Publications -->
           <section v-if="data.publications?.length" class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-0 lg:pt-0" id="publications">
-            <h1 class="text-4xl leading-[4rem] text-[var(--fourth-color)] self-start">Publications</h1>
+            <h1 class="text-4xl leading-[4rem] text-[var(--secondary-color)] self-start">Publications</h1>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 w-full max-w-full overflow-hidden my-5">
               <div 
                 v-for="pub in data.publications" 
                 :key="pub.id" 
-                class="flex flex-col bg-white shadow-lg border border-[var(--fourth-color)] rounded-lg overflow-hidden"
+                class="flex flex-col bg-[var(--background-color)] shadow-lg border border-[var(--fourth-color)] rounded-lg overflow-hidden"
               >
                 <div class="p-4">
                   <h3 class="text-[var(--fourth-color)] text-lg font-semibold mb-1">{{ pub.paper_name }}</h3>
@@ -524,7 +525,7 @@ const scrollToSection = (id: string) => {
                         v-if="pub.paper_pdf"
                         :href="pub.paper_pdf" 
                         target="_blank"
-                        class="text-xs py-1.5 px-3 bg-[var(--fourth-color)] text-white rounded-[15px] no-underline hover:opacity-80 transition-opacity duration-200"
+                        class="text-xs py-1.5 px-3 bg-[var(--fourth-color)] text-[var(--background-color)] rounded-[15px] no-underline hover:opacity-80 transition-opacity duration-200"
                       >
                         View PDF
                       </a>
@@ -532,7 +533,7 @@ const scrollToSection = (id: string) => {
                         v-if="pub.paper_link"
                         :href="pub.paper_link.startsWith('http') ? pub.paper_link : `https://${pub.paper_link}`" 
                         target="_blank"
-                        class="text-xs py-1.5 px-3 bg-[var(--fourth-color)] text-white rounded-[15px] no-underline hover:opacity-80 transition-opacity duration-200"
+                        class="text-xs py-1.5 px-3 bg-[var(--fourth-color)] text-[var(--background-color)] rounded-[15px] no-underline hover:opacity-80 transition-opacity duration-200"
                       >
                         View Paper
                       </a>
@@ -545,7 +546,7 @@ const scrollToSection = (id: string) => {
 
           <!-- Contact -->
           <section class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-0 lg:pt-0" id="contact">
-            <h1 class="text-4xl leading-[4rem] text-[var(--fourth-color)] self-start">Contact</h1>
+            <h1 class="text-4xl leading-[4rem] text-[var(--secondary-color)] self-start">Contact</h1>
             <form class="w-full max-w-[600px]" @submit.prevent="handleContactSubmit">
               <div class="flex items-center">
                 <input 
@@ -585,7 +586,7 @@ const scrollToSection = (id: string) => {
                 <button 
                   type="submit" 
                   :disabled="isSubmitting"
-                  class="text-[var(--fourth-color)] bg-white py-2.5 px-5 my-12 mx-4 rounded-[30px] border-none shadow-[0_0_10px_2px_rgba(0,0,0,0.1)] cursor-pointer hover:text-white hover:bg-[var(--fourth-color)] transition-colors duration-200 disabled:opacity-50"
+                  class="text-[var(--fourth-color)] bg-[var(--background-color)] py-2.5 px-5 my-12 mx-4 rounded-[30px] border-none shadow-[0_0_10px_2px_rgba(0,0,0,0.1)] cursor-pointer hover:text-[var(--background-color)] hover:bg-[var(--fourth-color)] transition-colors duration-200 disabled:opacity-50"
                   id="submit"
                 >
                   <i v-if="isSubmitting" class="fas fa-spinner fa-spin mr-2"></i>
@@ -598,7 +599,7 @@ const scrollToSection = (id: string) => {
         </div>
       </div>
             <!-- Navigation Menu -->
-            <div class="flex flex-row lg:flex-col items-center justify-center bg-white w-auto lg:w-[70px] h-[50px] md:h-[70px] lg:h-auto ml-0 lg:ml-5 rounded-[25px] md:rounded-[50px] lg:rounded-[35px] py-0 lg:py-4 px-2 md:px-4 lg:px-0 shadow-lg fixed lg:static bottom-4 z-[1000]">
+            <div class="flex flex-row lg:flex-col items-center justify-center bg-[var(--background-color)] w-auto lg:w-[70px] h-[50px] md:h-[70px] lg:h-auto ml-0 lg:ml-5 rounded-[25px] md:rounded-[50px] lg:rounded-[35px] py-0 lg:py-4 px-2 md:px-4 lg:px-0 shadow-lg fixed lg:static bottom-4 z-[1000]">
         <a href="#welcome-section" @click.prevent="scrollToSection('welcome-section')" class="text-lg md:text-2xl lg:text-3xl text-[var(--light-grey)] my-0 lg:my-4 mx-2 md:mx-4 lg:mx-0 hover:text-[var(--fourth-color)] transition-colors duration-200 fa-solid fa-house"></a>
         <a href="#about" @click.prevent="scrollToSection('about')" class="text-lg md:text-2xl lg:text-3xl text-[var(--light-grey)] my-0 lg:my-4 mx-2 md:mx-4 lg:mx-0 hover:text-[var(--fourth-color)] transition-colors duration-200 fa-solid fa-user"></a>
         <a v-if="data.experiences?.length" href="#experience" @click.prevent="scrollToSection('experience')" class="text-lg md:text-2xl lg:text-3xl text-[var(--light-grey)] my-0 lg:my-4 mx-2 md:mx-4 lg:mx-0 hover:text-[var(--fourth-color)] transition-colors duration-200 fa-solid fa-briefcase"></a>
@@ -615,7 +616,7 @@ const scrollToSection = (id: string) => {
         <p class="text-sm opacity-70">
           © {{ new Date().getFullYear() }} {{ data.userProfile.name }}. All rights reserved.
         </p>
-        <p v-if="!isPremiumUser">Powered by <a href="https://www.{{ brandName }}.com" target="_blank" class="hover:underline">{{ brandName }}</a></p>
+        <p v-if="!isPremiumUser">Powered by <a :href="brandUrl" target="_blank" class="hover:underline">{{ brandName }}</a></p>
       </footer>
     </div>
   </div>
@@ -668,7 +669,7 @@ const scrollToSection = (id: string) => {
   <!-- Toast Notification -->
   <div 
     v-if="showToast"
-    class="fixed bottom-30 right-8 bg-gray-800 text-white px-5 py-4 rounded-lg shadow-lg opacity-0 pointer-events-none transform translate-y-5 transition-all duration-300 ease-in-out flex items-center gap-3 z-50"
+    class="fixed bottom-30 right-8 bg-gray-800 text-[var(--background-color)] px-5 py-4 rounded-lg shadow-lg opacity-0 pointer-events-none transform translate-y-5 transition-all duration-300 ease-in-out flex items-center gap-3 z-50"
     :class="{ 'opacity-100 translate-y-0 pointer-events-auto': showToast }"
     :style="{ 
       boxShadow: toastType === 'success' ? '0 0 15px rgba(34, 197, 94, 0.3)' : '0 0 15px rgba(239, 68, 68, 0.3)',
@@ -677,12 +678,12 @@ const scrollToSection = (id: string) => {
   >
     <div class="flex items-center gap-3">
       <div v-if="toastType === 'success'" class="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
-        <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+        <svg class="w-3 h-3 text-[var(--background-color)]" fill="currentColor" viewBox="0 0 20 20">
           <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
         </svg>
       </div>
       <div v-else class="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center">
-        <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+        <svg class="w-3 h-3 text-[var(--background-color)]" fill="currentColor" viewBox="0 0 20 20">
           <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
         </svg>
       </div>
@@ -690,7 +691,7 @@ const scrollToSection = (id: string) => {
     </div>
     <button 
       @click="hideToast"
-      class="ml-2 text-gray-300 hover:text-white transition-colors"
+      class="ml-2 text-gray-300 hover:text-[var(--background-color)] transition-colors"
     >
       <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
         <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>

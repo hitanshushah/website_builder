@@ -13,6 +13,7 @@ interface Props {
   fourth?: string
   isPremiumUser?: boolean | false
   brandName?: string
+  brandUrl?: string
 }
 
 const props = defineProps<Props>()
@@ -225,7 +226,7 @@ onUnmounted(() => {
             <div class="w-3 h-3 bg-[var(--color-secondary)] mr-2"></div>
             <a href="#" class="text-xl font-bold text-[var(--color-fourth)]">
               {{ data.userProfile.name }} 
-              <span v-if="data.userProfile.designation" class="font-light text-base ml-2">/ {{ data.userProfile.designation }}</span>
+              <span v-if="data.userProfile.designation" class="font-light text-base">/ {{ data.userProfile.designation }}</span>
             </a>
           </div>
           <div class="hidden md:flex space-x-8">
@@ -261,19 +262,19 @@ onUnmounted(() => {
       <div class="container mx-auto max-w-6xl">
         <div class="flex flex-col md:flex-row ml-0 md:ml-12 rounded-lg overflow-hidden bg-transparent">
           <!-- Left Side - Profile Image -->
-          <div class="md:w-2/5 bg-[var(--color-secondary)] p-8 flex flex-col items-center text-center min-h-[600px] md:min-h-[700px]">
+          <div class="md:w-2/5 bg-[var(--color-primary)] p-8 flex flex-col items-center text-center min-h-[600px] md:min-h-[700px]">
             <img 
               v-if="data.userProfile.profile_photo_url"
               :src="data.userProfile.profile_photo_url" 
               :alt="data.userProfile.name" 
               class="w-80 h-80 rounded-full border-10 border-[var(--color-background)] object-cover mb-8 shadow-lg"
             >
-            <h2 class="text-4xl font-bold text-[var(--color-background)] mb-2">{{ data.userProfile.name }}</h2>
-            <div class="w-24 h-1 bg-[var(--color-primary)] my-6"></div>
-            <p v-if="data.userProfile.designation" class="text-xl text-[var(--color-background)] mb-8">{{ data.userProfile.designation }}</p>
+            <h2 class="text-4xl font-bold text-[var(--color-fourth)] mb-2">{{ data.userProfile.name }}</h2>
+            <div class="w-24 h-1 bg-[var(--color-secondary)] my-6"></div>
+            <p v-if="data.userProfile.designation" class="text-xl text-[var(--color-fourth)] mb-1">{{ data.userProfile.designation }}</p>
             
             <!-- Social Links -->
-            <div v-if="data.userProfile.links?.length" class="flex flex-wrap gap-3 bg-[var(--color-background)] p-4 rounded-lg mt-auto justify-center">
+            <div v-if="data.userProfile.links?.length" class="flex flex-wrap gap-3 bg-[var(--color-background)] p-4 rounded-lg mt-10 justify-center">
               <UButton
                 v-for="link in data.userProfile.links"
                 :key="link.url"
@@ -363,7 +364,7 @@ onUnmounted(() => {
                 </div>
                 
                 <!-- Content Card -->
-                <div class="bg-[var(--color-secondary)] rounded-lg p-8 shadow-lg relative">
+                <div class="bg-[var(--color-primary)] rounded-lg p-8 shadow-lg relative">
                   
                   <div class="flex flex-col md:flex-row md:items-start md:justify-between mb-1">
                     <div class="flex-1">
@@ -388,7 +389,7 @@ onUnmounted(() => {
                   </div>
                   
                   <!-- Separator Line -->
-                  <div class="w-full h-0.5 bg-[var(--color-primary)] mb-2"></div>
+                  <div class="w-full h-0.5 bg-[var(--color-secondary)] mb-2"></div>
                   
                   <div v-if="exp.description" class="text-[var(--color-background)] mb-4 leading-relaxed">
                     <p class="whitespace-pre-line break-words overflow-wrap-anywhere">{{ exp.description }}</p>
@@ -396,7 +397,7 @@ onUnmounted(() => {
                   
                   <!-- Skills Tags -->
                   <div v-if="exp.skills?.length" class="flex flex-wrap gap-2">
-                    <span v-for="skill in exp.skills" :key="skill" class="px-3 py-1 bg-[var(--color-primary)] text-[var(--color-fourth)] rounded-full text-sm font-medium">
+                    <span v-for="skill in exp.skills" :key="skill" class="px-3 py-1 bg-[var(--color-secondary)] text-[var(--color-background)] rounded-full text-sm font-medium">
                       {{ skill }}
                     </span>
                   </div>
@@ -800,7 +801,7 @@ onUnmounted(() => {
       <div class="bg-[var(--color-background)] bg-opacity-90 py-4">
         <div class="container mx-auto px-4">
           <p class="text-center text-[var(--color-fourth)] text-sm">&copy; {{ new Date().getFullYear() }} - Developed by {{ data.userProfile.name }}</p>
-          <p class="text-center text-[var(--color-fourth)] text-sm" v-if="!isPremiumUser">Powered by <a href="https://www.{{ brandName }}.com" target="_blank" class="hover:underline">{{ brandName }}</a></p>
+          <p class="text-center text-[var(--color-fourth)] text-sm" v-if="!isPremiumUser">Powered by <a :href="brandUrl" target="_blank" class="hover:underline">{{ brandName }}</a></p>
         </div>
       </div>
     </footer>
@@ -888,12 +889,12 @@ onUnmounted(() => {
 <style scoped>
 /* Gradient Section */
 .gradient-section {
-  background: linear-gradient(to top, var(--color-primary) 40%, var(--color-background) 40%);
+  background: linear-gradient(to top, var(--color-secondary) 40%, var(--color-background) 40%);
 }
 
 @media (min-width: 768px) {
   .gradient-section {
-    background: linear-gradient(to right, var(--color-primary) 40%, var(--color-background) 40%);
+    background: linear-gradient(to right, var(--color-secondary) 40%, var(--color-background) 40%);
   }
 }
 

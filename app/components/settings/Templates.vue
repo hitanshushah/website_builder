@@ -3,6 +3,7 @@ import type { Template } from '~/types'
 import { useTemplatesStore } from '../../../stores/templates'
 import { useUserPreferences } from '../../composables/useUserPreferences'
 import { useUserStore } from '../../../stores/user'
+import TemplatePreviewModal from '../modals/TemplatePreviewModal.vue'
 
 const emit = defineEmits<{
   selectTemplate: [identifier: string]
@@ -20,6 +21,10 @@ const templates = ref<Template[]>([])
 const validTemplates = ref<Template[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
+
+// Modal state
+const showPreviewModal = ref(false)
+const previewTemplate = ref<Template | null>(null)
 
 const fetchTemplates = async () => {
   try {
@@ -93,6 +98,16 @@ const resetToDefault = () => {
 const handleUpgrade = () => {
   navigateTo('/pricing')
 }
+
+const openPreview = (template: Template) => {
+  previewTemplate.value = template
+  showPreviewModal.value = true
+}
+
+const closePreview = () => {
+  showPreviewModal.value = false
+  previewTemplate.value = null
+}
 </script>
 
 <template>
@@ -131,7 +146,7 @@ const handleUpgrade = () => {
         }"
       >
         <!-- Thumbnail -->
-        <div class="rounded-lg relative h-64 bg-gray-200 dark:bg-gray-700 overflow-hidden">
+        <div class="rounded-lg relative h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden group">
           <img 
             v-if="template.thumbnail"
             :src="template.thumbnail" 
@@ -140,6 +155,19 @@ const handleUpgrade = () => {
           />
           <div v-else class="w-full h-full flex items-center justify-center">
             <UIcon name="i-lucide-image" class="w-16 h-16 text-gray-400" />
+          </div>
+          
+          <!-- Hover View Button -->
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+            <UButton 
+              @click="openPreview(template)"
+              color="neutral"
+              variant="solid"
+              icon="i-heroicons-eye"
+              class="cursor-pointer shadow-lg bg-white text-primary-600 hover:bg-primary-50"
+            >
+              View
+            </UButton>
           </div>
           
           <div v-if="template.is_premium" class="absolute top-2 right-2">
@@ -200,5 +228,14 @@ const handleUpgrade = () => {
           Reset to Default
         </UButton>
       </div>
+
+    <!-- Template Preview Modal -->
+    <TemplatePreviewModal
+      v-if="showPreviewModal && previewTemplate"
+      :template-name="previewTemplate.name"
+      :template-description="previewTemplate.description || undefined"
+      :image-url="previewTemplate.thumbnail || undefined"
+      @close="closePreview"
+    />
   </div>
 </template>

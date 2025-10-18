@@ -15,12 +15,12 @@ CREATE TABLE templates (
 
 
 insert into templates (name, identifier, thumbnail, is_default) 
-values ('Nova', 'GbSPaBFr', 'http://localhost:4810/projectsdashboard/akadmin/images/1757982824_1757035080_Screenshot 2025-09-04 at 9.17.28 PM.png', TRUE),
-('Nebula', 'uYkJhyRn', 'http://localhost:4810/projectsdashboard/akadmin/images/1757982824_1757035080_Screenshot 2025-09-04 at 9.17.28 PM.png', FALSE),
-('Astra', 'XFtSwkva', 'http://localhost:4810/projectsdashboard/akadmin/images/1757982824_1757035080_Screenshot 2025-09-04 at 9.17.28 PM.png', FALSE),
-('Orion', 'FbegNBEm', 'http://localhost:4810/projectsdashboard/akadmin/images/1757982824_1757035080_Screenshot 2025-09-04 at 9.17.28 PM.png', FALSE),
-('Titan', 'TnpaLjip', 'http://localhost:4810/projectsdashboard/akadmin/images/1757982824_1757035080_Screenshot 2025-09-04 at 9.17.28 PM.png', FALSE),
-('Zenith', 'BzGQHqTm', 'http://localhost:4810/projectsdashboard/akadmin/images/1757982824_1757035080_Screenshot 2025-09-04 at 9.17.28 PM.png', FALSE);
+values ('Nova', 'GbSPaBFr', 'https://minio.dev.hitanshushah.com/templates/nova.png', TRUE),
+('Nebula', 'uYkJhyRn', 'https://minio.dev.hitanshushah.com/templates/nebula.png', FALSE),
+('Astra', 'XFtSwkva', 'https://minio.dev.hitanshushah.com/templates/astra.png', FALSE),
+('Orion', 'FbegNBEm', 'https://minio.dev.hitanshushah.com/templates/orion.png', FALSE),
+('Titan', 'TnpaLjip', 'https://minio.dev.hitanshushah.com/templates/titan.png', FALSE),
+('Zenith', 'BzGQHqTm', 'https://minio.dev.hitanshushah.com/templates/zenith.png', FALSE);
 
 update templates set is_premium = TRUE where identifier = 'TnpaLjip';
 update templates set is_premium = TRUE where identifier = 'uYkJhyRn';

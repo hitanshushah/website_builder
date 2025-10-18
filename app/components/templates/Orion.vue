@@ -12,6 +12,7 @@ interface Props {
   fourth?: string
   isPremiumUser?: boolean | false
   brandName?: string
+  brandUrl?: string
 }
 
 const props = defineProps<Props>()
@@ -937,7 +938,7 @@ const fourth = computed(() => props.fourth || '#10b981')
                   </a>
                 </div>
               </div>
-              <p v-if="!isPremiumUser">Powered by <a href="https://www.{{ brandName }}.com" target="_blank" class="hover:underline">{{ brandName }}</a></p>
+              <p v-if="!isPremiumUser">Powered by <a :href="brandUrl" target="_blank" class="hover:underline">{{ brandName }}</a></p>
             </div>
           </div>
         </div>

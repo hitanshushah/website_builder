@@ -12,6 +12,7 @@ interface Props {
   fourth?: string
   isPremiumUser?: boolean | false
   brandName?: string
+  brandUrl?: string
 }
 
 const props = defineProps<Props>()
@@ -229,12 +230,12 @@ onUnmounted(() => {
     >
       <div class="max-w-7xl mx-auto px-4 flex items-center justify-between">
           <div class="text-lg md:text-2xl font-bold"
-          :style="scrolled ? { color: fourth } : { color: 'white' }"
+          :style="scrolled ? { color: fourth } : { color: background }"
           >{{data?.userProfile.name}}</div>
         
         <button 
           class="lg:hidden p-2"
-          :style="scrolled ? { color: fourth } : { color: 'white' }"
+          :style="scrolled ? { color: fourth } : { color: background }"
           @click="mobileMenuOpen = !mobileMenuOpen"
         >
           <i class="fas fa-bars text-xl md:text-2xl"></i>
@@ -250,7 +251,7 @@ onUnmounted(() => {
               activeSection === section ? 'px-4 py-2 rounded-lg' : ''
             ]"
             :style="{
-              color: scrolled ? fourth : 'white',
+              color: scrolled ? fourth : background,
               ...(activeSection === section ? { background: `linear-gradient(135deg, ${primary} 0%, ${secondary} 100%)`, color: background } : {})
             }"
           >
@@ -293,14 +294,14 @@ onUnmounted(() => {
           <!-- Profile Image - shown first on mobile -->
           <div class="flex justify-center order-1 md:order-2">
             <div class="relative">
-              <div v-if="data?.userProfile.profile_photo_url" class="w-48 h-48 md:w-80 md:h-80 rounded-full border-4 md:border-8 border-white shadow-2xl overflow-hidden">
+              <div v-if="data?.userProfile.profile_photo_url" class="w-48 h-48 md:w-80 md:h-80 rounded-full border-4 md:border-8 shadow-2xl overflow-hidden" :style="{borderColor: background}">
                 <img 
                   :src="data.userProfile.profile_photo_url" 
                   :alt="data.userProfile.name"
                   class="w-full h-full object-cover"
                 >
               </div>
-              <div v-else class="w-48 h-48 md:w-80 md:h-80 rounded-full border-4 md:border-8 border-white shadow-2xl flex items-center justify-center text-4xl md:text-6xl font-bold bg-white bg-opacity-20" :style="{ color: background }">
+              <div v-else class="w-48 h-48 md:w-80 md:h-80 rounded-full border-4 md:border-8 shadow-2xl flex items-center justify-center text-4xl md:text-6xl font-bold bg-opacity-20" :style="{ color: background, backgroundColor: background, borderColor: background }">
                 {{ getUserInitials }}
               </div>
             </div>
@@ -316,8 +317,8 @@ onUnmounted(() => {
             </p>
             <button 
               @click="scrollToSection('contact')"
-              class="bg-white rounded-full px-6 md:px-8 py-3 md:py-4 font-semibold hover:scale-105 transition-transform shadow-lg text-sm md:text-base"
-              :style="{ color: primary }"
+              class="rounded-full px-6 md:px-8 py-3 md:py-4 font-semibold hover:scale-105 transition-transform shadow-lg text-sm md:text-base"
+              :style="{ color: primary, backgroundColor: background }"
             >
               Get in Touch <i class="fas fa-arrow-right ml-2"></i>
             </button>
@@ -523,10 +524,10 @@ onUnmounted(() => {
           <div class="space-y-12">
             <div v-for="exp in sortedExperiences" :key="exp.id" class="relative pl-2 md:pl-24">
               <div 
-                class="absolute hidden md:block left-4 md:left-8 top-0 w-8 h-8 rounded-full border-4 border-white shadow-lg"
-                :style="{ backgroundColor: primary }"
+                class="absolute hidden md:block left-4 md:left-8 top-0 w-8 h-8 rounded-full border-4 shadow-lg"
+                :style="{ backgroundColor: primary, borderColor: background }"
               ></div>
-              <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-2xl transition-shadow">
+              <div class="rounded-xl p-6 shadow-lg hover:shadow-2xl transition-shadow" :style="{ backgroundColor: background }">
                 <div class="flex items-start gap-4 mb-4">
                   <div class="flex-1">
                     <h3 class="text-2xl font-bold mb-1" :style="{ color: primary }">{{ exp.role }}, <span class="text-xl font-normal italic" :style="{ color: fourth }">{{ exp.company_name }}</span></h3>
@@ -600,7 +601,7 @@ onUnmounted(() => {
         </div>
         
         <div class="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
-          <div v-for="edu in sortedEducation" :key="edu.id" class="bg-white rounded-xl shadow-lg p-8 hover:shadow-2xl hover:-translate-y-2 transition-all">
+          <div v-for="edu in sortedEducation" :key="edu.id" class="rounded-xl shadow-lg p-8 hover:shadow-2xl hover:-translate-y-2 transition-all" :style="{ backgroundColor: background }">
             <div class="text-center mb-6">
               <i class="fas fa-graduation-cap text-5xl mb-4" :style="{ color: primary }"></i>
               <h3 class="text-2xl font-bold mb-2" :style="{ color: fourth }">{{ edu.degree }}</h3>
@@ -669,7 +670,7 @@ onUnmounted(() => {
             class="px-6 py-2 rounded-full font-medium transition-all border-2 cursor-pointer"
             :style="activeFilter === 'all' ? { 
               background: `linear-gradient(135deg, ${primary} 0%, ${secondary} 100%)`, 
-              color: 'white', 
+              color: background, 
               borderColor: 'transparent' 
             } : { 
               color: primary, 
@@ -686,7 +687,7 @@ onUnmounted(() => {
             class="px-6 py-2 rounded-full font-medium transition-all border-2 cursor-pointer"
             :style="activeFilter === category ? { 
               background: `linear-gradient(135deg, ${primary} 0%, ${secondary} 100%)`, 
-              color: 'white', 
+              color: background, 
               borderColor: 'transparent' 
             } : { 
               color: primary, 
@@ -699,7 +700,7 @@ onUnmounted(() => {
         </div>
         
         <div class="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
-          <div v-for="project in filteredProjects" :key="project.id" class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all">
+          <div v-for="project in filteredProjects" :key="project.id" class="rounded-xl shadow-lg overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all" :style="{ backgroundColor: background }">
             <div class="p-6">
               <h4 class="text-2xl font-bold mb-2" :style="{ color: fourth }">{{ project.name }}</h4>
               <p class="text-sm mb-3 opacity-60" :style="{ color: fourth }">{{ project.category }}</p>
@@ -850,7 +851,7 @@ onUnmounted(() => {
         </div>
         
         <div class="grid lg:grid-cols-2 gap-8">
-          <div v-for="[category, skills] in data.skillsByCategory" :key="category" class="bg-white rounded-xl shadow-lg p-8 hover:shadow-2xl transition-shadow">
+          <div v-for="[category, skills] in data.skillsByCategory" :key="category" class="rounded-xl shadow-lg p-8 hover:shadow-2xl transition-shadow" :style="{ backgroundColor: background }">
             <h3 class="text-3xl font-bold mb-6 text-center" :style="{ color: primary }">
               {{ category }}
             </h3>
@@ -919,7 +920,7 @@ onUnmounted(() => {
         <div v-if="data?.certifications?.length" class="mb-16">
           <h2 class="text-4xl font-bold text-center mb-12" :style="{ color: fourth }">Certifications</h2>
           <div class="grid lg:grid-cols-2 gap-8">
-            <div v-for="cert in data.certifications" :key="cert.id" class="bg-white rounded-xl shadow-lg p-8 hover:shadow-2xl transition-shadow">
+            <div v-for="cert in data.certifications" :key="cert.id" class="rounded-xl shadow-lg p-8 hover:shadow-2xl transition-shadow" :style="{ backgroundColor: background }">
               <div class="flex items-start gap-4 mb-4">
                 <div class="flex-1">
                   <h3 class="text-2xl font-bold mb-1" :style="{ color: fourth }">{{ cert.name }}</h3>
@@ -977,7 +978,7 @@ onUnmounted(() => {
         </div>
         
         <div class="grid lg:grid-cols-2 gap-8">
-          <div v-for="pub in data.publications" :key="pub.id" style="z-index: 10" class="opacity-85 bg-white rounded-xl shadow-lg p-8 hover:shadow-2xl transition-shadow">
+          <div v-for="pub in data.publications" :key="pub.id" style="z-index: 10" class="opacity-85 rounded-xl shadow-lg p-8 hover:shadow-2xl transition-shadow" :style="{ backgroundColor: background }">
             <div class="flex items-start gap-4 mb-4">
               <div class="flex-shrink-0">
                 <i class="fas fa-file-alt text-4xl" :style="{ color: primary }"></i>
@@ -1049,7 +1050,7 @@ onUnmounted(() => {
           ></div>
         </div>
         
-        <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-8 relative z-10">
+        <div class="max-w-2xl mx-auto rounded-2xl shadow-2xl p-8 relative z-10" :style="{ backgroundColor: background }">
           <form @submit.prevent="handleContactSubmit" class="space-y-6">
             <div class="grid md:grid-cols-2 gap-6">
               <input 
@@ -1141,7 +1142,7 @@ onUnmounted(() => {
           </a>
         </div>
         <p class="opacity-60">© {{ new Date().getFullYear() }} {{ data?.userProfile.name }}. All rights reserved.</p>
-        <p v-if="!isPremiumUser">Powered by <a href="https://www.{{ brandName }}.com" target="_blank" class="hover:underline">{{ brandName }}</a></p>
+        <p v-if="!isPremiumUser">Powered by <a :href="brandUrl" target="_blank" class="hover:underline">{{ brandName }}</a></p>
       </div>
     </footer>
 
@@ -1161,7 +1162,7 @@ onUnmounted(() => {
       @click="showProjectModal = false"
       class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
     >
-      <div class="bg-white rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden" @click.stop>
+      <div class="rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden" :style="{ backgroundColor: background }" @click.stop>
         <div class="flex justify-between items-center p-6 border-b">
           <h3 class="text-3xl font-bold" :style="{ color: fourth }">{{ activeProject.name }}</h3>
           <button 
@@ -1186,14 +1187,16 @@ onUnmounted(() => {
               <button 
                 v-if="getProjectImages(activeProject.assets).length > 1"
                 @click="prevImage"
-                class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white bg-opacity-90 hover:bg-opacity-100 transition-all flex items-center justify-center shadow-lg"
+                class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-opacity-90 hover:bg-opacity-100 transition-all flex items-center justify-center shadow-lg"
+                :style="{ backgroundColor: background }"
               >
                 <i class="fas fa-chevron-left text-xl" :style="{ color: primary }"></i>
               </button>
               <button 
                 v-if="getProjectImages(activeProject.assets).length > 1"
                 @click="nextImage"
-                class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white bg-opacity-90 hover:bg-opacity-100 transition-all flex items-center justify-center shadow-lg"
+                class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-opacity-90 hover:bg-opacity-100 transition-all flex items-center justify-center shadow-lg"
+                :style="{ backgroundColor: background }"
               >
                 <i class="fas fa-chevron-right text-xl" :style="{ color: primary }"></i>
               </button>

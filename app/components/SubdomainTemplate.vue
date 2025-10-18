@@ -14,6 +14,7 @@ const selectedColors = computed(() => subdomainData.value?.colors)
 const isPremiumUser = computed(() => subdomainData.value?.isPremiumUser || false)
 const config = useRuntimeConfig()
 const brandName = config.public.brandName
+const brandUrl = config.public.brandUrl
 
 const templateComponent = computed(() => {
   if (!subdomainData.value?.templateIdentifier) return null
@@ -29,7 +30,8 @@ const templateProps = computed(() => ({
   background: selectedColors.value?.background,
   fourth: selectedColors.value?.fourth,
   isPremiumUser: isPremiumUser.value,
-  brandName: brandName
+  brandName: brandName,
+  brandUrl: brandUrl
 }))
 
 useHead(() => ({

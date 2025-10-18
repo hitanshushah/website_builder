@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS premium_plans (
 
 INSERT INTO premium_plans (key, name, price) VALUES
     ('basic', 'Basic', 0.00),
-    ('plus', 'Plus', 9.00),
-    ('pro', 'Pro', 190.00)
+    ('plus', 'Plus', 5.99),
+    ('pro', 'Pro', 9.99)
 ON CONFLICT (key) DO NOTHING;
 
 -- migrate:down

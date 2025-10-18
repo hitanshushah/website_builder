@@ -104,6 +104,7 @@ const isPremiumUser = computed(() => {
 
 const config = useRuntimeConfig()
 const brandName = config.public.brandName
+const brandUrl = config.public.brandUrl
 
 // Computed props to pass to template preview
 const templatePreviewProps = computed(() => ({
@@ -113,7 +114,8 @@ const templatePreviewProps = computed(() => ({
   background: colorsStore.selectedColors.background,
   fourth: colorsStore.selectedColors.fourth,
   isPremiumUser: isPremiumUser.value,
-  brandName: brandName
+  brandName: brandName,
+  brandUrl: brandUrl
 }))
 
 </script>

@@ -61,7 +61,7 @@ BEGIN
         IF current_color_id IS NOT NULL THEN
             -- Soft delete all custom colors created by this user
             UPDATE colors 
-            SET deleted_at = NOW(), updated_at = NOW()
+            SET disable_color_scheme = true, updated_at = NOW()
             WHERE user_id = NEW.id 
             AND deleted_at IS NULL;
             

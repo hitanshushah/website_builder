@@ -37,7 +37,6 @@ INSERT INTO colors (key, name, primary_color, secondary_color, background_color,
 ('ocean_blue', 'Ocean Blue', '#2563eb', '#1e40af', '#3b82f6', NULL, NULL, TRUE, TRUE),
 ('forest_green', 'Forest Green', '#059669', '#047857', '#10b981', NULL, NULL, TRUE, FALSE),
 ('sunset_orange', 'Sunset Orange', '#ea580c', '#c2410c', '#f97316', NULL, NULL, TRUE, FALSE),
-('royal_purple', 'Royal Purple', '#7c3aed', '#6d28d9', '#8b5cf6', NULL, NULL, TRUE, FALSE),
 ('rose_pink', 'Rose Pink', '#e11d48', '#be185d', '#f43f5e', NULL, NULL, TRUE, FALSE),
 ('charcoal_gray', 'Charcoal Gray', '#374151', '#1f2937', '#6b7280', NULL, NULL, TRUE, FALSE);
 
