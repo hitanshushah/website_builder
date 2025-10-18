@@ -43,11 +43,12 @@ export async function saveUserPreferences(preferences: UserPreferences): Promise
 
 export async function getUserPreferences(userId: number): Promise<any> {
   const queryString = `
-    SELECT ut.*, t.name as template_name, t.identifier as template_identifier, 
+       SELECT ut.*, t.name as template_name, tk.file_name as template_identifier, 
            c.name as color_name, c.key as color_key
     FROM user_templates ut
     JOIN templates t ON ut.template_id = t.id
     JOIN colors c ON ut.color_id = c.id
+    JOIN template_keys tk ON tk.key = t.identifier
     WHERE ut.user_id = $1 AND ut.is_active = true AND ut.deleted_at IS NULL
   `
   

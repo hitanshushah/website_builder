@@ -402,9 +402,9 @@ onUnmounted(() => {
             <h2 class="text-4xl font-bold mb-3" :style="{ color: fourth }">{{ data?.userProfile.name }}</h2>
             <h3 
               class="text-2xl mb-6 font-semibold"
-              :style="{ background: `linear-gradient(135deg, ${primary} 0%, ${secondary} 100%)`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }"
+              :style="{ color: primary }"
             >
-              {{ data?.userProfile.designation }}
+              I'm a {{ data?.userProfile.designation }}
             </h3>
             
             <!-- Bio and Introduction -->

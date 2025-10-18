@@ -185,6 +185,7 @@ const handleUpgrade = () => {
           color="success"
           variant="subtle"
           icon="i-heroicons-check-circle"
+          class="cursor-pointer"
         >
           Save Template
         </UButton>
@@ -194,6 +195,7 @@ const handleUpgrade = () => {
           size="xl"
           variant="subtle"
           icon="i-heroicons-arrow-path"
+          class="cursor-pointer"
         >
           Reset to Default
         </UButton>

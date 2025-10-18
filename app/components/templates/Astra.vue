@@ -198,13 +198,13 @@ onUnmounted(() => {
                 
                 <!-- Desktop Navigation -->
                 <div class="hidden lg:flex space-x-6 xl:space-x-8">
-                    <a v-if="data.experiences.length" href="#experience" @click.prevent="scrollToSection('experience')" class="hover:transition-colors text-sm xl:text-base" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Experience</a>
-                    <a v-if="data.projects.length" href="#projects" @click.prevent="scrollToSection('projects')" class="hover:transition-colors text-sm xl:text-base" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Projects</a>
-                    <a v-if="data.skillsByCategory.length" href="#skills" @click.prevent="scrollToSection('skills')" class="hover:transition-colors text-sm xl:text-base" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Skills</a>
-                    <a v-if="data.education.length" href="#education" @click.prevent="scrollToSection('education')" class="hover:transition-colors text-sm xl:text-base" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Education</a>
-                    <a v-if="data.certifications.length" href="#certifications" @click.prevent="scrollToSection('certifications')" class="hover:transition-colors text-sm xl:text-base" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Certifications</a>
-                    <a v-if="data.publications.length" href="#publications" @click.prevent="scrollToSection('publications')" class="hover:transition-colors text-sm xl:text-base" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Publications</a>
-                    <a v-if="data.achievements.length" href="#achievements" @click.prevent="scrollToSection('achievements')" class="hover:transition-colors text-sm xl:text-base" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Achievements</a>
+                    <a v-if="data.experiences?.length" href="#experience" @click.prevent="scrollToSection('experience')" class="hover:transition-colors text-sm xl:text-base" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Experience</a>
+                    <a v-if="data.projects?.length" href="#projects" @click.prevent="scrollToSection('projects')" class="hover:transition-colors text-sm xl:text-base" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Projects</a>
+                    <a v-if="data.skillsByCategory?.length" href="#skills" @click.prevent="scrollToSection('skills')" class="hover:transition-colors text-sm xl:text-base" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Skills</a>
+                    <a v-if="data.education?.length" href="#education" @click.prevent="scrollToSection('education')" class="hover:transition-colors text-sm xl:text-base" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Education</a>
+                    <a v-if="data.certifications?.length" href="#certifications" @click.prevent="scrollToSection('certifications')" class="hover:transition-colors text-sm xl:text-base" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Certifications</a>
+                    <a v-if="data.publications?.length" href="#publications" @click.prevent="scrollToSection('publications')" class="hover:transition-colors text-sm xl:text-base" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Publications</a>
+                    <a v-if="data.achievements?.length" href="#achievements" @click.prevent="scrollToSection('achievements')" class="hover:transition-colors text-sm xl:text-base" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Achievements</a>
                     <a href="#contact" @click.prevent="scrollToSection('contact')" class="hover:transition-colors text-sm xl:text-base" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Contact</a>
                 </div>
 
@@ -226,13 +226,16 @@ onUnmounted(() => {
                 style="border-color: var(--fourth-color); background-color: var(--background-color)"
             >
                 <div class="px-2 pt-2 pb-3 space-y-1">
-                    <a v-if="data.experiences.length" href="#experience" @click.prevent="scrollToSection('experience')" class="block px-3 py-2 text-base font-medium hover:transition-colors" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Experience</a>
+                    <a v-if="data.experiences?.length" href="#experience" @click.prevent="scrollToSection('experience')" class="block px-3 py-2 text-base font-medium hover:transition-colors" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Experience</a>
+                    <a v-if="data.projects?.length" href="#projects" @click.prevent="scrollToSection('projects')" class="block px-3 py-2 text-base font-medium hover:transition-colors" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Projects</a>
                     <a v-if="data.projects.length" href="#projects" @click.prevent="scrollToSection('projects')" class="block px-3 py-2 text-base font-medium hover:transition-colors" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Projects</a>
-                    <a v-if="data.skillsByCategory.length" href="#skills" @click.prevent="scrollToSection('skills')" class="block px-3 py-2 text-base font-medium hover:transition-colors" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Skills</a>
-                    <a v-if="data.education.length" href="#education" @click.prevent="scrollToSection('education')" class="block px-3 py-2 text-base font-medium hover:transition-colors" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Education</a>
-                    <a v-if="data.certifications.length" href="#certifications" @click.prevent="scrollToSection('certifications')" class="block px-3 py-2 text-base font-medium hover:transition-colors" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Certifications</a>
-                    <a v-if="data.publications.length" href="#publications" @click.prevent="scrollToSection('publications')" class="block px-3 py-2 text-base font-medium hover:transition-colors" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Publications</a>
-                    <a v-if="data.achievements.length" href="#achievements" @click.prevent="scrollToSection('achievements')" class="block px-3 py-2 text-base font-medium hover:transition-colors" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Achievements</a>
+                    <a v-if="data.skillsByCategory?.length" href="#skills" @click.prevent="scrollToSection('skills')" class="block px-3 py-2 text-base font-medium hover:transition-colors" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Skills</a>
+                    <a v-if="data.education?.length" href="#education" @click.prevent="scrollToSection('education')" class="block px-3 py-2 text-base font-medium hover:transition-colors" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Education</a>
+                    <a v-if="data.certifications?.length" href="#certifications" @click.prevent="scrollToSection('certifications')" class="block px-3 py-2 text-base font-medium hover:transition-colors" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Certifications</a>
+                    <a v-if="data.publications?.length" href="#publications" @click.prevent="scrollToSection('publications')" class="block px-3 py-2 text-base font-medium hover:transition-colors" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Publications</a>
+                    <a v-if="data.achievements?.length" href="#achievements" @click.prevent="scrollToSection('achievements')" class="block px-3 py-2 text-base font-medium hover:transition-colors" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Achievements</a>
+                    <a v-if="data.certifications?.length" href="#certifications" @click.prevent="scrollToSection('certifications')" class="block px-3 py-2 text-base font-medium hover:transition-colors" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Certifications</a>
+                    <a v-if="data.achievements?.length" href="#achievements" @click.prevent="scrollToSection('achievements')" class="block px-3 py-2 text-base font-medium hover:transition-colors" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Achievements</a>
                     <a href="#contact" @click.prevent="scrollToSection('contact')" class="block px-3 py-2 text-base font-medium hover:transition-colors" style="color: var(--fourth-color)" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--fourth-color)'">Contact</a>
                 </div>
             </div>
@@ -339,7 +342,7 @@ onUnmounted(() => {
     </section>
 
     <!-- Experience Section -->
-    <section v-if="data.experiences.length" id="experience" class="py-16 sm:py-20 px-4" style="background-color: var(--background-color)">
+    <section v-if="data.experiences?.length" id="experience" class="py-16 sm:py-20 px-4" style="background-color: var(--background-color)">
         <div class="max-w-7xl mx-auto">
             <h2 class="text-3xl sm:text-4xl font-bold mb-8 sm:mb-12 text-center" style="color: var(--primary-color)">Experience</h2>
             <div class="space-y-6 sm:space-y-8">
@@ -388,7 +391,7 @@ onUnmounted(() => {
     </section>
 
     <!-- Projects Section -->
-    <section v-if="data.projects.length" id="projects" class="py-16 sm:py-20 px-4" style="background-color: var(--secondary-color); ">
+    <section v-if="data.projects?.length" id="projects" class="py-16 sm:py-20 px-4" style="background-color: var(--secondary-color); ">
         <div class="max-w-7xl mx-auto">
             <h2 class="text-3xl sm:text-4xl font-bold mb-8 sm:mb-12 text-center" style="color: var(--background-color)">Projects</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
@@ -400,7 +403,7 @@ onUnmounted(() => {
                 >
                     <!-- Project Image Thumbnail -->
                     <div 
-                        v-if="getProjectImages(project.assets).length"
+                        v-if="getProjectImages(project.assets)?.length"
                         class="relative w-full h-48 overflow-hidden cursor-pointer"
                         @click="openProjectModal(project)"
                     >
@@ -427,7 +430,7 @@ onUnmounted(() => {
                                 <h3 class="text-lg sm:text-xl lg:text-2xl font-bold flex-1 break-words" style="color: var(--fourth-color)">{{ project.name }}</h3>
                                 <!-- Image Gallery Button -->
                                 <button 
-                                    v-if="getProjectImages(project.assets).length"
+                                    v-if="getProjectImages(project.assets)?.length"
                                     @click="openProjectModal(project)"
                                     class="p-2 rounded-full transition hover:scale-110 flex-shrink-0"
                                     style="background-color: var(--primary-color); color: var(--background-color)"
@@ -436,7 +439,7 @@ onUnmounted(() => {
                                     <i class="fas fa-images text-sm"></i>
                                 </button>
                             </div>
-                            <span v-if="project.category" class="px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm self-start" style="background-color: var(--primary-color); color: var(--background-color)">{{ project.category }}</span>
+                            <span v-if="project.category" class="px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm self-start" style="background-color: var(--background-color); color: var(--primary-color); border: 1px solid var(--primary-color)">{{ project.category }}</span>
                         </div>
                         <p class="mb-4 text-sm sm:text-base break-words" style="color: var(--fourth-color)">{{ project.description || 'No description available' }}</p>
                         <div v-if="project.technologies?.length" class="flex flex-wrap gap-2 mb-4">
@@ -444,21 +447,21 @@ onUnmounted(() => {
                                 v-for="tech in project.technologies" 
                                 :key="tech"
                                 class="px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm"
-                                style="background-color: var(--fourth-color); color: var(--background-color)"
+                                style="background-color: var(--background-color); color: var(--primary-color); border: 1px solid var(--primary-color)"
                             >
                                 {{ tech }}
                             </span>
                         </div>
-                        <div v-if="project.links?.length" class="flex flex-wrap gap-2 sm:gap-4 mt-4">
+                        <div v-if="project.links?.length" class="flex flex-wrap gap-2 sm:gap-4 mt-4 justify-center">
                             <a 
                                 v-for="link in project.links" 
                                 :key="link.url"
                                 :href="link.url" 
                                 target="_blank"
-                                class="hover:underline rounded-full px-2 sm:px-3 py-1 text-xs sm:text-sm"
-                                style="color: var(--primary-color); border: 1px solid var(--primary-color)"
+                                class="hover:underline rounded-sm px-2 sm:px-3 py-1 text-xs sm:text-sm"
+                                style="color: var(--background-color); background-color: var(--primary-color)"
                             >
-                                {{ link.title }}
+                               <i class="fas fa-external-link-alt mr-2!"></i> {{ link.title }}
                             </a>
                         </div>
                     </div>
@@ -468,7 +471,7 @@ onUnmounted(() => {
     </section>
 
     <!-- Skills Section -->
-    <section v-if="data.skillsByCategory.length" id="skills" class="py-16 sm:py-20 px-4" style="background-color: var(--background-color)">
+    <section v-if="data.skillsByCategory?.length" id="skills" class="py-16 sm:py-20 px-4" style="background-color: var(--background-color)">
         <div class="max-w-7xl mx-auto">
             <h2 class="text-3xl sm:text-4xl font-bold mb-8 sm:mb-12 text-center" style="color: var(--primary-color)">Skills</h2>
             <div class="space-y-6 sm:space-y-8">
@@ -505,7 +508,7 @@ onUnmounted(() => {
     </section>
 
     <!-- Education Section -->
-    <section v-if="data.education.length" id="education" class="py-16 sm:py-20 px-4" style="background-color: var(--secondary-color); ">
+    <section v-if="data.education?.length" id="education" class="py-16 sm:py-20 px-4" style="background-color: var(--secondary-color); ">
         <div class="max-w-7xl mx-auto">
             <h2 class="text-3xl sm:text-4xl font-bold mb-8 sm:mb-12 text-center" style="color: var(--background-color)">Education</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
@@ -526,7 +529,7 @@ onUnmounted(() => {
     </section>
 
     <!-- Achievements Section -->
-    <section v-if="data.achievements.length" id="achievements" class="py-16 sm:py-20 px-4" style="background-color: var(--background-color)">
+    <section v-if="data.achievements?.length" id="achievements" class="py-16 sm:py-20 px-4" style="background-color: var(--background-color)">
         <div class="max-w-7xl mx-auto">
             <h2 class="text-3xl sm:text-4xl font-bold mb-8 sm:mb-12 text-center" style="color: var(--primary-color)">Achievements</h2>
             <div class="max-w-4xl mx-auto">
@@ -547,7 +550,7 @@ onUnmounted(() => {
     </section>
 
     <!-- Certifications Section -->
-    <section v-if="data.certifications.length" id="certifications" class="py-16 sm:py-20 px-4" style="background-color: var(--secondary-color);">
+    <section v-if="data.certifications?.length" id="certifications" class="py-16 sm:py-20 px-4" style="background-color: var(--secondary-color);">
         <div class="max-w-7xl mx-auto">
             <h2 class="text-3xl sm:text-4xl font-bold mb-8 sm:mb-12 text-center" style="color: var(--background-color)">Certifications</h2>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
@@ -582,7 +585,7 @@ onUnmounted(() => {
     </section>
 
     <!-- Publications Section -->
-    <section v-if="data.publications.length" id="publications" class="py-16 sm:py-20 px-4" style="background-color: var(--background-color)">
+    <section v-if="data.publications?.length" id="publications" class="py-16 sm:py-20 px-4" style="background-color: var(--background-color)">
         <div class="max-w-7xl mx-auto">
             <h2 class="text-3xl sm:text-4xl font-bold mb-8 sm:mb-12 text-center" style="color: var(--primary-color)">Publications</h2>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">

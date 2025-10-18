@@ -15,7 +15,15 @@ CREATE TABLE templates (
 
 
 insert into templates (name, identifier, thumbnail, is_default) 
-values ('test', 'abcd', 'http://localhost:4810/projectsdashboard/akadmin/images/1757982824_1757035080_Screenshot 2025-09-04 at 9.17.28 PM.png', TRUE);
+values ('Nova', 'GbSPaBFr', 'http://localhost:4810/projectsdashboard/akadmin/images/1757982824_1757035080_Screenshot 2025-09-04 at 9.17.28 PM.png', TRUE),
+('Nebula', 'uYkJhyRn', 'http://localhost:4810/projectsdashboard/akadmin/images/1757982824_1757035080_Screenshot 2025-09-04 at 9.17.28 PM.png', FALSE),
+('Astra', 'XFtSwkva', 'http://localhost:4810/projectsdashboard/akadmin/images/1757982824_1757035080_Screenshot 2025-09-04 at 9.17.28 PM.png', FALSE),
+('Orion', 'FbegNBEm', 'http://localhost:4810/projectsdashboard/akadmin/images/1757982824_1757035080_Screenshot 2025-09-04 at 9.17.28 PM.png', FALSE),
+('Titan', 'TnpaLjip', 'http://localhost:4810/projectsdashboard/akadmin/images/1757982824_1757035080_Screenshot 2025-09-04 at 9.17.28 PM.png', FALSE),
+('Zenith', 'BzGQHqTm', 'http://localhost:4810/projectsdashboard/akadmin/images/1757982824_1757035080_Screenshot 2025-09-04 at 9.17.28 PM.png', FALSE);
+
+update templates set is_premium = TRUE where identifier = 'TnpaLjip';
+update templates set is_premium = TRUE where identifier = 'uYkJhyRn';
 -- Create index on is_active for filtering active templates
 CREATE INDEX idx_templates_is_active ON templates(is_active);
 

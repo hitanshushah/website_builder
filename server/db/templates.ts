@@ -16,7 +16,20 @@ export interface Template {
 
 export async function getActiveTemplates(): Promise<Template[]> {
   const sql = `
-    SELECT * FROM templates 
+    SELECT 
+      t.id,
+      t.name,
+      tk.file_name AS identifier,  -- use file_name as identifier
+      t.description,
+      t.is_active,
+      t.is_premium,
+      t.is_default,
+      t.thumbnail,
+      t.created_at,
+      t.updated_at,
+      t.deleted_at
+    FROM templates t
+    LEFT JOIN template_keys tk ON tk.key = t.identifier
     WHERE deleted_at IS NULL 
     AND is_active = TRUE
     ORDER BY is_default DESC, created_at DESC
