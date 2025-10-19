@@ -8,7 +8,13 @@ const allowedHosts = process.env.VITE_ALLOWED_HOSTS
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  modules: ['@nuxt/ui','@pinia/nuxt','@nuxt/eslint','nuxt-nodemailer'],
+  modules: [
+    '@nuxt/ui',
+    '@pinia/nuxt',
+    '@nuxt/eslint',
+    'nuxt-nodemailer',
+    '@unlok-co/nuxt-stripe'
+  ],
   css: ['~/assets/css/main.css'],
   vite: {
     plugins: [
@@ -27,6 +33,17 @@ export default defineNuxtConfig({
   devServer: {
     host: '0.0.0.0',
     port: 3000
+  },
+  stripe: {
+    server: {
+      key: process.env.STRIPE_SECRET_KEY,
+      options: {
+      },
+    },
+    client: {
+      key: process.env.STRIPE_PUBLIC_KEY,
+      options: {},
+    },
   },
   nodemailer: {
   from: process.env.PURELYMAIL_EMAIL,
@@ -55,12 +72,21 @@ export default defineNuxtConfig({
     minioSecretKey: process.env.MINIO_SECRET_KEY,
     minioUseSSL: process.env.MINIO_USE_SSL === 'true',
     
+    // Stripe Configuration
+    stripeSecretKey: process.env.STRIPE_SECRET_KEY,
+    stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+    stripePlusPriceId: process.env.STRIPE_PLUS_PRICE_ID,
+    stripeProPriceId: process.env.STRIPE_PRO_PRICE_ID,
+    stripePlusProductId: process.env.STRIPE_PLUS_PRODUCT_ID,
+    stripeProProductId: process.env.STRIPE_PRO_PRODUCT_ID,
+    
     public: {
       authentikLogoutUrl: process.env.AUTHENTIK_LOGOUT_URL,
       domainUrl: process.env.DOMAIN_URL,
       brandName: process.env.BRAND_NAME,
       ddns: process.env.DDNS,
-      brandUrl: process.env.BRAND_URL
+      brandUrl: process.env.BRAND_URL,
+      baseUrl: process.env.BASE_URL
     }
   }
 })

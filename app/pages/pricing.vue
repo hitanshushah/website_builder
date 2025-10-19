@@ -7,6 +7,16 @@
           Choose Your Plan
         </h1>
       </div>
+      <div v-if="currentPlanId !== 1" class="text-center md:text-end mt-4 mb-4">
+          <UButton
+            color="primary"
+            variant="outline"
+            @click="handleManageMembership"
+            class="cursor-pointer"
+          >
+            Manage Membership
+          </UButton>
+        </div>
 
       <!-- Loading State -->
       <div v-if="loading" class="flex items-center justify-center py-12">
@@ -90,8 +100,8 @@ const getButtonConfig = (planId: number, planName: string) => {
   if (isCurrentPlan) {
     return {
       label: 'Current Plan',
-      color: 'neutral',
-      variant: 'subtle',
+      color: 'neutral' as const,
+      variant: 'subtle' as const,
       disabled: true
     }
   }
@@ -99,8 +109,8 @@ const getButtonConfig = (planId: number, planName: string) => {
   if (isLowerTier) {
     return {
       label: 'Downgrade',
-      color: 'neutral',
-      variant: 'outline',
+      color: 'neutral' as const,
+      variant: 'outline' as const,
       onClick: () => handlePlanChange(planId, planName, 'downgrade')
     }
   }
@@ -207,18 +217,146 @@ const sections = computed(() => [
   },
 ])
 
-const handlePlanChange = (planId: number, planName: string, action: 'upgrade' | 'downgrade') => {
-  toast.add({
-    title: 'Coming Soon',
-    description: `${action === 'upgrade' ? 'Upgrade' : 'Downgrade'} to ${planName} plan will be available soon!`,
-    color: 'primary',
-    icon: 'i-heroicons-information-circle'
-  })
+const handlePlanChange = async (planId: number, planName: string, action: 'upgrade' | 'downgrade') => {
+  if (action === 'downgrade') {
+    handleManageMembership()
+    return
+  }
+
+  // For upgrades, redirect to Stripe checkout
+  try {
+    const plan = dbPlans.value.find(p => p.id === planId)
+    if (!plan) {
+      throw new Error('Plan not found')
+    }
+
+    // Skip Stripe checkout for free plans
+    if (plan.price === 0) {
+      toast.add({
+        title: 'Free Plan',
+        description: `${planName} is already free! No payment required.`,
+        color: 'info',
+        icon: 'i-heroicons-information-circle'
+      })
+      return
+    }
+
+    if (!userStore.user?.id) {
+      toast.add({
+        title: 'Authentication Required',
+        description: 'Please log in to upgrade your plan',
+        color: 'error'
+      })
+      return
+    }
+
+    const response = await $fetch<{ url: string }>('/api/create-checkout-session', {
+      method: 'POST',
+      body: {
+        planKey: plan.key,
+        userId: userStore.user.id,
+        customerEmail: userStore.user.email
+      }
+    })
+
+    if (response.url) {
+      window.location.href = response.url
+    }
+  } catch (error: any) {
+    console.error('Checkout error:', error)
+    
+    // Handle specific error messages
+    const errorMessage = error.data?.statusMessage || error.message || 'Failed to start checkout process. Please try again.'
+    
+    toast.add({
+      title: 'Error',
+      description: errorMessage,
+      color: 'error'
+    })
+  }
+}
+
+// Handle success/cancel from Stripe checkout
+const handleCheckoutResult = () => {
+  const urlParams = new URLSearchParams(window.location.search)
+  const success = urlParams.get('success')
+  const canceled = urlParams.get('canceled')
+  const sessionId = urlParams.get('session_id')
+
+  if (success && sessionId) {
+    toast.add({
+      title: 'Payment Successful!',
+      description: 'Your subscription has been activated. Welcome to your new plan!',
+      color: 'success',
+      icon: 'i-heroicons-check-circle'
+    })
+    // Refresh user data to get updated plan
+    userStore.fetchUser()
+  } else if (canceled) {
+    toast.add({
+      title: 'Payment Canceled',
+      description: 'Your payment was canceled. You can try again anytime.',
+      color: 'warning',
+      icon: 'i-heroicons-exclamation-triangle'
+    })
+  }
+}
+
+const handleManageMembership = async () => {
+  try {
+    if (!userStore.user?.id) {
+      toast.add({
+        title: 'Authentication Required',
+        description: 'Please log in to manage your membership',
+        color: 'error'
+      })
+      return
+    }
+
+    // Check if user is on basic plan
+    if (currentPlanId.value === 1) {
+      toast.add({
+        title: 'Upgrade Required',
+        description: 'Customer portal is only available for paid plans. Please upgrade your plan first.',
+        color: 'warning',
+        icon: 'i-heroicons-exclamation-triangle'
+      })
+      return
+    }
+
+    const response = await $fetch<{ url: string; success: boolean }>('/api/customer-portal', {
+      method: 'POST',
+      body: {
+        userId: userStore.user.id,
+        customerEmail: userStore.user.email
+      }
+    })
+
+    if (response.url) {
+      window.open(
+        response.url,
+        '_blank' // opens in a new tab
+      )
+    } else {
+      throw new Error('No portal URL received')
+    }
+  } catch (error: any) {
+    console.error('Customer portal error:', error)
+    
+    const errorMessage = error.data?.statusMessage || error.message || 'Failed to access customer portal. Please try again.'
+    
+    toast.add({
+      title: 'Error',
+      description: errorMessage,
+      color: 'error'
+    })
+  }
 }
 
 onMounted(async () => {
   await fetchPlans()
   await userStore.fetchUser()
+  handleCheckoutResult()
 })
 </script>
 
