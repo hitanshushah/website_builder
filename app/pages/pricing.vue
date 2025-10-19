@@ -112,37 +112,23 @@ const getButtonConfig = (planId: number, planName: string) => {
 }
 
 const tiers = computed(() => {
-  const basicPlan = getPlanByKey('basic')
-  const plusPlan = getPlanByKey('plus')
-  const proPlan = getPlanByKey('pro')
+  if (!dbPlans.value.length) return []
 
-  return [
-    {
-      id: 'basic',
-      title: basicPlan?.name || 'Basic',
-      price: basicPlan ? formatPrice(basicPlan.price) : 'Free',
-      billingCycle: basicPlan?.price === 0 ? '' : '/month',
-      button: getButtonConfig(basicPlan?.id || 1, basicPlan?.name || 'Basic')
-    },
-    {
-      id: 'plus',
-      title: plusPlan?.name || 'Plus',
-      price: plusPlan ? formatPrice(plusPlan.price) : '$9',
-      billingCycle: '/month',
-      badge: 'Most Popular',
-      button: getButtonConfig(plusPlan?.id || 2, plusPlan?.name || 'Plus'),
-      highlight: currentPlanId.value === (plusPlan?.id || 2)
-    },
-    {
-      id: 'pro',
-      title: proPlan?.name || 'Pro',
-      price: proPlan ? formatPrice(proPlan.price) : '$19',
-      billingCycle: '/month',
-      button: getButtonConfig(proPlan?.id || 3, proPlan?.name || 'Pro'),
-      highlight: currentPlanId.value === (proPlan?.id || 3)
+  const availablePlans = dbPlans.value.map((plan) => {
+    return {
+      id: plan.key,
+      title: plan.name,
+      price: formatPrice(plan.price),
+      billingCycle: plan.price === 0 ? '' : '/month',
+      button: getButtonConfig(plan.id, plan.name),
+      highlight: currentPlanId.value === plan.id,
+      badge: plan.key === 'plus' ? 'Most Popular' : undefined
     }
-  ]
+  })
+
+  return availablePlans
 })
+
 
 const sections = computed(() => [
   {

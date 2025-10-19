@@ -205,7 +205,7 @@ const closePreview = () => {
       </div>
     </div>
     <div v-if="!loading" class="flex justify-center gap-4 mt-8 flex-col md:flex-row w-fit justify-self-center">
-        <UBadge v-if="needsUpgrade" color="warning" variant="subtle">Plus Plan Required to Save</UBadge>
+        <UBadge v-if="needsUpgrade" color="warning" variant="subtle">Pro Plan Required to Save</UBadge>
         <UButton
           v-else
           @click="saveTemplate"

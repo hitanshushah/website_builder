@@ -269,7 +269,7 @@
             >
               Try
             </UButton>
-            <UBadge v-if="!isPremiumUser" color="warning" variant="subtle">Plus Plan Required to Save</UBadge>
+            <UBadge v-if="!isPremiumUser" color="warning" variant="subtle">Pro Plan Required to Save</UBadge>
             <UButton
               v-else
               @click="saveCustomColors"

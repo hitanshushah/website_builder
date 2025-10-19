@@ -19,6 +19,7 @@ export async function getAllPremiumPlans(): Promise<PremiumPlan[]> {
       created_at,
       updated_at
     FROM premium_plans
+    WHERE is_active = true
     ORDER BY price ASC
   `
   
@@ -36,7 +37,7 @@ export async function getPremiumPlanByKey(key: string): Promise<PremiumPlan | nu
       created_at,
       updated_at
     FROM premium_plans
-    WHERE key = $1
+    WHERE key = $1 AND is_active = true
   `
   
   const plans = await query<PremiumPlan>(sql, [key])
