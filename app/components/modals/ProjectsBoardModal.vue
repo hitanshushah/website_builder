@@ -23,9 +23,11 @@
               <p class="font-medium mb-1">What you can do in Projects Board:</p>
               <ul class="space-y-1 text-xs">
                 <li>• Create and manage projects</li>
-                <li>• Add technologies and skills</li>
+                <li>• Upload your resume and cover letter</li>
                 <li>• Update your profile information</li>
-                <li>• Create your own domain</li>
+                <li>• Upload your profile picture</li>
+                <li>• Add your social media links</li>
+                <li>• Add your Bio and Designation</li>
               </ul>
             </div>
           </div>
@@ -80,7 +82,7 @@ const sectionName = computed(() => {
 
 const goToProjectsBoard = () => {
   // Navigate to projects board
-  navigateTo('/projectsboard')
+  window.open('https://projectsboard.live', '_blank')
   emit('close')
 }
 </script>

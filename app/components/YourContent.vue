@@ -16,8 +16,10 @@
         :icon="section.icon"
         :icon-color="section.iconColor"
         :is-open="openSections[section.id]"
+        :show-info="section.id === 'projects' || section.id === 'user-info'"
         @toggle="toggleAccordion(section.id)"
         @add="addItem(section.id)"
+        @info="showInfoModal(section.id)"
       >
         <!-- Slot content for each section -->
         <template v-if="section.id === 'user-info'">
@@ -176,6 +178,9 @@
 
   <!-- ProjectsBoardModal -->
 <ModalsProjectsBoardModal v-if="showProjectsBoardModal" :section="projectsBoardSection" @close="closeProjectsBoardModal" />
+
+  <!-- ProjectsBoardInfoModal -->
+<ModalsProjectsBoardInfoModal v-if="showProjectsBoardInfoModal" :section="projectsBoardInfoSection" @close="closeProjectsBoardInfoModal" />
 
 </template>
 
@@ -447,6 +452,15 @@ const closeProjectsBoardModal = () => {
   showProjectsBoardModal.value = false
 }
 
+const showInfoModal = (section) => {
+  projectsBoardInfoSection.value = section
+  showProjectsBoardInfoModal.value = true
+}
+
+const closeProjectsBoardInfoModal = () => {
+  showProjectsBoardInfoModal.value = false
+}
+
 // Generic delete handler
 const handleItemDeleted = (itemId, section) => {
   if (projectsBoardData.value?.[section]) {
@@ -524,6 +538,8 @@ const showContactDetailsForm = ref(false)
 const showContactDetailsEditForm = ref(false)
 const showProjectsBoardModal = ref(false)
 const projectsBoardSection = ref('')
+const showProjectsBoardInfoModal = ref(false)
+const projectsBoardInfoSection = ref('')
 
 const fetchProjectsBoardData = async () => {
   try {

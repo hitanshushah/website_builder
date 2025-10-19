@@ -50,5 +50,6 @@ onMounted(async () => {
         </div>
       </UContainer>
     </div>
+    <Footer />
   </UApp>
 </template>

@@ -15,6 +15,17 @@
         </div>
         <div class="flex items-center space-x-2">
           <UButton 
+            v-if="showInfo"
+            size="sm" 
+            variant="ghost" 
+            color="blue"
+            @click.stop="$emit('info')"
+            class="cursor-pointer"
+            title="Information"
+          >
+            <UIcon name="i-heroicons-information-circle" class="w-4 h-4" />
+          </UButton>
+          <UButton 
             size="sm" 
             variant="subtle" 
             color="neutral"
@@ -67,10 +78,14 @@ const props = defineProps({
   isOpen: {
     type: Boolean,
     default: false
+  },
+  showInfo: {
+    type: Boolean,
+    default: false
   }
 })
 
-const emit = defineEmits(['toggle', 'add'])
+const emit = defineEmits(['toggle', 'add', 'info'])
 
 </script>
 
