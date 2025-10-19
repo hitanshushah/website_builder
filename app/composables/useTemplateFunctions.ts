@@ -119,6 +119,66 @@ export const useTemplateFunctions = (data: Ref<ProcessedTemplateData | null>) =>
     return percentages[level.toLowerCase()] || 50
   }
 
+  // Generate favicon URL using placehold.co API
+  const generateFavicon = (options: {
+    primaryColor?: string
+    secondaryColor?: string
+    name?: string
+    font?: string
+  } = {}): string => {
+    const config = useRuntimeConfig()
+    const brandName = config.public.brandName
+    const {
+      primaryColor = '000000',
+      secondaryColor = 'FFFFFF',
+      name = brandName,
+      font = 'roboto'
+    } = options
+
+    // Get initials from the name
+    const initials = getInitials(name)
+
+    // Remove hash symbols if present
+    const cleanPrimaryColor = primaryColor.replace('#', '')
+    const cleanSecondaryColor = secondaryColor.replace('#', '')
+
+    // Construct the placehold.co URL
+    const baseUrl = 'https://placehold.co'
+    const faviconUrl = `${baseUrl}/10x10/transparent/${cleanPrimaryColor}?text=${encodeURIComponent(initials)}&font=${font}`
+
+    return faviconUrl
+  }
+
+  // Set favicon for the current page
+  const setFavicon = (options: {
+    primaryColor?: string
+    secondaryColor?: string
+    name?: string
+    font?: string
+  } = {}) => {
+    if (process.client) {
+      const faviconUrl = generateFavicon(options)
+      
+      // Set document title to user's name
+      if (options.name) {
+        document.title = options.name
+      }
+      
+      // Remove existing favicon links
+      const existingLinks = document.querySelectorAll('link[rel*="icon"]')
+      existingLinks.forEach(link => link.remove())
+      
+      // Create new favicon link
+      const link = document.createElement('link')
+      link.rel = 'icon'
+      link.type = 'image/png'
+      link.sizes = '32x32'
+      link.href = faviconUrl
+      
+      document.head.appendChild(link)
+    }
+  }
+
   return {
     sortedExperiences,
     sortedEducation,
@@ -129,7 +189,9 @@ export const useTemplateFunctions = (data: Ref<ProcessedTemplateData | null>) =>
     formatDateRange,
     formatDate,
     formatYear,
-    getProficiencyPercentage
+    getProficiencyPercentage,
+    generateFavicon,
+    setFavicon
   }
 }
 

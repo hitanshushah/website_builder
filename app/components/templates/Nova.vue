@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, toRef } from 'vue'
+import { ref, computed, toRef, onMounted } from 'vue'
 import type { ProcessedTemplateData } from '../../composables/useTemplateData'
 import { useTemplateFunctions } from '../../composables/useTemplateFunctions'
 import { useContactForm } from '../../composables/useContactForm'
@@ -27,7 +27,8 @@ const {
   formatDateRange,
   formatDate,
   formatYear,
-  getProficiencyPercentage
+  getProficiencyPercentage,
+  setFavicon
 } = useTemplateFunctions(dataRef)
 
 // Open link in new tab
@@ -141,6 +142,18 @@ const scrollToSection = (id: string) => {
   }
 }
 
+// Lifecycle
+onMounted(() => {
+  // Set favicon
+  if (props.data?.userProfile?.name && props.primary && props.background) {
+    setFavicon({
+      primaryColor: props.primary,
+      secondaryColor: props.background,
+      name: props.data.userProfile.name
+    })
+  }
+})
+
 </script>
 
 <template>
@@ -212,15 +225,6 @@ const scrollToSection = (id: string) => {
                 {{ data.userProfile.phone_number }}
               </a>
             </div>
-            
-            <!-- Location -->
-            <div v-if="data.userProfile.city || data.userProfile.province || data.userProfile.country" class="flex items-center justify-center gap-2">
-              <i class="fas fa-location-dot text-[var(--background-color)]"></i>
-              <span class="text-[var(--background-color)]">
-                {{ [data.userProfile.city, data.userProfile.province, data.userProfile.country].filter(Boolean).join(', ') }}
-              </span>
-            </div>
-            
             <!-- Website -->
             <div v-if="data.userProfile.website_url" class="flex items-center justify-center gap-2">
               <i class="fas fa-globe text-[var(--background-color)]"></i>
@@ -229,9 +233,27 @@ const scrollToSection = (id: string) => {
                 target="_blank"
                 class="text-[var(--background-color)] hover:text-[var(--fourth-color)] transition-colors duration-200 break-all"
               >
-                {{ data.userProfile.website_url }}
+                {{ data.userProfile.website_url.replace(/^https?:\/\//, '') }}
               </a>
             </div>
+            <div v-if="data.userProfile.projects_board_url" class="flex items-center justify-center gap-2">
+              <i class="fas fa-globe text-[var(--background-color)]"></i>
+              <a 
+                :href="data.userProfile.projects_board_url.startsWith('http') ? data.userProfile.projects_board_url : `https://${data.userProfile.projects_board_url}`" 
+                target="_blank"
+                class="text-[var(--background-color)] hover:text-[var(--fourth-color)] transition-colors duration-200 break-all"
+              >
+                {{ data.userProfile.projects_board_url.replace(/^https?:\/\//, '') }}
+              </a>
+            </div>
+            <!-- Location -->
+            <div v-if="data.userProfile.city || data.userProfile.province || data.userProfile.country" class="flex items-center justify-center gap-2 mt-2">
+              <i class="fas fa-location-dot text-[var(--background-color)]"></i>
+              <span class="text-[var(--background-color)]">
+                {{ [data.userProfile.city, data.userProfile.province, data.userProfile.country].filter(Boolean).join(', ') }}
+              </span>
+            </div>
+            
           </div>
           
           <!-- Documents -->

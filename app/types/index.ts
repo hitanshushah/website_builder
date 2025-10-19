@@ -97,6 +97,7 @@ export interface UserProfile {
   personal_website_url?: string;
   share_website?: boolean;
   share_personal_website?: boolean;
+  projects_board_url?: string;
   profile_photo_url?: string;
   links: ProjectLink[];
   documents: ProjectAsset[];

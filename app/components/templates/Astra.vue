@@ -27,7 +27,8 @@ const {
   formatDateRange,
   formatDate,
   formatYear,
-  getProficiencyPercentage
+  getProficiencyPercentage,
+  setFavicon
 } = useTemplateFunctions(dataRef)
 
 // State management
@@ -176,6 +177,15 @@ const scrollToSection = (id: string) => {
 // Lifecycle
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
+  
+  // Set favicon
+  if (props.data?.userProfile?.name && props.primary && props.background) {
+    setFavicon({
+      primaryColor: props.primary,
+      secondaryColor: props.background,
+      name: props.data.userProfile.name
+    })
+  }
 })
 
 onUnmounted(() => {
@@ -254,7 +264,7 @@ onUnmounted(() => {
                     <p v-if="data.userProfile.introduction && !data.userProfile.hide_introduction_on_website" class="text-base sm:text-lg mb-6 lg:mb-8 max-w-2xl mx-auto lg:mx-0 break-words whitespace-pre-wrap" style="color: var(--fourth-color)">{{ data.userProfile.introduction }}</p>
                     
                     <!-- Contact Info -->
-                    <div class="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4 text-sm sm:text-base mb-6 justify-center lg:justify-start" style="color: var(--fourth-color)">
+                    <div class="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4 text-sm sm:text-base mb-2 justify-center lg:justify-start" style="color: var(--fourth-color)">
                         <span v-if="data.userProfile.city || data.userProfile.province || data.userProfile.country" class="flex items-center justify-center lg:justify-start gap-2">
                             <i class="fas fa-map-marker-alt"></i> 
                             <span class="break-words">{{ [data.userProfile.city, data.userProfile.province, data.userProfile.country].filter(Boolean).join(', ') }}</span>
@@ -292,6 +302,20 @@ onUnmounted(() => {
                             <i class="fas fa-phone"></i> 
                             <span class="break-words">{{ data.userProfile.phone_number }}</span>
                         </a>
+                    </div>
+                    <div class="mb-6 flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start">
+                        <div>
+                            <a v-if="data.userProfile.website_url" :href="data.userProfile.website_url.startsWith('http') ? data.userProfile.website_url : `https://${data.userProfile.website_url}`" target="_blank" class="md:text-lg text-sm">
+                                <strong>Website:</strong> 
+                                <span class="ml-1 text-[var(--color-fourth)] hover:underline">{{ data.userProfile.website_url.replace(/^https?:\/\//, '') }}</span>
+                            </a>
+                        </div>
+                        <div>
+                            <a v-if="data.userProfile.projects_board_url" :href="data.userProfile.projects_board_url.startsWith('http') ? data.userProfile.projects_board_url : `https://${data.userProfile.projects_board_url}`" target="_blank" class="md:text-lg text-sm">
+                                <strong>Projects Board:</strong> 
+                                <span class="ml-1 text-[var(--color-fourth)] hover:underline">{{ data.userProfile.projects_board_url.replace(/^https?:\/\//, '') }}</span>
+                            </a>
+                        </div>
                     </div>
                       <!-- Social Links -->
                       <div v-if="data.userProfile.links?.length" class="flex gap-3 sm:gap-4 mb-4 justify-center lg:justify-start">
@@ -681,6 +705,24 @@ onUnmounted(() => {
                                 <div class="min-w-0">
                                     <p class="font-semibold text-sm sm:text-base" style="color: var(--background-color)">Location</p>
                                     <p class="text-sm sm:text-base" style="color: var(--background-color)">{{ [data.userProfile.city, data.userProfile.province, data.userProfile.country].filter(Boolean).join(', ') }}</p>
+                                </div>
+                            </div>
+                            <div v-if="data.userProfile.website_url" class="flex items-start gap-3 sm:gap-4">
+                                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center flex-shrink-0" style="background-color: var(--background-color); color: var(--primary-color)">
+                                    <i class="fas fa-globe text-sm sm:text-base"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="font-semibold text-sm sm:text-base" style="color: var(--background-color)">Website</p>
+                                    <a :href="data.userProfile.website_url.startsWith('http') ? data.userProfile.website_url : `https://${data.userProfile.website_url}`" target="_blank" class="text-sm sm:text-base hover:underline" style="color: var(--background-color)">{{ data.userProfile.website_url.replace(/^https?:\/\//, '') }}</a>
+                                </div>
+                            </div>
+                            <div v-if="data.userProfile.projects_board_url" class="flex items-start gap-3 sm:gap-4">
+                                <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center flex-shrink-0" style="background-color: var(--background-color); color: var(--primary-color)">
+                                    <i class="fas fa-globe text-sm sm:text-base"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="font-semibold text-sm sm:text-base" style="color: var(--background-color)">Projects Board</p>
+                                    <a :href="data.userProfile.projects_board_url.startsWith('http') ? data.userProfile.projects_board_url : `https://${data.userProfile.projects_board_url}`" target="_blank" class="text-sm sm:text-base hover:underline" style="color: var(--background-color)">{{ data.userProfile.projects_board_url.replace(/^https?:\/\//, '') }}</a>
                                 </div>
                             </div>
                         </div>

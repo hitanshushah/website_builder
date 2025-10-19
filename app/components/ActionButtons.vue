@@ -61,6 +61,7 @@ const props = withDefaults(defineProps<{
   showEdit?: boolean
   showDelete?: boolean
   containerClass?: string
+  refresh?: boolean
 }>(), {
   size: 'sm',
   showVisibility: true,
@@ -68,13 +69,15 @@ const props = withDefaults(defineProps<{
   showDelete: true,
   containerClass: 'ml-4',
   itemType: 'Item',
-  itemName: 'this item'
+  itemName: 'this item',
+  refresh: false
 })
 
 const emit = defineEmits<{
   (e: 'toggle-visibility', item: any): void
   (e: 'edit', item: any): void
   (e: 'delete', item: any): void
+  (e: 'refresh'): void
 }>()
 
 const showVisibilityModal = ref(false)
@@ -90,6 +93,9 @@ const closeVisibilityModal = () => {
 const confirmToggleVisibility = () => {
   showVisibilityModal.value = false
   emit('toggle-visibility', props.item)
+  if (props.refresh) {
+    emit('refresh')
+  }
 }
 
 const iconClass = computed(() => {

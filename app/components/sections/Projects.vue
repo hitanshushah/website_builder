@@ -56,9 +56,11 @@
               item-type="Project"
               :item-name="project.name"
               container-class="ml-3"
+              :refresh="true"
               :show-edit="false"
               :show-delete="false"
               @toggle-visibility="toggleVisibility"
+              @refresh="handleRefresh"
             />
           </div>
 
@@ -191,6 +193,10 @@ const toggleVisibility = async (project: Project) => {
   } catch (err) {
     console.error('Error toggling project visibility:', err)
   }
+}
+
+const handleRefresh = () => {
+  window.location.reload()
 }
 
 const openLink = (url: string) => window.open(url, '_blank')

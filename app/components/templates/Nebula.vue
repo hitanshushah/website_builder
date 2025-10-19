@@ -26,7 +26,8 @@ const {
   formatDateRange,
   formatDate,
   formatYear,
-  getProficiencyPercentage
+  getProficiencyPercentage,
+  setFavicon
 } = useTemplateFunctions(dataRef)
 
 // State management
@@ -205,6 +206,15 @@ const handleScroll = () => {
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
   handleScroll()
+  
+  // Set favicon
+  if (props.data?.userProfile?.name && props.primary && props.background) {
+    setFavicon({
+      primaryColor: props.primary,
+      secondaryColor: props.background,
+      name: props.data.userProfile.name
+    })
+  }
 })
 
 onUnmounted(() => {
@@ -246,7 +256,7 @@ onUnmounted(() => {
             v-for="section in navigationSections"
             :key="section"
             @click="scrollToSection(section)"
-            class="font-medium capitalize transition-opacity hover:opacity-80"
+            class="font-medium capitalize transition-opacity hover:opacity-80 cursor-pointer"
             :class="[
               activeSection === section ? 'px-4 py-2 rounded-lg' : ''
             ]"
@@ -273,7 +283,7 @@ onUnmounted(() => {
           v-for="section in navigationSections"
           :key="section"
           @click="scrollToSection(section)"
-          class="text-2xl font-medium capitalize hover:opacity-80"
+          class="text-2xl font-medium capitalize hover:opacity-80 cursor-pointer"
           :class="activeSection === section ? 'px-6 py-3 rounded-lg' : ''"
           :style="activeSection === section ? { background: `linear-gradient(135deg, ${primary} 0%, ${secondary} 100%)`, color: background } : { color: background }"
         >
@@ -317,7 +327,7 @@ onUnmounted(() => {
             </p>
             <button 
               @click="scrollToSection('contact')"
-              class="rounded-full px-6 md:px-8 py-3 md:py-4 font-semibold hover:scale-105 transition-transform shadow-lg text-sm md:text-base"
+              class="rounded-full px-6 md:px-8 py-3 md:py-4 font-semibold hover:scale-105 transition-transform shadow-lg text-sm md:text-base cursor-pointer"
               :style="{ color: primary, backgroundColor: background }"
             >
               Get in Touch <i class="fas fa-arrow-right ml-2"></i>
@@ -456,7 +466,13 @@ onUnmounted(() => {
               <div v-if="data?.userProfile.website_url" class="flex items-center gap-3">
                 <i class="fas fa-globe text-xl" :style="{ color: primary }"></i>
                 <a :href="`https://${data.userProfile.website_url}`" target="_blank" class="text-lg hover:underline break-all" :style="{ color: fourth }">
-                  {{ data.userProfile.website_url }}
+                  {{ data.userProfile.website_url.replace(/^https?:\/\//, '') }}
+                </a>
+              </div>
+              <div v-if="data?.userProfile.projects_board_url" class="flex items-center gap-3">
+                <i class="fas fa-globe text-xl" :style="{ color: primary }"></i>
+                <a :href="`https://${data.userProfile.projects_board_url}`" target="_blank" class="text-lg hover:underline break-all" :style="{ color: fourth }">
+                  {{ data.userProfile.projects_board_url.replace(/^https?:\/\//, '') }}
                 </a>
               </div>
             </div>
@@ -1127,6 +1143,14 @@ onUnmounted(() => {
           <div v-if="data?.userProfile.phone_number">
             <i class="fas fa-phone mr-2" :style="{ color: background }"></i>
             <a :href="`tel:${data.userProfile.phone_number}`" class="hover:underline">{{ data.userProfile.phone_number }}</a>
+          </div>
+          <div v-if="data?.userProfile.website_url">
+            <i class="fas fa-globe mr-2" :style="{ color: background }"></i>
+            <a :href="data.userProfile.website_url.startsWith('http') ? data.userProfile.website_url : `https://${data.userProfile.website_url}`" target="_blank" class="hover:underline">{{ data.userProfile.website_url.replace(/^https?:\/\//, '') }}</a>
+          </div>
+          <div v-if="data?.userProfile.projects_board_url">
+            <i class="fas fa-globe mr-2" :style="{ color: background }"></i>
+            <a :href="data.userProfile.projects_board_url.startsWith('http') ? data.userProfile.projects_board_url : `https://${data.userProfile.projects_board_url}`" target="_blank" class="hover:underline">{{ data.userProfile.projects_board_url.replace(/^https?:\/\//, '') }}</a>
           </div>
         </div>
         <div v-if="data?.userProfile.links?.length" class="flex justify-center gap-6 mb-6">

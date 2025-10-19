@@ -27,7 +27,8 @@ const {
   formatDateRange,
   formatDate,
   formatYear,
-  getProficiencyPercentage
+  getProficiencyPercentage,
+  setFavicon
 } = useTemplateFunctions(dataRef)
 
 // Mobile menu state
@@ -185,6 +186,15 @@ onMounted(() => {
   if (typingPhrases.value.length > 0) {
     setTimeout(() => typeText(), 500)
   }
+  
+  // Set favicon
+  if (props.data?.userProfile?.name && props.primary && props.background) {
+    setFavicon({
+      primaryColor: props.primary,
+      secondaryColor: props.background,
+      name: props.data.userProfile.name
+    })
+  }
 })
 
 onUnmounted(() => {
@@ -302,6 +312,38 @@ const colorVars = computed(() => ({
               >
                 {{ doc.display_name || 'Download Document' }}
               </a>
+            </div>
+            <div class="flex flex-wrap gap-4 text-[var(--primary-color)] mt-4!">
+            <div v-if="data.userProfile.email">
+              <div class="info">
+                <div><i class="fas fa-envelope mr-2!"></i><a :href="`mailto:${data.userProfile.email}`" target="_blank" class="hover:underline!">{{ data.userProfile.email }}</a></div>
+              </div>
+            </div>
+            <div v-if="data.userProfile.phone_number">
+              <div class="info">
+                <div><i class="fas fa-phone mr-2!"></i><a :href="`tel:${data.userProfile.phone_number}`" target="_blank" class="hover:underline!">{{ data.userProfile.phone_number }}</a></div>
+              </div>
+            </div>
+            <div v-if="data.userProfile.city || data.userProfile.province || data.userProfile.country">
+              <div class="info">
+                <div><i class="fas fa-map-marker-alt mr-2!"></i>{{ [data.userProfile.city, data.userProfile.province, data.userProfile.country].filter(Boolean).join(', ') }}</div>
+              </div>
+            </div>
+            <div v-if="data.userProfile.website_url">
+              <div class="info">
+                <div><i class="fas fa-globe mr-2!"></i><a :href="data.userProfile.website_url.startsWith('http') ? data.userProfile.website_url : `https://${data.userProfile.website_url}`" target="_blank" class="hover:underline!">{{ data.userProfile.website_url.replace(/^https?:\/\//, '') }}</a></div>
+              </div>
+            </div>
+            <div v-if="data.userProfile.projects_board_url">
+              <div class="info">
+                <div><i class="fas fa-globe mr-2!"></i><a :href="data.userProfile.projects_board_url.startsWith('http') ? data.userProfile.projects_board_url : `https://${data.userProfile.projects_board_url}`" target="_blank" class="hover:underline!">{{ data.userProfile.projects_board_url.replace(/^https?:\/\//, '') }}</a></div>
+              </div>
+            </div>
+            <div v-if="data.userProfile.links?.length" class="flex flex-wrap gap-4 flex-row">
+              <div v-for="link in data.userProfile.links" :key="link.url">
+                <div><i class="fa fa-share-square mr-2!"></i><a :href="link.url" target="_blank" class="hover:underline!">{{ link.title }}</a></div>
+              </div>
+            </div>
             </div>
           </div>
         </div>
@@ -555,39 +597,39 @@ const colorVars = computed(() => ({
         <div class="contact-content">
           <div class="column left">
             <div class="icons">
-              <div v-if="data.userProfile.name" class="row">
-                <i class="fas fa-user"></i>
-                <div class="info">
-                  <div class="head">Name</div>
-                  <div class="sub-title">{{ data.userProfile.name }}</div>
-                </div>
-              </div>
-              <div v-if="data.userProfile.city || data.userProfile.province || data.userProfile.country" class="row">
-                <i class="fas fa-map-marker-alt"></i>
-                <div class="info">
-                  <div class="head">Address</div>
-                  <div class="sub-title">{{ [data.userProfile.city, data.userProfile.province, data.userProfile.country].filter(Boolean).join(', ') }}</div>
-                </div>
-              </div>
               <div v-if="!data.userProfile.override_email && data.userProfile.email" class="row">
                 <i class="fas fa-envelope"></i>
                 <div class="info">
                   <div class="head">Email</div>
-                  <div class="sub-title">{{ data.userProfile.email }}</div>
+                  <div class="sub-title cursor-pointer hover:underline!"><a :href="`mailto:${data.userProfile.email}`" target="_blank">{{ data.userProfile.email }}</a></div>
                 </div>
               </div>
               <div v-else-if="data.userProfile.override_email && !data.userProfile.hide_secondary_email_on_website && data.userProfile.secondary_email" class="row">
                 <i class="fas fa-envelope"></i>
                 <div class="info">
                   <div class="head">Email</div>
-                  <div class="sub-title">{{ data.userProfile.secondary_email }}</div>
+                  <div class="sub-title cursor-pointer hover:underline!"><a :href="`mailto:${data.userProfile.secondary_email}`" target="_blank">{{ data.userProfile.secondary_email }}</a></div>
                 </div>
               </div>
               <div v-if="data.userProfile.phone_number && !data.userProfile.hide_phone_on_website" class="row">
                 <i class="fas fa-phone"></i>
                 <div class="info">
                   <div class="head">Phone</div>
-                  <div class="sub-title">{{ data.userProfile.phone_number }}</div>
+                  <div class="sub-title cursor-pointer hover:underline!"><a :href="`tel:${data.userProfile.phone_number}`" target="_blank">{{ data.userProfile.phone_number }}</a></div>
+                </div>
+              </div>
+              <div v-if="data.userProfile.website_url" class="row">
+                <i class="fas fa-globe"></i>
+                <div class="info">
+                  <div class="head">Website</div>
+                  <div class="sub-title cursor-pointer hover:underline!"><a :href="data.userProfile.website_url.startsWith('http') ? data.userProfile.website_url : `https://${data.userProfile.website_url}`" target="_blank">{{ data.userProfile.website_url.replace(/^https?:\/\//, '') }}</a></div>
+                </div>
+              </div>
+              <div v-if="data.userProfile.projects_board_url" class="row">
+                <i class="fas fa-globe"></i>
+                <div class="info">
+                  <div class="head">Projects Board</div>
+                  <div class="sub-title cursor-pointer hover:underline!"><a :href="data.userProfile.projects_board_url.startsWith('http') ? data.userProfile.projects_board_url : `https://${data.userProfile.projects_board_url}`" target="_blank">{{ data.userProfile.projects_board_url.replace(/^https?:\/\//, '') }}</a></div>
                 </div>
               </div>
               <div v-if="data.userProfile.links?.length" class="row">
@@ -1009,7 +1051,7 @@ section .title {
   hyphens: auto;
 }
 
-.about .about-content .right a,
+.about .about-content .right .documents-container a,
 .about .about-content .right .document-link {
   display: inline-block;
   background: var(--primary-color);
@@ -1023,7 +1065,7 @@ section .title {
   transition: all 0.3s ease;
 }
 
-.about .about-content .right a:hover,
+.about .about-content .right .documents-container a:hover,
 .about .about-content .right .document-link:hover {
   color: var(--primary-color);
   background: none;

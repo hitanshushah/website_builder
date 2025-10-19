@@ -147,7 +147,9 @@ const templatePreviewProps = computed(() => ({
           </UButton>
         </div>
       </div>
-      
+      <p class="text-gray-600 dark:text-gray-400 mb-4 font-semibold">
+        <span class="font-bold">Note:</span> This is just a preview! Some navigation links might not work yet. Click <span class="font-bold">“Open in New Tab”</span> to see your site in action.
+      </p>
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
         <div class="flex justify-center sm:hidden">
           <div

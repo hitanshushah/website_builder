@@ -27,7 +27,8 @@ const {
   formatDateRange,
   formatDate,
   formatYear,
-  getProficiencyPercentage
+  getProficiencyPercentage,
+  setFavicon
 } = useTemplateFunctions(dataRef)
 
 // Navigation state
@@ -278,6 +279,15 @@ onMounted(() => {
   window.addEventListener('touchstart', handleTouchStart)
   window.addEventListener('touchend', handleTouchEnd)
   
+  // Set favicon
+  if (props.data?.userProfile?.name && props.primary && props.background) {
+    setFavicon({
+      primaryColor: props.primary,
+      secondaryColor: props.background,
+      name: props.data.userProfile.name
+    })
+  }
+  
   // Navigation is now handled directly in template with @click handlers
 })
 
@@ -455,8 +465,10 @@ const fourth = computed(() => props.fourth || '#10b981')
             </div>
             <div class="flex flex-col gap-2 text-sm md:text-base" :style="{ color: `${background}CC` }">
               <span v-if="userProfile?.city || userProfile?.province || userProfile?.country"><i class="fas fa-map-marker-alt"></i> {{ [userProfile?.city, userProfile?.province, userProfile?.country].filter(Boolean).join(', ') }}</span>
-              <span v-if="userProfile?.email"><i class="fas fa-envelope"></i> {{ userProfile.email }}</span>
-              <span v-if="userProfile?.phone_number"><i class="fas fa-phone"></i> {{ userProfile.phone_number }}</span>
+              <span v-if="userProfile?.email"><i class="fas fa-envelope"></i> <a :href="`mailto:${userProfile.email}`" target="_blank" class="hover:underline">{{ userProfile.email }}</a></span>
+              <span v-if="userProfile?.phone_number"><i class="fas fa-phone"></i> <a :href="`tel:${userProfile.phone_number}`" target="_blank" class="hover:underline">{{ userProfile.phone_number }}</a></span>
+              <span v-if="userProfile?.website_url"><i class="fas fa-globe"></i> <a :href="userProfile.website_url.startsWith('http') ? userProfile.website_url : `https://${userProfile.website_url}`" target="_blank" class="hover:underline">{{ userProfile.website_url.replace(/^https?:\/\//, '') }}</a></span>
+              <span v-if="userProfile?.projects_board_url"><i class="fas fa-globe"></i> <a :href="userProfile.projects_board_url.startsWith('http') ? userProfile.projects_board_url : `https://${userProfile.projects_board_url}`" target="_blank" class="hover:underline">{{ userProfile.projects_board_url.replace(/^https?:\/\//, '') }}</a></span>
             </div>
           </div>
           <div class="flex-shrink-0 order-1 md:order-2">
@@ -914,6 +926,24 @@ const fourth = computed(() => props.fourth || '#10b981')
                     <p :style="{ color: `${background}CC` }">
                       {{ [userProfile?.city, userProfile?.province, userProfile?.country].filter(Boolean).join(', ') }}
                     </p>
+                  </div>
+                </div>
+                <div v-if="userProfile?.website_url" class="flex items-center gap-4">
+                  <div class="w-12 h-12 rounded-full flex items-center justify-center" :style="{ backgroundColor: `${background}20` }">
+                    <i class="fas fa-globe text-xl" :style="{ color: background }"></i>
+                  </div>
+                  <div>
+                    <p class="font-semibold" :style="{ color: background }">Website</p>
+                    <a :href="userProfile.website_url.startsWith('http') ? userProfile.website_url : `https://${userProfile.website_url}`" target="_blank" class="hover:underline" :style="{ color: `${background}CC` }">{{ userProfile.website_url.replace(/^https?:\/\//, '') }}</a>
+                  </div>
+                </div>
+                <div v-if="userProfile?.projects_board_url" class="flex items-center gap-4">
+                  <div class="w-12 h-12 rounded-full flex items-center justify-center" :style="{ backgroundColor: `${background}20` }">
+                    <i class="fas fa-globe text-xl" :style="{ color: background }"></i>
+                  </div>
+                  <div>
+                    <p class="font-semibold" :style="{ color: background }">Projects Board</p>
+                    <a :href="userProfile.projects_board_url.startsWith('http') ? userProfile.projects_board_url : `https://${userProfile.projects_board_url}`" target="_blank" class="hover:underline" :style="{ color: `${background}CC` }">{{ userProfile.projects_board_url.replace(/^https?:\/\//, '') }}</a>
                   </div>
                 </div>
               </div>

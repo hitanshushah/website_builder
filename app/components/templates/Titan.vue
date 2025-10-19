@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onUnmounted, toRef } from 'vue'
+import { ref, computed, onMounted, onUnmounted, toRef } from 'vue'
 import type { ProcessedTemplateData } from '../../composables/useTemplateData'
 import { formatPublishDate } from '../../composables/useTemplateData'
 import { useTemplateFunctions } from '../../composables/useTemplateFunctions'
@@ -30,7 +30,8 @@ const {
   formatDate,
   formatYear,
   getProficiencyPercentage,
-  getInitials
+  getInitials,
+  setFavicon
 } = useTemplateFunctions(dataRef)
 
 const showMobileMenu = ref(false)
@@ -199,6 +200,18 @@ if (typeof window !== 'undefined') {
   }, 500)
 }
 
+// Lifecycle
+onMounted(() => {
+  // Set favicon
+  if (props.data?.userProfile?.name && props.primary && props.background) {
+    setFavicon({
+      primaryColor: props.primary,
+      secondaryColor: props.background,
+      name: props.data.userProfile.name
+    })
+  }
+})
+
 onUnmounted(() => {
   if (typingTimeout) {
     clearTimeout(typingTimeout)
@@ -315,7 +328,11 @@ onUnmounted(() => {
                   </p>
                   <p v-if="data.userProfile.website_url" class="text-lg">
                     <strong>Website:</strong> 
-                    <a :href="data.userProfile.website_url" target="_blank" class="ml-1 text-[var(--color-fourth)] hover:underline">{{ data.userProfile.website_url.replace('http://', '').replace('https://', '') }}</a>
+                    <a :href="data.userProfile.website_url.startsWith('http') ? data.userProfile.website_url : `https://${data.userProfile.website_url}`" target="_blank" class="ml-1 text-[var(--color-fourth)] hover:underline">{{ data.userProfile.website_url.replace(/^https?:\/\//, '') }}</a>
+                  </p>
+                  <p v-if="data.userProfile.projects_board_url" class="text-lg">
+                    <strong>Projects Board:</strong> 
+                    <a :href="data.userProfile.projects_board_url.startsWith('http') ? data.userProfile.projects_board_url : `https://${data.userProfile.projects_board_url}`" target="_blank" class="ml-1 text-[var(--color-fourth)] hover:underline">{{ data.userProfile.projects_board_url.replace(/^https?:\/\//, '') }}</a>
                   </p>
                 </div>
               </div>
@@ -775,6 +792,26 @@ onUnmounted(() => {
                   size="xs"
                   :label="link.title"
                   @click="openLink(link.url)"
+                  color="neutral"
+                  icon="i-heroicons-arrow-top-right-on-square-16-solid"
+                  class="flex items-center gap-1 cursor-pointer"
+                />
+                <UButton
+                  v-if="data.userProfile.website_url"
+                  variant="subtle"
+                  size="xs"
+                  :label="data.userProfile.website_url.replace(/^https?:\/\//, '')"
+                  @click="openLink(data.userProfile.website_url.startsWith('http') ? data.userProfile.website_url : `https://${data.userProfile.website_url}`)"
+                  color="neutral"
+                  icon="i-heroicons-arrow-top-right-on-square-16-solid"
+                  class="flex items-center gap-1 cursor-pointer"
+                />
+                <UButton
+                  v-if="data.userProfile.projects_board_url"
+                  variant="subtle"
+                  size="xs"
+                  :label="data.userProfile.projects_board_url.replace(/^https?:\/\//, '')"
+                  @click="openLink(data.userProfile.projects_board_url.startsWith('http') ? data.userProfile.projects_board_url : `https://${data.userProfile.projects_board_url}`)"
                   color="neutral"
                   icon="i-heroicons-arrow-top-right-on-square-16-solid"
                   class="flex items-center gap-1 cursor-pointer"

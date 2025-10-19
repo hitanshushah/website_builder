@@ -28,6 +28,11 @@ export async function getProjectsBoardData(userId: number): Promise<ProjectsBoar
             p.personal_website_url,
             p.share_website,
             p.share_personal_website,
+            -- Projects Board URL (only if share_profile is true)
+            CASE 
+                WHEN p.share_profile = TRUE AND p.public_url IS NOT NULL THEN p.public_url 
+                ELSE NULL 
+            END AS projects_board_url,
             -- Profile Photo
             (
                 SELECT a.filename
@@ -338,6 +343,11 @@ export async function getPublicWebsiteData(userId: number): Promise<ProjectsBoar
             p.personal_website_url,
             p.share_website,
             p.share_personal_website,
+            -- Projects Board URL (only if share_profile is true)
+            CASE 
+                WHEN p.share_profile = TRUE AND p.public_url IS NOT NULL THEN p.public_url 
+                ELSE NULL 
+            END AS projects_board_url,
             -- Profile Photo
             (
                 SELECT a.filename
