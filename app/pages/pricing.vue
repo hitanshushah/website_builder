@@ -149,14 +149,6 @@ const sections = computed(() => [
     title: 'Features',
     features: [
       {
-        title: 'Non-Premium Templates',
-        tiers: {
-          basic: true,
-          plus: true,
-          pro: true
-        }
-      },
-      {
         title: 'Premium Templates',
         tiers: {
           basic: false,
@@ -202,15 +194,7 @@ const sections = computed(() => [
     title: 'Customization',
     features: [
       {
-        title: 'System Color Themes',
-        tiers: {
-          basic: true,
-          plus: true,
-          pro: true
-        }
-      },
-      {
-        title: 'Custom Color Themes',
+        title: 'Customize Color Themes',
         tiers: {
           basic: false,
           plus: true,
@@ -218,7 +202,7 @@ const sections = computed(() => [
         }
       },
       {
-        title: 'Custom Domain',
+        title: 'Use Your Own Domain',
         tiers: {
           basic: false,
           plus: false,
