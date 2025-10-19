@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, toRef } from 'vue'
+import { ref, computed, onMounted, onUnmounted, toRef, watch } from 'vue'
 import type { ProcessedTemplateData } from '../../composables/useTemplateData'
 import { useTemplateFunctions } from '../../composables/useTemplateFunctions'
 import { useContactForm } from '../../composables/useContactForm'
@@ -33,22 +33,11 @@ const {
 
 // Navigation state
 const currentSection = ref(0)
-const totalSections = 9
 const isScrolling = ref(false)
 const isMobileMenuOpen = ref(false)
 
-// Section names for navigation
-const sectionNames = [
-  'About',
-  'Experience',
-  'Projects',
-  'Skills',
-  'Education',
-  'Certifications',
-  'Achievements',
-  'Publications',
-  'Contact'
-]
+// Total sections will be computed based on visible sections
+const totalSections = computed(() => visibleSections.value.length)
 
 // Computed properties
 const userProfile = computed(() => props.data?.userProfile)
@@ -59,6 +48,32 @@ const experiences = computed(() => props.data?.experiences || [])
 const achievements = computed(() => props.data?.achievements || [])
 const certifications = computed(() => props.data?.certifications || [])
 const publications = computed(() => props.data?.publications || [])
+
+// Create visible sections based on content availability
+const visibleSections = computed(() => {
+  const sections = [
+    { name: 'About', hasContent: true }, // About section always visible
+    { name: 'Experience', hasContent: sortedExperiences.value?.length > 0 },
+    { name: 'Projects', hasContent: projects.value?.length > 0 },
+    { name: 'Skills', hasContent: (props.data?.skillsByCategory?.length || 0) > 0 },
+    { name: 'Education', hasContent: sortedEducation.value?.length > 0 },
+    { name: 'Certifications', hasContent: certifications.value?.length > 0 },
+    { name: 'Achievements', hasContent: achievements.value?.length > 0 },
+    { name: 'Publications', hasContent: publications.value?.length > 0 },
+    { name: 'Contact', hasContent: true } // Contact section always visible
+  ]
+  
+  return sections.filter(section => section.hasContent)
+})
+
+// Create a map of section names to their indices in the visible sections
+const sectionIndices = computed(() => {
+  const indices: Record<string, number> = {}
+  visibleSections.value.forEach((section, index) => {
+    indices[section.name] = index
+  })
+  return indices
+})
 
 // Project modal state
 const showProjectModal = ref(false)
@@ -164,27 +179,29 @@ const submitContactForm = async () => {
 
 // Navigation functions
 const changeSection = (newIndex: number) => {
-  if (newIndex < 0 || newIndex >= totalSections || isScrolling.value) return
+  if (newIndex < 0 || newIndex >= totalSections.value || isScrolling.value) return
   
   isScrolling.value = true
   
-  const sections = document.querySelectorAll('.section')
-  const navDots = document.querySelectorAll('.nav-dot')
+  // Remove active class from all sections
+  const allSections = document.querySelectorAll('.section')
+  allSections.forEach(section => {
+    section.classList.remove('active')
+  })
   
-  if (sections[currentSection.value]) {
-    sections[currentSection.value].classList.remove('active')
-  }
-  if (navDots[currentSection.value]) {
-    navDots[currentSection.value].classList.remove('active')
-  }
+  // Remove active class from all nav dots
+  const allNavDots = document.querySelectorAll('.nav-dot')
+  allNavDots.forEach(dot => {
+    dot.classList.remove('active')
+  })
   
+  // Update current section index
   currentSection.value = newIndex
   
-  if (sections[currentSection.value]) {
-    sections[currentSection.value].classList.add('active')
-  }
-  if (navDots[currentSection.value]) {
-    navDots[currentSection.value].classList.add('active')
+  // Find and activate the section with matching data-index
+  const targetSection = document.querySelector(`.section[data-index="${newIndex}"]`)
+  if (targetSection) {
+    targetSection.classList.add('active')
   }
   
   // Close mobile menu when navigating
@@ -253,11 +270,11 @@ let touchStartY = 0
 let touchEndY = 0
 
 const handleTouchStart = (e: TouchEvent) => {
-  touchStartY = e.changedTouches[0].screenY
+  touchStartY = e.changedTouches[0]?.screenY || 0
 }
 
 const handleTouchEnd = (e: TouchEvent) => {
-  touchEndY = e.changedTouches[0].screenY
+  touchEndY = e.changedTouches[0]?.screenY || 0
   handleSwipe()
 }
 
@@ -271,6 +288,71 @@ const handleSwipe = () => {
   }
 }
 
+// Intersection Observer for section detection
+const setupIntersectionObserver = () => {
+  let hasInitialized = false
+  
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (!hasInitialized) {
+        // Skip the first few intersection events to let the page settle
+        setTimeout(() => {
+          hasInitialized = true
+        }, 1000)
+        return
+      }
+      
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+          const sectionIndex = parseInt(entry.target.getAttribute('data-index') || '0')
+          // Don't switch to Contact section unless we're actually scrolling to it
+          if (sectionIndex !== currentSection.value && !isScrolling.value && sectionIndex !== (totalSections.value - 1)) {
+            currentSection.value = sectionIndex
+          }
+        }
+      })
+    },
+    {
+      threshold: 0.6, // Higher threshold to ensure section is more visible
+      rootMargin: '-10% 0px -10% 0px' // Add margin to avoid edge cases
+    }
+  )
+
+  // Observe all sections
+  const sections = document.querySelectorAll('.section')
+  sections.forEach((section) => {
+    observer.observe(section)
+  })
+
+  return observer
+}
+
+// Store observer reference for cleanup
+let observerInstance: IntersectionObserver | null = null
+
+// Track if we're still in initial load phase
+const isInitialLoad = ref(true)
+
+// Watch for changes in currentSection to update active states
+watch(currentSection, (newIndex) => {
+  // During initial load, prevent switching to Contact section
+  if (isInitialLoad.value && newIndex === (totalSections.value - 1)) {
+    currentSection.value = 0
+    return
+  }
+  
+  // Update section active states
+  const allSections = document.querySelectorAll('.section')
+  allSections.forEach(section => {
+    const sectionIndex = parseInt(section.getAttribute('data-index') || '-1')
+    if (sectionIndex === newIndex) {
+      section.classList.add('active')
+    } else {
+      section.classList.remove('active')
+    }
+  })
+})
+
 // Lifecycle
 onMounted(() => {
   // Add event listeners
@@ -278,6 +360,43 @@ onMounted(() => {
   window.addEventListener('keydown', handleKeydown)
   window.addEventListener('touchstart', handleTouchStart)
   window.addEventListener('touchend', handleTouchEnd)
+  
+  // Ensure About section is active on initial load
+  currentSection.value = 0
+  
+  // Force About section to be active on initial load with multiple attempts
+  const forceAboutSectionActive = () => {
+    // Remove active class from all sections
+    const allSections = document.querySelectorAll('.section')
+    allSections.forEach(section => {
+      section.classList.remove('active')
+    })
+    
+    // Set About section as active
+    const aboutSection = document.querySelector('.section[data-index="0"]')
+    if (aboutSection) {
+      aboutSection.classList.add('active')
+    }
+    
+    // Ensure currentSection is 0
+    currentSection.value = 0
+  }
+  
+  // Force About section active immediately
+  forceAboutSectionActive()
+  
+  // Force it again after a short delay
+  setTimeout(forceAboutSectionActive, 100)
+  
+  // Force it again after a longer delay to ensure it sticks
+  setTimeout(forceAboutSectionActive, 500)
+  
+  // Set up intersection observer for section detection after ensuring About is active
+  setTimeout(() => {
+    observerInstance = setupIntersectionObserver()
+    // Mark initial load as complete
+    isInitialLoad.value = false
+  }, 1000)
   
   // Set favicon
   if (props.data?.userProfile?.name && props.primary && props.background) {
@@ -287,8 +406,6 @@ onMounted(() => {
       name: props.data.userProfile.name
     })
   }
-  
-  // Navigation is now handled directly in template with @click handlers
 })
 
 onUnmounted(() => {
@@ -297,6 +414,11 @@ onUnmounted(() => {
   window.removeEventListener('keydown', handleKeydown)
   window.removeEventListener('touchstart', handleTouchStart)
   window.removeEventListener('touchend', handleTouchEnd)
+  
+  // Disconnect intersection observer
+  if (observerInstance) {
+    observerInstance.disconnect()
+  }
 })
 
 // Skill level mapping
@@ -327,7 +449,7 @@ const fourth = computed(() => props.fourth || '#10b981')
     <!-- Desktop Navigation -->
     <div class="fixed right-8 ml-8 top-1/2 transform -translate-y-1/2 z-50 flex flex-col gap-4">
       <div 
-        v-for="(sectionName, index) in sectionNames" 
+        v-for="(section, index) in visibleSections" 
         :key="index"
         :class="[
           'nav-item cursor-pointer transition-all duration-300',
@@ -338,7 +460,7 @@ const fourth = computed(() => props.fourth || '#10b981')
         }"
         @click="changeSection(index)"
       >
-        <span class="text-sm font-semibold whitespace-nowrap">{{ sectionName }}</span>
+        <span class="text-sm font-semibold whitespace-nowrap">{{ section.name }}</span>
       </div>
     </div>
 
@@ -391,7 +513,7 @@ const fourth = computed(() => props.fourth || '#10b981')
         <!-- Menu Items -->
         <div class="p-8 space-y-6 flex-1 overflow-y-auto">
           <div 
-            v-for="(sectionName, index) in sectionNames" 
+            v-for="(section, index) in visibleSections" 
             :key="index"
             :class="[
               'nav-mobile-item cursor-pointer transition-all duration-300 p-2 rounded-xl',
@@ -411,7 +533,7 @@ const fourth = computed(() => props.fourth || '#10b981')
                   backgroundColor: currentSection === index ? primary : `${background}60`
                 }"
               ></div>
-              <span class="text-xl font-semibold">{{ sectionName }}</span>
+              <span class="text-xl font-semibold">{{ section.name }}</span>
               <i 
                 v-if="currentSection === index"
                 class="fas fa-check ml-auto text-xl"
@@ -460,7 +582,7 @@ const fourth = computed(() => props.fourth || '#10b981')
                 :style="{ backgroundColor: `${background}20`, color: background, borderColor: background }"
                 class="px-3 py-2 md:px-4 md:py-2 rounded-lg transition hover:opacity-90 border backdrop-blur-lg text-sm md:text-base"
               >
-                {{ doc.display_name || doc.name || 'Download' }}
+                {{ doc.display_name || (doc as any).name || 'Download' }}
               </a>
             </div>
             <div class="flex flex-col gap-2 text-sm md:text-base" :style="{ color: `${background}CC` }">
@@ -484,7 +606,7 @@ const fourth = computed(() => props.fourth || '#10b981')
               :style="{ backgroundColor: `${background}20`, borderColor: `${background}33` }"
             >
               <span class="text-3xl sm:text-4xl md:text-6xl font-bold" :style="{ color: background }">
-                {{ getUserInitials(userProfile) }}
+                {{ getUserInitials }}
               </span>
             </div>
           </div>
@@ -493,12 +615,13 @@ const fourth = computed(() => props.fourth || '#10b981')
     </div>
 
     <!-- Section 2: Experience -->
-    <div class="section" data-index="1">
+    <div v-if="sortedExperiences?.length > 0" class="section" :data-index="sectionIndices['Experience']">
       <div class="h-full flex items-center justify-center px-8" :style="{ background: `linear-gradient(135deg, ${secondary}90 0%, ${background}10 100%)` }">
         <div class="section-content max-w-6xl w-full py-12 overflow-y-auto">
-          <h2 class="text-5xl font-bold mb-12 text-center" :style="{ color: background }">Experience</h2>
+          <h2 v-if="sortedExperiences?.length > 0" class="text-5xl font-bold mb-12 text-center" :style="{ color: background }">Experience</h2>
           <div class="space-y-8">
             <div 
+              v-if="sortedExperiences?.length > 0"
               v-for="(experience, index) in sortedExperiences" 
               :key="index"
               class="backdrop-blur-lg p-8 rounded-2xl border transition"
@@ -510,7 +633,7 @@ const fourth = computed(() => props.fourth || '#10b981')
                   <h3 class="text-3xl font-bold mb-2" :style="{ color: background }">{{ experience.role }}</h3>
                   <p class="text-xl font-semibold mb-2" :style="{ color: background }">{{ experience.company_name }}</p>
                   <p class="mb-4" :style="{ color: `${background}` }">
-                    {{ experience.location }} | {{ formatDateRange(experience.start_date, experience.end_date) }}
+                    {{ experience.location }} | {{ formatDateRange(experience.start_date || '', experience.end_date || '') }}
                   </p>
                   <p class="mb-4 leading-relaxed break-words whitespace-pre-wrap overflow-wrap-anywhere max-w-full" :style="{ color: `${background}` }">{{ experience.description }}</p>
                   <div v-if="experience.skills?.length" class="flex flex-wrap gap-2">
@@ -532,12 +655,13 @@ const fourth = computed(() => props.fourth || '#10b981')
     </div>
 
     <!-- Section 3: Projects -->
-    <div class="section" data-index="2">
+    <div v-if="projects?.length > 0" class="section" :data-index="sectionIndices['Projects']">
       <div class="h-full flex items-center justify-center px-8" :style="{ background: `linear-gradient(135deg, ${fourth} 0%, ${secondary}80 100%)` }">
         <div class="section-content max-w-6xl w-full py-12 overflow-y-auto">
-          <h2 class="text-5xl font-bold mb-12 text-center" :style="{ color: background }">Projects</h2>
+          <h2 v-if="projects?.length > 0" class="text-5xl font-bold mb-12 text-center" :style="{ color: background }">Projects</h2>
           <div class="grid md:grid-cols-2 gap-8">
             <div 
+              v-if="projects?.length > 0"
               v-for="(project, index) in projects" 
               :key="index"
               class="backdrop-blur-lg rounded-2xl overflow-hidden border transition"
@@ -637,13 +761,14 @@ const fourth = computed(() => props.fourth || '#10b981')
     </div>
 
     <!-- Section 4: Skills -->
-    <div class="section" data-index="3">
+    <div v-if="(props.data?.skillsByCategory?.length || 0) > 0" class="section" :data-index="sectionIndices['Skills']">
       <div class="h-full flex items-center justify-center px-8" :style="{ background: `linear-gradient(135deg, ${fourth}80 0%, ${secondary}80 100%)` }">
         <div class="section-content max-w-6xl w-full py-12 overflow-y-auto">
-          <h2 class="text-5xl font-bold mb-12 text-center" :style="{ color: background }">Skills</h2>
+          <h2 v-if="(props.data?.skillsByCategory?.length || 0) > 0" class="text-5xl font-bold mb-12 text-center" :style="{ color: background }">Skills</h2>
           <div class="space-y-10">
             <div 
-              v-for="(categoryGroup, index) in data?.skillsByCategory" 
+              v-if="(props.data?.skillsByCategory?.length || 0) > 0"
+              v-for="(categoryGroup, index) in props.data?.skillsByCategory" 
               :key="index"
             >
               <h3 class="text-3xl font-semibold mb-6 mt-8" :style="{ color: background }">{{ categoryGroup[0] }}</h3>
@@ -656,12 +781,12 @@ const fourth = computed(() => props.fourth || '#10b981')
                 >
                   <div class="flex justify-between mb-3">
                     <span class="text-xl font-semibold" :style="{ color: background }">{{ skill.name }}</span>
-                    <span :style="{ color: background }">{{ getSkillLevelText(skill.proficiency_level) }}</span>
+                    <span :style="{ color: background }">{{ getSkillLevelText(skill.proficiency_level || '') }}</span>
                   </div>
                   <div class="w-full rounded-full h-3" :style="{ backgroundColor: `${background}50` }">
                     <div 
                       class="h-3 rounded-full transition-all duration-500"
-                      :style="{ width: getSkillLevelWidth(skill.proficiency_level), background: primary }"
+                      :style="{ width: getSkillLevelWidth(skill.proficiency_level || ''), background: primary }"
                     ></div>
                   </div>
                 </div>
@@ -673,12 +798,13 @@ const fourth = computed(() => props.fourth || '#10b981')
     </div>
 
     <!-- Section 5: Education -->
-    <div class="section" data-index="4">
+    <div v-if="sortedEducation?.length > 0" class="section" :data-index="sectionIndices['Education']">
       <div class="h-full flex items-center justify-center px-8" :style="{ background: `linear-gradient(135deg, ${primary}80 0%, ${fourth}80 100%)` }">
         <div class="section-content max-w-6xl w-full py-12 overflow-y-auto">
-          <h2 class="text-5xl font-bold mb-12 text-center" :style="{ color: background }">Education</h2>
+          <h2 v-if="sortedEducation?.length > 0"  class="text-5xl font-bold mb-12 text-center" :style="{ color: background }">Education</h2>
           <div class="space-y-6">
             <div 
+              v-if="sortedEducation?.length > 0"
               v-for="(edu, index) in sortedEducation" 
               :key="index"
               class="backdrop-blur-lg p-8 rounded-2xl border transition"
@@ -686,7 +812,7 @@ const fourth = computed(() => props.fourth || '#10b981')
               :class="{ 'hover:opacity-90': true }"
             >
               <h3 class="text-3xl font-bold mb-2" :style="{ color: background }">{{ edu.degree }}, <span class="text-xl font-semibold" :style="{ color: background }">{{ edu.university_name }}</span></h3>
-              <p class="mb-2" :style="{ color: `${background}` }">{{ edu.location }}, {{ formatDateRange(edu.from_date, edu.end_date) }}</p>
+              <p class="mb-2" :style="{ color: `${background}` }">{{ edu.location }}, {{ formatDateRange(edu.from_date || null, edu.end_date || null) }}</p>
               <div 
                 v-if="edu.cgpa"
                 :style="{ backgroundColor: `${fourth}`, color: background }"
@@ -701,12 +827,13 @@ const fourth = computed(() => props.fourth || '#10b981')
     </div>
 
     <!-- Section 6: Certifications -->
-    <div class="section" data-index="5">
+    <div v-if="certifications?.length > 0" class="section" :data-index="sectionIndices['Certifications']">
       <div class="h-full flex items-center justify-center px-8" :style="{ background: `linear-gradient(135deg, ${secondary}80 0%, ${primary} 100%)` }">
         <div class="section-content max-w-6xl w-full py-12 overflow-y-auto">
-          <h2 class="text-5xl font-bold mb-12 text-center" :style="{ color: background }">Certifications</h2>
+          <h2 v-if="certifications?.length > 0" class="text-5xl font-bold mb-12 text-center" :style="{ color: background }">Certifications</h2>
           <div class="grid md:grid-cols-2 gap-8">
             <div 
+              v-if="certifications?.length > 0"
               v-for="(cert, index) in certifications" 
               :key="index"
               class="backdrop-blur-lg rounded-2xl overflow-hidden border transition"
@@ -720,7 +847,7 @@ const fourth = computed(() => props.fourth || '#10b981')
                     <p v-if="cert.institute_name" class="text-xl font-semibold mb-2" :style="{ color: background }">{{ cert.institute_name }}</p>
                     <p v-if="cert.description" class="mb-4 leading-relaxed" :style="{ color: `${background}` }">{{ cert.description }}</p>
                     <div v-if="cert.start_date || cert.end_date" class="text-sm mb-4" :style="{ color: `${background}` }">
-                      {{ formatDateRange(cert.start_date, cert.end_date) }}
+                      {{ formatDateRange(cert.start_date || null, cert.end_date || null) }}
                     </div>
                     <div v-if="cert.certificate_pdf" class="flex gap-4">
                       <a 
@@ -742,13 +869,14 @@ const fourth = computed(() => props.fourth || '#10b981')
     </div>
 
     <!-- Section 7: Achievements -->
-    <div class="section" data-index="6">
+    <div v-if="achievements?.length > 0" class="section" :data-index="sectionIndices['Achievements']">
       <div class="h-full flex items-center justify-center px-8" :style="{ background: `linear-gradient(135deg, ${primary} 0%, ${background}80 100%)` }">
         <div class="section-content max-w-6xl w-full py-12 overflow-y-auto">
-          <h2 class="text-5xl font-bold mb-12 text-center" :style="{ color: background }">Achievements</h2>
+          <h2 v-if="achievements?.length > 0" class="text-5xl font-bold mb-12 text-center" :style="{ color: background }">Achievements</h2>
           <div class="max-w-4xl mx-auto">
             <ul class="space-y-4">
               <li 
+                v-if="achievements?.length > 0"
                 v-for="(achievement, index) in achievements" 
                 :key="index"
                 class="flex items-start gap-4"
@@ -764,12 +892,13 @@ const fourth = computed(() => props.fourth || '#10b981')
     </div>
 
     <!-- Section 8: Publications -->
-    <div class="section" data-index="7">
+    <div v-if="publications?.length > 0" class="section" :data-index="sectionIndices['Publications']">
       <div class="h-full flex items-center justify-center px-8" :style="{ background: `linear-gradient(135deg, ${fourth}80 0%, ${secondary}80 100%)` }">
         <div class="section-content max-w-6xl w-full py-12 overflow-y-auto">
-          <h2 class="text-5xl font-bold mb-12 text-center" :style="{ color: background }">Publications</h2>
+          <h2 v-if="publications?.length > 0" class="text-5xl font-bold mb-12 text-center" :style="{ color: background }">Publications</h2>
           <div class="grid md:grid-cols-2 gap-8">
             <div 
+              v-if="publications?.length > 0"
               v-for="(pub, index) in publications" 
               :key="index"
               class="backdrop-blur-lg rounded-2xl overflow-hidden border transition"
@@ -783,7 +912,7 @@ const fourth = computed(() => props.fourth || '#10b981')
                     <p v-if="pub.conference_name" class="text-xl font-semibold mb-2" :style="{ color: background }">{{ pub.conference_name }}</p>
                     <p v-if="pub.description" class="mb-4 leading-relaxed" :style="{ color: `${background}` }">{{ pub.description }}</p>
                     <div v-if="pub.published_date" class="text-sm mb-4" :style="{ color: `${background}` }">
-                      Published: {{ formatDate(pub.published_date) }}
+                      Published: {{ formatDate(pub.published_date || '') }}
                     </div>
                     <div class="flex gap-4">
                       <a 
@@ -815,7 +944,7 @@ const fourth = computed(() => props.fourth || '#10b981')
     </div>
 
     <!-- Section 9: Contact -->
-    <div class="section" data-index="8">
+    <div class="section" :data-index="sectionIndices['Contact']">
       <div class="h-full flex items-center justify-center px-8" :style="{ background: `linear-gradient(135deg, ${primary} 0%, ${secondary} 50%, ${fourth} 100%)` }">
         <div class="section-content max-w-6xl w-full py-12 overflow-y-auto">
           <div class="text-center mb-12">
@@ -989,7 +1118,7 @@ const fourth = computed(() => props.fourth || '#10b981')
       >
         <!-- Modal Header -->
         <div class="flex items-center justify-between p-6 border-b" :style="{ borderColor: `${background}20` }">
-          <h3 class="text-2xl font-bold" :style="{ color: background }">{{ activeProject.name }}</h3>
+          <h3 class="text-2xl font-bold" :style="{ color: background }">{{ activeProject?.name }}</h3>
           <button 
             @click="closeProjectModal"
             class="w-10 h-10 rounded-full flex items-center justify-center transition hover:opacity-80"
@@ -1000,10 +1129,10 @@ const fourth = computed(() => props.fourth || '#10b981')
         </div>
 
         <!-- Image Display -->
-        <div v-if="getProjectImages(activeProject.assets).length > 0" class="relative">
+        <div v-if="getProjectImages(activeProject?.assets).length > 0" class="relative">
           <img 
-            :src="getProjectImages(activeProject.assets)[activeIndex].url" 
-            :alt="activeProject.name"
+            :src="getProjectImages(activeProject?.assets)[activeIndex]?.url" 
+            :alt="activeProject?.name"
             class="w-full h-96 object-cover"
           >
           
@@ -1057,10 +1186,10 @@ const fourth = computed(() => props.fourth || '#10b981')
 
         <!-- Modal Footer -->
         <div class="p-6 border-t" :style="{ borderColor: `${background}20` }">
-          <p v-if="activeProject.description" class="mb-4" :style="{ color: background }">{{ activeProject.description }}</p>
-          <div v-if="activeProject.links?.length" class="flex gap-4">
+          <p v-if="activeProject?.description" class="mb-4" :style="{ color: background }">{{ activeProject?.description }}</p>
+          <div v-if="activeProject?.links?.length" class="flex gap-4">
             <a 
-              v-for="link in activeProject.links" 
+              v-for="link in activeProject?.links" 
               :key="link.url"
               :href="link.url" 
               target="_blank" 
