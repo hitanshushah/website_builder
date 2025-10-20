@@ -24,6 +24,9 @@ export interface Profile {
   personal_website_url?: string;
   share_website?: boolean;
   share_personal_website?: boolean;
+  domain_verified?: boolean;
+  domain_key?: string;
+  domain_value?: string;
   created_at?: Date;
   updated_at?: Date;
 }
@@ -98,6 +101,9 @@ export interface UserProfile {
   personal_website_url?: string;
   share_website?: boolean;
   share_personal_website?: boolean;
+  domain_verified?: boolean;
+  domain_key?: string;
+  domain_value?: string;
   projects_board_url?: string;
   profile_photo_url?: string;
   links: ProjectLink[];

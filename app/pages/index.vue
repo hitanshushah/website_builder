@@ -10,6 +10,8 @@ const subdomainData = useState('subdomainAccess', () => {
 })
 
 const isSubdomainAccess = computed(() => subdomainData.value?.isSubdomainAccess === true)
+const config = useRuntimeConfig()
+const brandName = config.public.brandName || 'Website Builder'
 
 definePageMeta({
   layout: false
@@ -18,7 +20,7 @@ definePageMeta({
 useHead(() => {
   if (!isSubdomainAccess.value) {
     return {
-      title: 'Dashboard - Website Builder',
+      title: `${brandName} - Dashboard`,
       meta: [
         { name: 'description', content: 'Manage your website and content with our professional dashboard.' }
       ]

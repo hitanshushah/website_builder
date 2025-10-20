@@ -178,11 +178,11 @@ const currentDate = new Date().toLocaleDateString('en-US', {
   month: 'long', 
   day: 'numeric' 
 })
-
+const brandName = config.public.brandName || 'Website Builder'
 useHead({
-  title: 'Terms & Conditions - Website Builder',
+  title: `${brandName} - Terms & Conditions`,
   meta: [
-    { name: 'description', content: 'Terms and conditions for Website Builder - Read our service terms and user agreement.' }
+    { name: 'description', content: `Terms and conditions for ${brandName} - Read our service terms and user agreement.` }
   ]
 })
 </script>

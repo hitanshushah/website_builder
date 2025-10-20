@@ -55,16 +55,16 @@ interface PremiumPlan {
   created_at: Date
   updated_at: Date
 }
-
+const config = useRuntimeConfig()
+const brandName = config.public.brandName || 'Website Builder'
 useHead({
-  title: 'Pricing Plans - Website Builder',
+  title: `${brandName} - Pricing Plans`,
   meta: [
     { name: 'description', content: 'Choose the perfect plan for your portfolio website. Upgrade or downgrade at any time.' }
   ]
 })
 
 const toast = useToast()
-const config = useRuntimeConfig()
 const userStore = useUserStore()
 
 const appDomain = computed(() => {

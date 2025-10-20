@@ -1,12 +1,27 @@
 import { promisify } from 'util'
-import { lookup } from 'dns'
+import { lookup, resolveTxt } from 'dns'
+import { query } from '../db/db'
 
 const dnsLookup = promisify(lookup)
+const dnsResolveTxt = promisify(resolveTxt)
+
+function getBaseDomain(domain: string): string {
+  // Remove protocol (http:// or https://) if present
+  let cleanDomain = domain.replace(/^https?:\/\//, '')
+  
+  // Remove www. prefix if present
+  cleanDomain = cleanDomain.replace(/^www\./, '')
+  
+  // Remove trailing slash if present
+  cleanDomain = cleanDomain.replace(/\/$/, '')
+  
+  return cleanDomain
+}
 
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
-    const { domain, expectedHostname } = body
+    const { domain, expectedHostname, userId } = body
 
     if (!domain || !expectedHostname) {
       throw createError({
@@ -15,22 +30,72 @@ export default defineEventHandler(async (event) => {
       })
     }
 
+    // Get user's domain verification key if exists
+    let domainKey = null
+    let domainValue = null
+    let domainVerified = false
+
+    if (userId) {
+      const userProfile = await query<{domain_key: string, domain_value: string, domain_verified: boolean}>(
+        'SELECT domain_key, domain_value, domain_verified FROM profiles WHERE user_id = $1',
+        [userId]
+      )
+      if (userProfile.length > 0) {
+        domainKey = userProfile[0].domain_key
+        domainValue = userProfile[0].domain_value
+        domainVerified = userProfile[0].domain_verified
+      }
+    }
+
     try {
-      // Use DNS lookup to resolve the domain to IP
+      // Check IP resolution (existing functionality)
       const domainResult = await dnsLookup(domain, { all: true })
-      const domainAddresses = Array.isArray(domainResult) ? domainResult.map(r => r.address) : [domainResult.address]
+      const domainAddresses = Array.isArray(domainResult) ? domainResult.map((r: any) => r.address) : [(domainResult as any).address]
       
-      // Also resolve the expected hostname to IP for comparison
       const expectedResult = await dnsLookup(expectedHostname, { all: true })
-      const expectedAddresses = Array.isArray(expectedResult) ? expectedResult.map(r => r.address) : [expectedResult.address]
+      const expectedAddresses = Array.isArray(expectedResult) ? expectedResult.map((r: any) => r.address) : [(expectedResult as any).address]
       
-      // Check if any of the resolved addresses match
       const matchingAddresses = domainAddresses.filter(domainAddr => 
         expectedAddresses.includes(domainAddr)
       )
       
-      const isCorrect = matchingAddresses.length > 0
+      const ipCorrect = matchingAddresses.length > 0
+
+      // Check TXT record for domain ownership (new functionality)
+      let txtCorrect = false
+      let txtError = null
+      let txtRecords: string[] = []
+
+      if (domainKey && domainValue) {
+        try {
+          // Get base domain (remove www. if present) for TXT lookup
+          const baseDomain = getBaseDomain(domain)
+          const fullDomainKey = `${domainKey}.${baseDomain}`
+          
+          const txtResults = await dnsResolveTxt(fullDomainKey)
+          txtRecords = txtResults.flat()
+          
+          // Check if any TXT record matches our expected value
+          txtCorrect = txtRecords.some(record => 
+            record.includes(domainValue) || record === domainValue
+          )
+          
+        } catch (txtErr: any) {
+          txtError = txtErr.message
+        }
+      }
+
+      // Overall verification status
+      const isCorrect = ipCorrect && (domainKey ? txtCorrect : true)
       
+      // Update domain_verified status in database if both checks pass
+      if (userId && ipCorrect && txtCorrect && domainKey && !domainVerified) {
+        await query(
+          'UPDATE profiles SET domain_verified = true, updated_at = NOW() WHERE user_id = $1',
+          [userId]
+        )
+      }
+
       return {
         success: true,
         domain,
@@ -40,10 +105,16 @@ export default defineEventHandler(async (event) => {
         expectedAddresses,
         matchingAddresses,
         isCorrect,
-        pingOutput: `DNS lookup results:\n${domain} resolves to: ${domainAddresses.join(', ')}\n${expectedHostname} resolves to: ${expectedAddresses.join(', ')}\nMatching IPs: ${matchingAddresses.join(', ') || 'None'}\nStatus: ${isCorrect ? 'CORRECTLY CONFIGURED' : 'NOT CONFIGURED'}`
+        ipCorrect,
+        txtCorrect: domainKey ? txtCorrect : null,
+        txtError,
+        txtRecords,
+        domainKey,
+        domainValue,
+        domainVerified: isCorrect && domainKey ? true : domainVerified,
+        pingOutput: `DNS lookup results:\n${domain} resolves to: ${domainAddresses.join(', ')}\n${expectedHostname} resolves to: ${expectedAddresses.join(', ')}\nMatching IPs: ${matchingAddresses.join(', ') || 'None'}\nIP Status: ${ipCorrect ? 'CORRECTLY CONFIGURED' : 'NOT CONFIGURED'}${domainKey ? `\nTXT Record Status: ${txtCorrect ? 'VERIFIED' : 'NOT VERIFIED'}\nDomain Key: ${domainKey}\nBase Domain: ${getBaseDomain(domain)}\nFull TXT Record: ${domainKey}.${getBaseDomain(domain)}\nDomain Value: ${domainValue}\nTXT Records: ${txtRecords.join(', ')}` : ''}`
       }
     } catch (dnsError: any) {
-      // If DNS lookup fails, return error info
       return {
         success: false,
         domain,

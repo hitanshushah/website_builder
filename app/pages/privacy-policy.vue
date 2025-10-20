@@ -133,11 +133,11 @@ const currentDate = new Date().toLocaleDateString('en-US', {
   month: 'long', 
   day: 'numeric' 
 })
-
+const brandName = config.public.brandName || 'Website Builder'
 useHead({
-  title: 'Privacy Policy - Website Builder',
+  title: `${brandName} - Privacy Policy`,
   meta: [
-    { name: 'description', content: 'Privacy policy for Website Builder - Learn how we collect, use, and protect your personal information.' }
+    { name: 'description', content: `Privacy policy for ${brandName} - Learn how we collect, use, and protect your personal information.` }
   ]
 })
 </script>

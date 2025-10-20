@@ -91,6 +91,7 @@ BEGIN
     IF NEW.premium_plan_id < 3 AND OLD.premium_plan_id = 3 THEN
         UPDATE profiles 
         SET share_personal_website = false, 
+            domain_verified = false,
             updated_at = NOW(),
             share_website = true
         WHERE user_id = NEW.id;

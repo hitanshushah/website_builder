@@ -32,16 +32,16 @@
 
 <script setup lang="ts">
 import { useUserStore } from '../../stores/user'
-
+const config = useRuntimeConfig()
+const brandName = config.public.brandName || 'Website Builder'
 useHead({
-  title: 'Live Website - Website Builder',
+  title: `${brandName} - Live Website`,
   meta: [
     { name: 'description', content: 'Your live website preview.' }
   ]
 })
 
 const userStore = useUserStore()
-const config = useRuntimeConfig()
 
 const websiteUrlSectionRef = ref<any>(null)
 const personalWebsiteUrlSectionRef = ref<any>(null)

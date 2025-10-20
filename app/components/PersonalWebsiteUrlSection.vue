@@ -221,6 +221,9 @@ const savePersonalWebsiteUrl = async () => {
       description: 'Your personal website URL has been saved successfully',
       color: 'success'
     })
+    
+    // Refresh the page to update domain verification data
+    await navigateTo(window.location.pathname, { external: true })
   } catch (error: any) {
     personalUrlError.value = error.data?.statusMessage || 'Failed to save personal website URL'
     
