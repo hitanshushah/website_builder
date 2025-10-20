@@ -2,15 +2,18 @@
   <nav class="bg-white border-b border-gray-200 px-6 py-4 dark:bg-gray-900 dark:border-gray-700">
     <div class="flex items-center justify-between">
       <!-- Logo -->
-      <div class="flex items-center space-x-3">
-        <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-600 rounded-lg flex items-center justify-center">
-          <span class="text-white font-bold text-sm">W</span>
+      <NuxtLink to="/">
+        <div class="flex items-center space-x-3">
+          <div class="w-16 h-16 flex items-center justify-center">
+            <img src="/dark_mode_logo.png" alt="Logo" class="w-full h-full object-contain hidden dark:block">
+            <img src="/light_mode_logo.png" alt="Logo" class="w-full h-full object-contain block dark:hidden">
+          </div>
+          <div>
+            <h1 class="text-lg font-bold text-gray-900 dark:text-white">Website Builder</h1>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Professional CMS</p>
+          </div>
         </div>
-        <div>
-          <h1 class="text-lg font-bold text-gray-900 dark:text-white">Website Builder</h1>
-          <p class="text-xs text-gray-500 dark:text-gray-400">Professional CMS</p>
-        </div>
-      </div>
+      </NuxtLink>
 
       <!-- Nav Buttons (Desktop only) -->
       <div class="hidden lg:flex items-center space-x-1">

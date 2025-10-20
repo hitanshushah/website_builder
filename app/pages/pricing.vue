@@ -7,7 +7,7 @@
           Choose Your Plan
         </h1>
       </div>
-      <div v-if="currentPlanId !== 1" class="text-center md:text-end mt-4 mb-4">
+      <div v-if="currentPlanId !== 1 && !userStore.isLifetimePlan" class="text-center md:text-end mt-4 mb-4">
           <UButton
             color="primary"
             variant="outline"
@@ -15,6 +15,15 @@
             class="cursor-pointer"
           >
             Manage Membership
+          </UButton>
+        </div>
+        <div v-if="currentPlanId !== 1 && userStore.isLifetimePlan" class="text-center md:text-end mt-4 mb-4">
+          <UButton
+            color="warning"
+            variant="outline"
+            disabled
+          >
+            Lifetime Plan
           </UButton>
         </div>
 
@@ -107,11 +116,21 @@ const getButtonConfig = (planId: number, planName: string) => {
   }
   
   if (isLowerTier) {
-    return {
-      label: 'Downgrade',
-      color: 'neutral' as const,
-      variant: 'outline' as const,
-      onClick: () => handlePlanChange(planId, planName, 'downgrade')
+    if (userStore.isLifetimePlan) {
+      return {
+        label: 'Lifetime Plan',
+        color: 'neutral' as const,
+        variant: 'outline' as const,
+        disabled: true
+      }
+    } 
+    else {
+      return {
+        label: 'Downgrade',
+        color: 'neutral' as const,
+        variant: 'outline' as const,
+        onClick: () => handlePlanChange(planId, planName, 'downgrade')
+      }
     }
   }
   

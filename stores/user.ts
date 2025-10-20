@@ -10,6 +10,7 @@ export const useUserStore = defineStore('user', {
     isLoggedIn: (state) => !!state.user,
     isPremium: (state) => state.user ? state.user.premium_plan_id >= 2 : false,
     isPro: (state) => state.user?.premium_plan_id === 3,
+    isLifetimePlan: (state) => state.user?.is_lifetime_plan || false,
   },
   actions: {
     setUser(user: User) {
@@ -30,7 +31,8 @@ export const useUserStore = defineStore('user', {
           const userData = (response as any)[0]
           this.user = {
             ...this.user,
-            premium_plan_id: userData.premium_plan_id || 1
+            premium_plan_id: userData.premium_plan_id || 1,
+            is_lifetime_plan: userData.is_lifetime_plan || false
           }
         }
       } catch (error) {

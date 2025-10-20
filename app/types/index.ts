@@ -6,6 +6,7 @@ export interface User {
   premium_plan_id: number;
   created_at?: Date;
   updated_at?: Date;
+  is_lifetime_plan?: boolean;
 }
 
 export interface Profile {

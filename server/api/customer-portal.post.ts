@@ -54,52 +54,16 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    let customer = null
-    
-    // If we have a stored customer ID, use it
-    if (userStripeCustomerId) {
-      try {
-        customer = await stripe.customers.retrieve(userStripeCustomerId)
-      } catch (error) {
-        userStripeCustomerId = null // Reset to null so we create a new customer
-      }
+    // If no stored customer ID, return error immediately
+    if (!userStripeCustomerId) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: 'No customer found. Please contact support for assistance.'
+      })
     }
 
-    // If no customer found by stored ID, try to find by email (for existing users)
-    if (!customer && customerEmail) {
-      const customers = await stripe.customers.list({
-        email: customerEmail,
-        limit: 1
-      })
-      if (customers.data.length > 0) {
-        customer = customers.data[0]
-        
-        // Update the database with the found customer ID
-        const { query } = await import('../db/db')
-        await query(
-          'UPDATE users SET stripe_customer_id = $1 WHERE id = $2',
-          [customer.id, userId]
-        )
-      }
-    }
-
-    // If still no customer found, create a new one
-    if (!customer) {
-      customer = await stripe.customers.create({
-        email: customerEmail,
-        metadata: {
-          userId: userId.toString()
-        }
-      })
-      console.log('Created new customer:', customer.id)
-      
-      // Store the new customer ID in the database
-      const { query } = await import('../db/db')
-      await query(
-        'UPDATE users SET stripe_customer_id = $1 WHERE id = $2',
-        [customer.id, userId]
-      )
-    }
+    // Retrieve customer using stored ID
+    const customer = await stripe.customers.retrieve(userStripeCustomerId)
 
     // Create customer portal session
     const portalSession = await stripe.billingPortal.sessions.create({

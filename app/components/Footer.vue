@@ -35,10 +35,18 @@
 
         <!-- Company Info -->
         <div>
-          <h3 class="text-lg font-semibold mb-4">Company</h3>
-          <p class="text-gray-300">
-            {{ brandName || 'Website Builder' }} - Create professional websites with ease.
-          </p>
+          <h3 class="text-lg font-semibold">Company</h3>
+          <NuxtLink to="/">
+            <div class="flex items-center gap-8">
+                <div class="w-24 h-24">
+                    <img src="/dark_mode_logo.png" alt="Logo" class="w-full h-full object-contain">
+                </div>
+                <div class="flex flex-col">
+                    <h1 class="text-lg font-bold text-white">Website Builder</h1>
+                    <p class="text-xs text-gray-400">Professional CMS</p>
+                </div>
+            </div>
+          </NuxtLink>
         </div>
       </div>
 
