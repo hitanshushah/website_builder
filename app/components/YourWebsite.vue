@@ -136,6 +136,18 @@
         </p>
         <p v-else class="font-medium text-gray-500 dark:text-gray-400">Not shared</p>
       </div>
+      <div v-if="activeWebsiteUrl" class="text-sm text-gray-500 dark:text-gray-400 mt-4">
+        <p>
+        Email setup is <span class="font-medium text-green-600 dark:text-green-400">Active</span>.  
+      </p>
+      <p>You’ll get an email when someone submits your contact form.</p>
+      <p>
+        Check your spam folder if it’s not in your inbox and mark it as “Not Spam.”  
+      </p>
+      <p>
+        If you’ve added a secondary email, make sure to check both emails.  
+      </p>
+      </div>
   </div>
 </template>
 
@@ -146,6 +158,7 @@ import { useUserStore } from '../../stores/user'
 import { useColorsStore } from '../../stores/colors'
 import { useTemplatesStore } from '../../stores/templates'
 import PlanBadge from './PlanBadge.vue'
+import websiteUrlDelete from '~~/server/api/website-url.delete'
 
 const userStore = useUserStore()
 const colorsStore = useColorsStore()

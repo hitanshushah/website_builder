@@ -118,6 +118,7 @@ export default defineEventHandler(async (event) => {
       if (session.metadata?.userId && session.metadata?.planId) {
         const userId = parseInt(session.metadata.userId)
         const planId = parseInt(session.metadata.planId)
+        const planKey = session.metadata.planKey
         
         try {
           // Check if user already has an active subscription for this plan
@@ -136,6 +137,75 @@ export default defineEventHandler(async (event) => {
             'UPDATE users SET premium_plan_id = $1, stripe_customer_id = $2 WHERE id = $3',
             [planId, session.customer, userId]
           )
+          
+          // Send subscription confirmation email
+          try {
+            // Get plan name from database
+            const planResult = await query(
+              'SELECT name FROM premium_plans WHERE id = $1',
+              [planId]
+            )
+            
+            if (planResult.length > 0) {
+              const planName = (planResult[0] as any).name
+              
+              // Fetch user email using the same logic as user-email.get.ts
+              const userEmailSql = `
+                SELECT 
+                  u.email as user_email,
+                  p.override_email,
+                  p.secondary_email
+                FROM users u
+                LEFT JOIN profiles p ON p.user_id = u.id
+                WHERE u.id = $1
+              `
+              
+              const userResult = await query(userEmailSql, [userId])
+              
+              if (userResult.length > 0) {
+                const user = userResult[0] as any
+                let userEmail = null
+                
+                // Check override_email logic
+                if (user.override_email && user.secondary_email) {
+                  userEmail = user.secondary_email
+                } else if (user.override_email && !user.secondary_email) {
+                  userEmail = user.user_email
+                } else if (!user.override_email) {
+                  userEmail = user.user_email
+                }
+                
+                if (userEmail) {
+                  
+                  let userName = userEmail
+                  if(userId) {
+                    const userNameResult = await query('SELECT name FROM profiles WHERE user_id = $1', [userId])
+                    if (userNameResult.length > 0) {
+                      userName = userNameResult[0].name
+                    }
+                  }
+                
+                try {
+                  const result = await $fetch('/api/send-subscription', {
+                      method: 'POST',
+                      body: {
+                        userName: userName,
+                        userEmail: userEmail,
+                        planName: planName
+                      }
+                    })
+
+                    console.log(`Subscription confirmation email sent to ${userEmail} for plan ${planName}`)
+                } catch (error) {
+                  console.error('Error sending subscription confirmation email:', error)
+                }
+                }
+              }
+            }
+          } catch (emailError) {
+            console.error('Error sending subscription confirmation email:', emailError)
+            // Don't fail the webhook if email sending fails
+          }
         } catch (error) {
           console.error('Error updating user plan:', error)
         }
