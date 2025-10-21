@@ -1,5 +1,6 @@
 import { savePersonalWebsiteUrl } from '../db/websiteUrl'
 import { validateProPlan } from '../utils/planValidation'
+import { getBaseDomain } from './ping-domain.post'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -23,8 +24,8 @@ export default defineEventHandler(async (event) => {
         statusMessage: planValidation.message || 'Personal website URLs require a Pro plan'
       })
     }
-
-    const data = await savePersonalWebsiteUrl(userIdInt, personalWebsiteUrl)
+    const baseDomain = getBaseDomain(personalWebsiteUrl)
+    const data = await savePersonalWebsiteUrl(userIdInt, baseDomain)
 
     return {
       success: true,

@@ -5,7 +5,7 @@ import { query } from '../db/db'
 const dnsLookup = promisify(lookup)
 const dnsResolveTxt = promisify(resolveTxt)
 
-function getBaseDomain(domain: string): string {
+export function getBaseDomain(domain: string): string {
   // Remove protocol (http:// or https://) if present
   let cleanDomain = domain.replace(/^https?:\/\//, '')
   
