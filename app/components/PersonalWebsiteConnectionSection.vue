@@ -261,6 +261,24 @@
                     </div>
                     
                   </div>
+
+                  <!-- Domain Verified Status -->
+                  <div v-if="domainVerified && isPro" class="space-y-2 mt-4">
+                    <div class="flex items-center gap-2 p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+                      <UIcon 
+                        name="i-heroicons-check-circle" 
+                        class="text-green-600 dark:text-green-400 w-5 h-5 flex-shrink-0"
+                      />
+                      <div class="flex-1">
+                        <p class="text-sm font-medium text-green-800 dark:text-green-200">
+                          Domain Verified ✓
+                        </p>
+                        <p class="text-xs mt-1 text-green-700 dark:text-green-300">
+                          Your domain ownership has been successfully verified!
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                   
                 </div>
               </div>
@@ -367,21 +385,23 @@ const pingResult = ref<{
   domainVerified?: boolean
 } | null>(null)
 const isPinging = ref(false)
+const domainVerified = ref(false)
 
-// Load existing domain key/value on component mount
+// Load existing domain key/value and domain verification status on component mount
 onMounted(async () => {
   try {
-    const response = await $fetch<{domain_key?: string, domain_value?: string}>('/api/website-url', {
+    const websiteResponse = await $fetch<{domain_key?: string, domain_value?: string, domain_verified?: boolean}>('/api/website-url', {
       query: { userId: props.userId }
     })
     
-    if (response) {
-      domainKey.value = response.domain_key || null
-      domainValue.value = response.domain_value || null
+    if (websiteResponse) {
+      domainKey.value = websiteResponse.domain_key || null
+      domainValue.value = websiteResponse.domain_value || null
+      domainVerified.value = websiteResponse.domain_verified || false
     }
   } catch (error) {
-    // Silently fail - domain key/value loading is optional
-    console.log('Could not load domain key/value:', error)
+    // Silently fail - domain key/value and verification status loading is optional
+    console.log('Could not load domain data:', error)
   }
 })
 
@@ -567,14 +587,14 @@ const testDomainConnection = async () => {
 
     pingResult.value = response as any
 
-    if (response.success && response.ipCorrect) {
+    if (response.success && (response as any).ipCorrect) {
       if (response.isCorrect) {
         toast.add({
           title: 'Success!',
           description: `Domain correctly configured and verified!`,
           color: 'success'
         })
-      } else if (response.domainKey && !response.txtCorrect) {
+      } else if ((response as any).domainKey && !(response as any).txtCorrect) {
         toast.add({
           title: 'IP Resolution: Correct!',
           description: `Domain points correctly, but TXT record verification pending.`,
@@ -587,15 +607,15 @@ const testDomainConnection = async () => {
           color: 'success'
         })
       }
-    } else if (response.success && !response.ipCorrect) {
-      const resolvedHostname = 'resolvedHostname' in response ? response.resolvedHostname : 'unknown'
+    } else if (response.success && !(response as any).ipCorrect) {
+      const resolvedHostname = 'resolvedHostname' in response ? (response as any).resolvedHostname : 'unknown'
       toast.add({
         title: 'Domain Not Configured',
         description: `Domain points to ${resolvedHostname}, expected ${ddnsHostname}`,
         color: 'warning'
       })
     } else {
-      const error = 'error' in response ? response.error : 'Could not ping domain'
+      const error = 'error' in response ? String((response as any).error) : 'Could not ping domain'
       toast.add({
         title: 'Ping Failed',
         description: error,
