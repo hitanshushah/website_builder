@@ -279,7 +279,7 @@
                       </div>
                     </div>
                   </div>
-                  <div v-else class="space-y-2 mt-4">
+                  <div v-if="!domainVerified && isPro" class="space-y-2 mt-4">
                     <p class="text-xs text-gray-500 dark:text-gray-400">
                       Domain ownership verification is pending. Please wait for DNS propagation to complete.
                     </p>
