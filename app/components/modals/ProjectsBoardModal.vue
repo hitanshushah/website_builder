@@ -82,7 +82,7 @@ const sectionName = computed(() => {
 
 const goToProjectsBoard = () => {
   // Navigate to projects board
-  window.open('https://projectsboard.live', '_blank')
+  window.open('https://admin.projectsboard.live', '_blank')
   emit('close')
 }
 </script>
