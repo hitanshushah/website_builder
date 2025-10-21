@@ -51,6 +51,9 @@ export async function findProfileByHostUrl(hostUrl: string): Promise<Profile | n
 
   if (profiles.length > 0) {
     const profile = profiles[0]
+    if(profile.domain_verified) {
+      return profile
+    }
     
     // Perform domain verification
     const verification = await verifyDomainOwnership(profile, hostUrl)
