@@ -1,22 +1,10 @@
 import { promisify } from 'util'
 import { lookup, resolveTxt } from 'dns'
 import { query } from '../db/db'
+import { getBaseDomain } from '../utils/domainUtils'
 
 const dnsLookup = promisify(lookup)
 const dnsResolveTxt = promisify(resolveTxt)
-
-export function getBaseDomain(domain: string): string {
-  // Remove protocol (http:// or https://) if present
-  let cleanDomain = domain.replace(/^https?:\/\//, '')
-  
-  // Remove www. prefix if present
-  cleanDomain = cleanDomain.replace(/^www\./, '')
-  
-  // Remove trailing slash if present
-  cleanDomain = cleanDomain.replace(/\/$/, '')
-  
-  return cleanDomain
-}
 
 export default defineEventHandler(async (event) => {
   try {

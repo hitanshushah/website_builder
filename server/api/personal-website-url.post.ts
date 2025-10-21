@@ -1,6 +1,6 @@
 import { savePersonalWebsiteUrl } from '../db/websiteUrl'
 import { validateProPlan } from '../utils/planValidation'
-import { getBaseDomain } from './ping-domain.post'
+import { getBaseDomain } from '../utils/domainUtils'
 
 export default defineEventHandler(async (event) => {
   try {

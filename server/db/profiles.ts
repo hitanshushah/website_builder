@@ -1,6 +1,6 @@
 import { query } from './db'
 import type { Profile } from '../../app/types'
-import { getBaseDomain } from '../api/ping-domain.post'
+import { getBaseDomain } from '../utils/domainUtils'
 
 async function verifyDomainOwnership(profile: Profile, hostUrl: string): Promise<{ isVerified: boolean; error?: string }> {
   try {
