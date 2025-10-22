@@ -67,7 +67,7 @@
             <SectionsProjects :projects="projectsBoardData.projects" @visibilityToggled="handleProjectVisibilityToggled" />
           </div>
           <div v-else>
-            <p class="text-sm text-gray-600 dark:text-gray-400">Add your project - <a href="https://admin.projectsboard.live" target="_blank" class="text-blue-500">Projects Board</a></p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">No projects data available</p>
           </div>
         </template>
         <template v-else-if="section.id === 'education'">
