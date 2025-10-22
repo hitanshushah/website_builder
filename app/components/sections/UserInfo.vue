@@ -20,13 +20,19 @@
             size="3xl"
             rounded
           />
-          <UAvatar
-            v-else
-            :label="initials"
-            size="3xl"
-            rounded
-            class="bg-primary text-white font-semibold"
-          />
+          <div v-else class="flex flex-col items-center gap-2">
+            <div class="text-center">
+              <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Add your profile picture</p>
+              <UButton
+                size="xs"
+                variant="ghost"
+                color="primary"
+                label="Go to Projects Board"
+                class="cursor-pointer"
+                @click="navigateToProjectsBoard"
+              />
+            </div>
+          </div>
         </div>
 
         <!-- Info -->
@@ -42,6 +48,18 @@
           <p v-if="userProfile.bio" class="text-gray-700 dark:text-gray-300 leading-relaxed mb-2 whitespace-pre-line">
             {{ userProfile.bio }}
           </p>
+          <div v-else class="flex items-center gap-2 mb-2">
+            <UIcon name="i-heroicons-user" class="text-gray-400" />
+            <span class="text-xs text-gray-500 dark:text-gray-400">Add your bio</span>
+            <UButton
+              size="xs"
+              variant="ghost"
+              color="primary"
+              label="Go to Projects Board"
+              class="cursor-pointer"
+              @click="navigateToProjectsBoard"
+            />
+          </div>
 
           <!-- Location + Email -->
           <div class="flex flex-wrap gap-2 md:gap-6 text-gray-600 dark:text-gray-400 text-sm mb-3">
@@ -69,6 +87,18 @@
               class="flex items-center gap-2 cursor-pointer"
             />
           </div>
+          <div v-else class="flex items-center gap-2 mt-2">
+            <UIcon name="i-heroicons-link" class="text-gray-400" />
+            <span class="text-xs text-gray-500 dark:text-gray-400">Add your social links</span>
+            <UButton
+              size="xs"
+              variant="ghost"
+              color="primary"
+              label="Go to Projects Board"
+              class="cursor-pointer"
+              @click="navigateToProjectsBoard"
+            />
+          </div>
         </div>
       </div>
 
@@ -87,6 +117,18 @@
           >
             {{ doc.display_name }}
           </UButton>
+        </div>
+        <div v-else class="flex flex-col items-center gap-2 text-center">
+          <UIcon name="i-heroicons-document-text" class="text-2xl text-gray-400" />
+          <p class="text-xs text-gray-500 dark:text-gray-400">Add your resume</p>
+          <UButton
+            size="xs"
+            variant="ghost"
+            color="primary"
+            label="Go to Projects Board"
+            class="cursor-pointer"
+            @click="navigateToProjectsBoard"
+          />
         </div>
       </div>
     </UCard>
@@ -119,5 +161,9 @@ const downloadDocument = (url: string, filename: string) => {
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
+}
+
+const navigateToProjectsBoard = () => {
+  window.open('https://admin.projectsboard.live', '_blank')
 }
 </script>
