@@ -10,7 +10,7 @@
 
         <!-- Skill Name -->
         <UFormField name="name" label="Skill Name" required>
-          <UInput v-model="state.name" placeholder="e.g., JavaScript, Python, React" />
+          <UInput v-model="state.name" placeholder="Enetr skill name" class="w-full" />
         </UFormField>
 
         <!-- Category Selection -->

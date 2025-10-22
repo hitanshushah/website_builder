@@ -8,39 +8,51 @@
           <p class="text-sm text-gray-600 dark:text-gray-400">Update your skill details</p>
         </div>
 
-        <!-- Skill Name -->
-        <UFormField label="Skill Name" help="Enter the name of the skill" required>
-          <UInput v-model="state.name" placeholder="Enter skill name" />
-        </UFormField>
+        <!-- Skill Name and Proficiency Level -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+          <UFormField label="Skill Name" help="Enter the name of the skill" required class="w-full">
+            <UInput v-model="state.name" placeholder="Enter skill name" class="w-full" />
+          </UFormField>
 
-        <!-- Proficiency Level -->
-        <UFormField label="Proficiency Level" help="Select your proficiency level">
-          <USelect
-            v-model="state.proficiencyLevel"
-            :options="proficiencyOptions"
-            placeholder="Select proficiency level"
-          />
-        </UFormField>
+          <UFormField label="Proficiency Level" help="Select your proficiency level" class="w-full">
+            <USelect
+              v-model="state.proficiencyLevel"
+              :items="proficiencyOptions"
+              placeholder="Select proficiency level"
+              class="w-full"
+            />
+          </UFormField>
+        </div>
 
         <!-- Category -->
         <UFormField label="Category" help="Select the skill category">
-          <USelect
-            v-model="state.categoryId"
-            :options="categoryOptions"
-            placeholder="Select category"
-            option-attribute="name"
-            value-attribute="id"
-          />
+          <div class="flex gap-2">
+            <USelect
+              v-model="state.categoryId"
+              :items="categoryOptions"
+              placeholder="Select category"
+              class="flex-1"
+            />
+            <UButton
+              v-if="state.categoryId"
+              label="Remove Category"
+              size="sm"
+              color="error"
+              variant="subtle"
+              @click="removeCategory"
+            />
+          </div>
         </UFormField>
 
         <!-- Description -->
-        <UFormField label="Description" help="Brief description of the skill">
+        <!-- <UFormField label="Description" help="Brief description of the skill">
           <UTextarea 
             v-model="state.description" 
             placeholder="Brief description of the skill"
             :rows="3"
+            class="w-full"
           />
-        </UFormField>
+        </UFormField> -->
 
         <!-- Error Message -->
         <div v-if="error" class="text-red-600 text-sm bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">
@@ -62,10 +74,10 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted } from 'vue'
 import type { Skill, Category } from '@/types'
+import { useUserStore } from '../../../stores/user'
 
 const props = defineProps<{
   skill: Skill
-  categories?: Category[]
 }>()
 
 const emit = defineEmits<{
@@ -73,44 +85,58 @@ const emit = defineEmits<{
   (e: 'close'): void
 }>()
 
+const userStore = useUserStore()
 const loading = ref(false)
 const error = ref<string | null>(null)
 const toast = useToast()
 
 // Proficiency level options
-const proficiencyOptions = [
-  { label: 'Beginner', value: 'beginner' },
-  { label: 'Intermediate', value: 'intermediate' },
-  { label: 'Advanced', value: 'advanced' },
-  { label: 'Expert', value: 'expert' }
-]
+const proficiencyOptions = ['Beginner', 'Intermediate', 'Advanced', 'Expert']
 
 // Category options
-const categoryOptions = ref<Category[]>([])
+const categoryOptions = ref<string[]>([])
+const categoryMap = ref<Map<string, number>>(new Map())
 
 // Reactive state for UForm
 const state = reactive({
   name: props.skill.name || '',
   proficiencyLevel: props.skill.proficiency_level || '',
-  categoryId: props.skill.category?.id || null,
+  categoryId: props.skill.category?.name || '',
   description: props.skill.description || ''
 })
 
-// Load categories if not provided
+// Load categories from API
 onMounted(async () => {
-  if (!props.categories) {
-    try {
-      const response = await $fetch('/api/categories')
-      if (response.success) {
-        categoryOptions.value = response.categories
-      }
-    } catch (err) {
-      console.error('Error loading categories:', err)
+  try {
+    const userId = userStore.user?.id
+    if (!userId) return
+
+    const response = await $fetch('/api/categories', {
+      query: { userId }
+    })
+    
+    // Handle both possible response formats
+    let categories: Array<{id: number, name: string}> = []
+    if (response.success && response.data) {
+      categories = response.data
+    } else if (Array.isArray(response)) {
+      categories = response
+    } else if (response.data && Array.isArray(response.data)) {
+      categories = response.data
     }
-  } else {
-    categoryOptions.value = props.categories
+    
+    if (categories.length > 0) {
+      categoryOptions.value = categories.map((cat) => cat.name)
+      categoryMap.value = new Map(categories.map((cat) => [cat.name, cat.id]))
+    }
+  } catch (err) {
+    console.error('Error fetching categories:', err)
   }
 })
+
+const removeCategory = () => {
+  state.categoryId = ''
+}
 
 const submitForm = async () => {
   try {
@@ -118,11 +144,14 @@ const submitForm = async () => {
     error.value = null
 
     // Map form data to API format
+    const categoryId = state.categoryId ? categoryMap.value.get(state.categoryId) : null
+    const proficiencyLevel = state.proficiencyLevel ? state.proficiencyLevel.toLowerCase() : 'intermediate'
+    
     const skillData = {
       id: props.skill.id,
       name: state.name,
-      proficiency_level: state.proficiencyLevel,
-      category_id: state.categoryId,
+      proficiency_level: proficiencyLevel,
+      category_id: categoryId,
       description: state.description
     }
 

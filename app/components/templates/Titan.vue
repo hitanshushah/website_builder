@@ -282,6 +282,12 @@ onUnmounted(() => {
               :alt="data.userProfile.name" 
               class="w-80 h-80 rounded-full border-10 border-[var(--color-background)] object-cover mb-8 shadow-lg"
             >
+            <div 
+              v-else 
+              class="w-80 h-80 rounded-full border-10 border-[var(--color-background)] bg-[var(--color-secondary)] flex items-center justify-center mb-8 shadow-lg"
+            >
+              <span class="text-6xl font-bold text-[var(--color-background)]">{{ getInitials(data.userProfile.name) }}</span>
+            </div>
             <h2 class="text-4xl font-bold text-[var(--color-fourth)] mb-2">{{ data.userProfile.name }}</h2>
             <div class="w-24 h-1 bg-[var(--color-secondary)] my-6"></div>
             <p v-if="data.userProfile.designation" class="text-xl text-[var(--color-fourth)] mb-1">{{ data.userProfile.designation }}</p>

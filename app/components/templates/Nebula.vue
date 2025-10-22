@@ -311,7 +311,7 @@ onUnmounted(() => {
                   class="w-full h-full object-cover"
                 >
               </div>
-              <div v-else class="w-48 h-48 md:w-80 md:h-80 rounded-full border-4 md:border-8 shadow-2xl flex items-center justify-center text-4xl md:text-6xl font-bold bg-opacity-20" :style="{ color: background, backgroundColor: background, borderColor: background }">
+              <div v-else class="w-48 h-48 md:w-80 md:h-80 rounded-full border-4 md:border-8 shadow-2xl flex items-center justify-center text-4xl md:text-6xl font-bold bg-opacity-20" :style="{ color: fourth, backgroundColor: background, borderColor: background }">
                 {{ getUserInitials }}
               </div>
             </div>
