@@ -3,13 +3,13 @@ import pkg from 'pg';
 import { User } from '../../app/types'
 
 const { Pool } = pkg;
-
+const config = useRuntimeConfig()
 const pool = new Pool({
-  user: process.env.DB_USERNAME,
-  host: process.env.DB_HOST,
-  database: process.env.DB_DATABASE,
-  password: process.env.DB_PASSWORD,
-  port: Number(process.env.DB_PORT),
+  user: config.dbUsername,
+  host: config.dbHost,
+  database: config.dbDatabase,
+  password: config.dbPassword,
+  port: Number(config.dbPort),
 });
 
 export const query = async <T>(text: string, params?: any[]): Promise<T[]> => {
