@@ -7,6 +7,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return;
   }
   
+  // Skip authentication for Stripe webhook endpoint
+  if (to.path === '/api/stripe-webhook') {
+    return;
+  }
+  
   if (!process.server) {
     return;
   }
