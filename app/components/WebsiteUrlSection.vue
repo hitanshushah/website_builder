@@ -216,6 +216,12 @@ const saveWebsiteUrl = async () => {
   
   urlError.value = ''
   saving.value = true
+
+  if (customUrl.value === 'admin' || customUrl.value === 'prod' || customUrl.value === 'stripe') {
+    urlError.value = 'The subdomain is reserved and cannot be used'
+    saving.value = false
+    return
+  }
   
   try {
     const response = await $fetch('/api/website-url', {

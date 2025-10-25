@@ -17,10 +17,10 @@
               <h4 class="font-semibold text-gray-900 dark:text-white mb-1">{{ publication.paper_name }}</h4>
               <p v-if="publication.conference_name" class="text-sm text-gray-600 dark:text-gray-400 mb-2">
                 {{ publication.conference_name }}
-                <span v-if="publication.published_date" class="ml-2">
-                  • {{ formatDate(publication.published_date) }}
-                </span>
               </p>
+              <span v-if="publication.published_date">
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Published on: {{ formatDate(publication.published_date) }}</p>
+                </span>
               <p v-if="publication.description" class="text-sm text-gray-700 dark:text-gray-300 mb-3 whitespace-pre-line">
                 {{ publication.description }}
               </p>

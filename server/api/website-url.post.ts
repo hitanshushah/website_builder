@@ -12,6 +12,13 @@ export default defineEventHandler(async (event) => {
       })
     }
 
+    if (websiteUrl === 'admin' || websiteUrl === 'prod' || websiteUrl === 'stripe') {
+      throw createError({
+        statusCode: 422,
+        statusMessage: 'The subdomain is reserved and cannot be used'
+      })
+    }
+
     const data = await saveWebsiteUrl(userId, websiteUrl)
 
     return {
