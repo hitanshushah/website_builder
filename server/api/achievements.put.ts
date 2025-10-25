@@ -3,7 +3,7 @@ import { updateAchievement } from '../db/achievements'
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
-    const { id, description } = body
+    const { id, description, hide_on_website } = body
 
     if (!id) {
       throw createError({
@@ -19,7 +19,10 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const updatedAchievement = await updateAchievement(id, description.trim())
+    const updatedAchievement = await updateAchievement(id, {
+      description: description.trim(),
+      hide_on_website: hide_on_website || false
+    })
 
     return {
       success: true,

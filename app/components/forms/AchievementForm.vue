@@ -124,8 +124,9 @@
           title: 'Achievements saved successfully',
           color: 'success'
         })
-        emit('save', { achievements: toSend })
-  
+        // Emit the achievements with IDs from the API response
+        emit('save', { achievements: response.achievements })
+
         // Reset form
         currentAchievement.value = ''
         achievements.splice(0)
