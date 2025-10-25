@@ -313,11 +313,28 @@ const addItem = (section) => {
 const closeEducationForm = () => {
   showEducationForm.value = false
 }
-const saveEducation = (data) => {
-  // Append new education to projectsBoardData
-  projectsBoardData.value.education = projectsBoardData.value.education || []
-  projectsBoardData.value.education.push(data)
-  showEducationForm.value = false
+const saveEducation = async (data) => {
+  // Refresh data from server to ensure all fields including dates are properly loaded
+  try {
+    const userId = userStore.user?.id
+    if (!userId) {
+      throw new Error('User not authenticated')
+    }
+    
+    const response = await $fetch('/api/projectsboard', {
+      query: { userId }
+    })
+    
+    // Update the education with the fresh data from server
+    projectsBoardData.value.education = response.education || []
+    showEducationForm.value = false
+  } catch (error) {
+    console.error('Error refreshing education data:', error)
+    // Fallback to the old method if refresh fails
+    projectsBoardData.value.education = projectsBoardData.value.education || []
+    projectsBoardData.value.education.push(data)
+    showEducationForm.value = false
+  }
 }
 
 const closeAchievementForm = () => {
@@ -333,31 +350,82 @@ const saveAchievements = (data) => {
 const closeExperienceForm = () => {
   showExperienceForm.value = false
 }
-const saveExperience = (data) => {
-  // Append new experience to projectsBoardData
-  projectsBoardData.value.experiences = projectsBoardData.value.experiences || []
-  projectsBoardData.value.experiences.push(data)
-  showExperienceForm.value = false
+const saveExperience = async (data) => {
+  // Refresh data from server to ensure all fields including dates are properly loaded
+  try {
+    const userId = userStore.user?.id
+    if (!userId) {
+      throw new Error('User not authenticated')
+    }
+    
+    const response = await $fetch('/api/projectsboard', {
+      query: { userId }
+    })
+    
+    // Update the experiences with the fresh data from server
+    projectsBoardData.value.experiences = response.experiences || []
+    showExperienceForm.value = false
+  } catch (error) {
+    console.error('Error refreshing experiences data:', error)
+    // Fallback to the old method if refresh fails
+    projectsBoardData.value.experiences = projectsBoardData.value.experiences || []
+    projectsBoardData.value.experiences.push(data)
+    showExperienceForm.value = false
+  }
 }
 
 const closePublicationsForm = () => {
   showPublicationsForm.value = false
 }
-const savePublication = (data) => {
-  // Append new publication to projectsBoardData
-  projectsBoardData.value.publications = projectsBoardData.value.publications || []
-  projectsBoardData.value.publications.push(data)
-  showPublicationsForm.value = false
+const savePublication = async (data) => {
+  // Refresh data from server to ensure all fields including dates are properly loaded
+  try {
+    const userId = userStore.user?.id
+    if (!userId) {
+      throw new Error('User not authenticated')
+    }
+    
+    const response = await $fetch('/api/projectsboard', {
+      query: { userId }
+    })
+    
+    // Update the publications with the fresh data from server
+    projectsBoardData.value.publications = response.publications || []
+    showPublicationsForm.value = false
+  } catch (error) {
+    console.error('Error refreshing publications data:', error)
+    // Fallback to the old method if refresh fails
+    projectsBoardData.value.publications = projectsBoardData.value.publications || []
+    projectsBoardData.value.publications.push(data)
+    showPublicationsForm.value = false
+  }
 }
 
 const closeCertificationForm = () => {
   showCertificationForm.value = false
 }
-const saveCertification = (data) => {
-  // Append new certification to projectsBoardData
-  projectsBoardData.value.certifications = projectsBoardData.value.certifications || []
-  projectsBoardData.value.certifications.push(data)
-  showCertificationForm.value = false
+const saveCertification = async (data) => {
+  // Refresh data from server to ensure all fields including dates are properly loaded
+  try {
+    const userId = userStore.user?.id
+    if (!userId) {
+      throw new Error('User not authenticated')
+    }
+    
+    const response = await $fetch('/api/projectsboard', {
+      query: { userId }
+    })
+    
+    // Update the certifications with the fresh data from server
+    projectsBoardData.value.certifications = response.certifications || []
+    showCertificationForm.value = false
+  } catch (error) {
+    console.error('Error refreshing certifications data:', error)
+    // Fallback to the old method if refresh fails
+    projectsBoardData.value.certifications = projectsBoardData.value.certifications || []
+    projectsBoardData.value.certifications.push(data)
+    showCertificationForm.value = false
+  }
 }
 
 const closeSkillsForm = () => {
@@ -487,12 +555,40 @@ const handleCategoryDeleted = (categoryId) => {
   }
 }
 
-// Generic update handler
-const handleItemUpdated = (updatedItem, section) => {
-  if (projectsBoardData.value?.[section]) {
-    const index = projectsBoardData.value[section].findIndex(item => item.id === updatedItem.id)
-    if (index !== -1) {
-      projectsBoardData.value[section][index] = updatedItem
+// Generic update handler - refresh data from server to ensure all fields are properly loaded
+const handleItemUpdated = async (updatedItem, section) => {
+  try {
+    const userId = userStore.user?.id
+    if (!userId) {
+      throw new Error('User not authenticated')
+    }
+    
+    const response = await $fetch('/api/projectsboard', {
+      query: { userId }
+    })
+    
+    // Update the specific section with fresh data from server
+    if (section === 'experiences') {
+      projectsBoardData.value.experiences = response.experiences || []
+    } else if (section === 'education') {
+      projectsBoardData.value.education = response.education || []
+    } else if (section === 'skills') {
+      projectsBoardData.value.skills = response.skills || []
+    } else if (section === 'certifications') {
+      projectsBoardData.value.certifications = response.certifications || []
+    } else if (section === 'achievements') {
+      projectsBoardData.value.achievements = response.achievements || []
+    } else if (section === 'publications') {
+      projectsBoardData.value.publications = response.publications || []
+    }
+  } catch (error) {
+    console.error(`Error refreshing ${section} data:`, error)
+    // Fallback to the old method if refresh fails
+    if (projectsBoardData.value?.[section]) {
+      const index = projectsBoardData.value[section].findIndex(item => item.id === updatedItem.id)
+      if (index !== -1) {
+        projectsBoardData.value[section][index] = updatedItem
+      }
     }
   }
 }
