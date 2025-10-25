@@ -184,7 +184,7 @@ onMounted(() => {
           >
             {{ getUserInitials }}
           </div>
-          <h1 class="text-4xl leading-[4rem] text-[var(--background-color)]">{{ data.userProfile.name }}</h1>
+          <h1 class="text-4xl leading-[4rem] text-[var(--background-color)] px-4">{{ data.userProfile.name }}</h1>
           <h2 v-if="data.userProfile.designation" class="text-base leading-8 font-normal text-[var(--background-color)]">{{ data.userProfile.designation }}</h2>
           
           <div v-if="data.userProfile.links?.length" class="mt-5">

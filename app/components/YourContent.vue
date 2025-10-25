@@ -67,7 +67,7 @@
             <SectionsProjects :projects="projectsBoardData.projects" @visibilityToggled="handleProjectVisibilityToggled" />
           </div>
           <div v-else>
-            <p class="text-sm text-gray-600 dark:text-gray-400">No projects data available</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Add your project - <a href="https://admin.projectsboard.live" target="_blank" class="text-blue-500">Projects Board</a></p>
           </div>
         </template>
         <template v-else-if="section.id === 'education'">
@@ -199,7 +199,7 @@ const sections = computed(() => [
   },
   {
     id: 'contact-details',
-    title: 'Extra Details',
+    title: 'Contact Details and Summary',
     itemCount: projectsBoardData.value?.userProfile && (projectsBoardData.value.userProfile.phone_number || projectsBoardData.value.userProfile.secondary_email) ? 1 : 0,
     icon: 'i-heroicons-squares-plus-16-solid',
     iconColor: 'teal'

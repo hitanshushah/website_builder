@@ -6,47 +6,6 @@ import { getBaseDomain } from '../utils/domainUtils'
 const dnsLookup = promisify(lookup)
 const dnsResolveTxt = promisify(resolveTxt)
 
-// Helper function to resolve TXT with timeout and retry
-async function resolveTxtWithTimeout(domain: string, timeoutMs: number = 10000): Promise<string[]> {
-  return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => {
-      reject(new Error(`DNS TXT lookup timeout for ${domain}`))
-    }, timeoutMs)
-    
-    resolveTxt(domain, (err, records) => {
-      clearTimeout(timer)
-      if (err) {
-        reject(err)
-      } else {
-        resolve(records.flat())
-      }
-    })
-  })
-}
-
-// Helper function to retry DNS lookup with exponential backoff
-async function resolveTxtWithRetry(domain: string, maxRetries: number = 3): Promise<string[]> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      console.log(`[DNS Debug] Attempt ${attempt}/${maxRetries} for ${domain}`)
-      return await resolveTxtWithTimeout(domain, 10000)
-    } catch (error: any) {
-      console.log(`[DNS Debug] Attempt ${attempt} failed:`, error.message)
-      
-      if (attempt === maxRetries) {
-        throw error
-      }
-      
-      // Wait before retry with exponential backoff
-      const waitTime = Math.pow(2, attempt) * 1000
-      console.log(`[DNS Debug] Waiting ${waitTime}ms before retry...`)
-      await new Promise(resolve => setTimeout(resolve, waitTime))
-    }
-  }
-  
-  throw new Error(`All ${maxRetries} attempts failed`)
-}
-
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
@@ -101,46 +60,16 @@ export default defineEventHandler(async (event) => {
           const baseDomain = getBaseDomain(domain)
           const fullDomainKey = `${domainKey}.${baseDomain}`
           
-          console.log(`[DNS Debug] Looking up TXT record for: ${fullDomainKey}`)
-          console.log(`[DNS Debug] Expected domain value: ${domainValue}`)
-          
-          // Try with retry mechanism first, then fallback to regular lookup
-          try {
-            txtRecords = await resolveTxtWithRetry(fullDomainKey, 3)
-          } catch (retryErr: any) {
-            console.log(`[DNS Debug] Retry approach failed, trying regular lookup:`, retryErr.message)
-            try {
-              const txtResults = await dnsResolveTxt(fullDomainKey)
-              txtRecords = txtResults.flat()
-            } catch (fallbackErr: any) {
-              console.log(`[DNS Debug] Fallback also failed:`, fallbackErr.message)
-              throw fallbackErr
-            }
-          }
-          
-          console.log(`[DNS Debug] Found TXT records:`, txtRecords)
+          const txtResults = await dnsResolveTxt(fullDomainKey)
+          txtRecords = txtResults.flat()
           
           // Check if any TXT record matches our expected value
           txtCorrect = txtRecords.some(record => 
             record.includes(domainValue) || record === domainValue
           )
           
-          console.log(`[DNS Debug] TXT verification result: ${txtCorrect}`)
-          
         } catch (txtErr: any) {
-          console.log(`[DNS Debug] TXT lookup error:`, txtErr.message)
-          console.log(`[DNS Debug] Error code:`, txtErr.code)
-          console.log(`[DNS Debug] Full error:`, txtErr)
-          
-          // Provide more specific error messages
-          const fullDomainKey = `${domainKey}.${getBaseDomain(domain)}`
-          if (txtErr.code === 'ENOTFOUND') {
-            txtError = `TXT record not found for ${fullDomainKey}. Please ensure the TXT record is properly configured in your DNS settings.`
-          } else if (txtErr.code === 'ETIMEOUT') {
-            txtError = `DNS lookup timeout for ${fullDomainKey}. This might be a DNS propagation issue.`
-          } else {
-            txtError = `DNS lookup failed: ${txtErr.message}`
-          }
+          txtError = txtErr.message
         }
       }
 

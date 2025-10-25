@@ -27,7 +27,7 @@
         </div>
 
         <!-- Introduction - full width below -->
-        <UFormField label="Introduction" name="introduction" class="col-span-2">
+        <UFormField label="Professional Summary" name="introduction" class="col-span-2">
           <UTextarea 
             v-model="state.introduction" 
             placeholder="Brief introduction about yourself..." 

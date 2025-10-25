@@ -102,7 +102,7 @@ export async function getProjectsBoardData(userId: number): Promise<ProjectsBoar
                     'sorting_order', pr.sorting_order,
                     'created_at', pr.created_at,
                     'updated_at', pr.updated_at,
-                    'category', c.key,
+                    'category', c.name,
                     'status', s.key,
                     -- Project Settings
                     'settings', (
