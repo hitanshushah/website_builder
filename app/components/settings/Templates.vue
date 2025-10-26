@@ -140,10 +140,11 @@ const closePreview = () => {
       <div 
         v-for="template in validTemplates" 
         :key="template.id"
-        class="rounded-lg overflow-hiddentransition group w-sm"
+        class="rounded-lg overflow-hiddentransition group w-sm cursor-pointer"
         :class="{
           'ring-2 ring-primary-500 ring-offset-2': templatesStore.selectedTemplate?.identifier === template.identifier
         }"
+        @click="selectTemplate(template.identifier)"
       >
         <!-- Thumbnail -->
         <div class="rounded-lg relative h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden group">
@@ -160,7 +161,7 @@ const closePreview = () => {
           <!-- Hover View Button -->
           <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
             <UButton 
-              @click="openPreview(template)"
+              @click.stop="() => openPreview(template)" 
               color="neutral"
               variant="solid"
               icon="i-heroicons-eye"

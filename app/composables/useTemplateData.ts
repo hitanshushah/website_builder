@@ -61,7 +61,6 @@ export function useFetchTemplateData(userId: number | undefined) {
   }
 }
 
-// Process raw data into template-ready format
 function processTemplateData(data: ProjectsBoardData | null): ProcessedTemplateData | null {
   if (!data) return null
 
@@ -74,23 +73,45 @@ function processTemplateData(data: ProjectsBoardData | null): ProcessedTemplateD
   const visibleCertifications = data.certifications?.filter(cert => !cert.hide_on_website) || []
   const visiblePublications = data.publications?.filter(pub => !pub.hide_on_website) || []
 
-  // Group skills by category
-  const skillsGrouped = new Map<string, Skill[]>()
-  
-  visibleSkills.forEach(skill => {
-    const categoryName = skill.category?.name || 'Other Skills'
-    if (!skillsGrouped.has(categoryName)) {
-      skillsGrouped.set(categoryName, [])
-    }
-    skillsGrouped.get(categoryName)!.push(skill)
-  })
-  
-  const skillsByCategory = Array.from(skillsGrouped.entries())
+  const categories = Array.from(
+    new Set(visibleSkills.map(skill => skill.category?.name || null))
+  )
 
-  // Handle email override - if override_email is active, swap email with secondary_email
+  const singleNullCategory = categories.length === 1 && categories[0] === null
+
+  const skillsGrouped = new Map<string, Skill[]>()
+
+  visibleSkills.forEach(skill => {
+    let categoryName = skill.category?.name
+
+    if (!categoryName) {
+      categoryName = singleNullCategory ? '' : 'Other Skills'
+    }
+
+    const groupKey = categoryName || ''
+
+    if (!skillsGrouped.has(groupKey)) {
+      skillsGrouped.set(groupKey, [])
+    }
+    skillsGrouped.get(groupKey)!.push(skill)
+  })
+
+  let skillsByCategory = Array.from(skillsGrouped.entries()).map(([key, value]) => [
+    key || null,
+    value
+  ])
+
   const processedUserProfile = { ...data.userProfile }
   if (data.userProfile.override_email && data.userProfile.secondary_email) {
     processedUserProfile.email = data.userProfile.secondary_email
+  }
+
+  if (skillsByCategory.length > 1) {
+    skillsByCategory = skillsByCategory.sort(([a], [b]) => {
+      if (a === 'Other Skills') return 1
+      if (b === 'Other Skills') return -1
+      return 0
+    })
   }
 
   return {
