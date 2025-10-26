@@ -101,6 +101,11 @@
             :style="{ backgroundColor: selectedColorScheme.fourth_color }"
           />
         </div>
+        <div>
+        <UButton class="cursor-pointer" variant="subtle" color="neutral" @click="navigateTo('/settings')">
+        Change
+      </UButton>
+      </div>
         </div>
       </div>
       <div v-else class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 flex items-center gap-4">
@@ -125,6 +130,11 @@
       <div>
         <span class="text-gray-500 dark:text-gray-400">Status:</span>
         <p class="font-medium" :class="statusColor">{{ statusText }}</p>
+      </div>
+      <div>
+        <UButton class="cursor-pointer" variant="subtle" color="neutral" @click="navigateTo('/website')">
+        Change Domain
+      </UButton>
       </div>
     </div>
     <div class="mt-4">
