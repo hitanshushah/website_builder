@@ -25,7 +25,14 @@
         <!-- Published Date and Paper Link -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
           <UFormField label="Published Date">
-            <UInput type="date" v-model="state.publishedDate" />
+            <UPopover>
+              <UButton color="neutral" variant="subtle" icon="i-lucide-calendar" class="w-full justify-start">
+                {{ publishedDateValue ? df.format(publishedDateValue.toDate(getLocalTimeZone())) : 'Select published date' }}
+              </UButton>
+              <template #content>
+                <UCalendar v-model="publishedDateValue" class="p-2" />
+              </template>
+            </UPopover>
           </UFormField>
 
           <UFormField label="Paper Link">
@@ -80,9 +87,10 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch, shallowRef } from 'vue'
 import { useUserStore } from '../../../stores/user'
 import type { Publication } from '@/types'
+import { CalendarDate, DateFormatter, getLocalTimeZone, parseDate } from '@internationalized/date'
 
 const props = defineProps<{
   publication: Publication
@@ -97,6 +105,18 @@ const loading = ref(false)
 const error = ref<string | null>(null)
 const toast = useToast()
 
+const df = new DateFormatter('en-US', { dateStyle: 'medium' })
+const publishedDateValue = shallowRef<CalendarDate | null>(null)
+
+// Initialize calendar value from existing publication date
+if (props.publication.published_date) {
+  try {
+    publishedDateValue.value = parseDate(props.publication.published_date)
+  } catch (e) {
+    console.error('Error parsing date:', e)
+  }
+}
+
 // Reactive state for UForm
 const state = reactive({
   paperName: props.publication.paper_name || '',
@@ -105,6 +125,15 @@ const state = reactive({
   description: props.publication.description || '',
   paperLink: props.publication.paper_link || '',
   paperPdf: undefined
+})
+
+// Watch calendar changes and update state
+watch(publishedDateValue, (newValue) => {
+  if (newValue) {
+    state.publishedDate = newValue.toString()
+  } else {
+    state.publishedDate = ''
+  }
 })
 
 const submitForm = async () => {

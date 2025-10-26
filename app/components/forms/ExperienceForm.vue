@@ -26,16 +26,35 @@
         <!-- Start Date and End Date -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
           <UFormField name="startDate" label="Start Date" required>
-            <UInput type="date" v-model="state.startDate" />
+            <UPopover>
+              <UButton color="neutral" variant="subtle" icon="i-lucide-calendar" class="w-full justify-start">
+                {{ startDateValue ? df.format(startDateValue.toDate(getLocalTimeZone())) : 'Select start date' }}
+              </UButton>
+              <template #content>
+                <UCalendar v-model="startDateValue" class="p-2" />
+              </template>
+            </UPopover>
           </UFormField>
 
           <UFormField name="endDate" label="End Date" :required="!state.currentlyWorking">
-            <UInput 
-              type="date" 
-              v-model="state.endDate" 
-              :min="state.startDate"
-              :disabled="state.currentlyWorking"
-            />
+            <UPopover :disabled="state.currentlyWorking">
+              <UButton 
+                color="neutral" 
+                variant="subtle" 
+                icon="i-lucide-calendar" 
+                class="w-full justify-start"
+                :disabled="state.currentlyWorking"
+              >
+                {{ endDateValue ? df.format(endDateValue.toDate(getLocalTimeZone())) : 'Select end date' }}
+              </UButton>
+              <template #content>
+                <UCalendar 
+                  v-model="endDateValue" 
+                  class="p-2"
+                  :min-value="startDateValue || undefined"
+                />
+              </template>
+            </UPopover>
           </UFormField>
 
           <!-- Empty column for consistency -->
@@ -43,18 +62,29 @@
         </div>
 
         <!-- Currently Working Checkbox -->
-        <UFormField name="currentlyWorking">
+        <UFormField name="currentlyWorking" class="w-fit">
           <UCheckbox v-model="state.currentlyWorking" label="I am currently working here" />
         </UFormField>
 
         <!-- Skills -->
         <UFormField name="skills" label="Skills">
           <div class="space-y-2">
-            <UInput
-              v-model="currentSkill"
-              placeholder="Enter a skill and press Enter"
-              @keyup.enter="addSkill"
-            />
+            <div class="flex gap-2">
+              <UInput
+                v-model="currentSkill"
+                placeholder="Enter a skill and press Enter"
+                @keyup.enter="addSkill"
+                class="flex-1"
+              />
+              <UButton 
+                type="button"
+                color="primary" 
+                icon="i-lucide-plus"
+                @click="addSkill"
+              >
+                Add
+              </UButton>
+            </div>
             <div v-if="state.skills.length" class="flex flex-wrap gap-2">
               <UBadge
                 v-for="(skill, index) in state.skills"
@@ -113,8 +143,9 @@
 <script setup lang="ts">
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref, watch, shallowRef } from 'vue'
 import { useUserStore } from '../../../stores/user'
+import { CalendarDate, DateFormatter, getLocalTimeZone } from '@internationalized/date'
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024 // 2MB
 const MIN_DIMENSIONS = { width: 200, height: 200 }
@@ -186,6 +217,10 @@ const loading = ref(false)
 const error = ref<string | null>(null)
 const toast = useToast()
 
+const df = new DateFormatter('en-US', { dateStyle: 'medium' })
+const startDateValue = shallowRef<CalendarDate | null>(null)
+const endDateValue = shallowRef<CalendarDate | null>(null)
+
 const state = reactive<Schema & { currentlyWorking: boolean }>({
   companyName: '',
   designation: '',
@@ -200,12 +235,30 @@ const state = reactive<Schema & { currentlyWorking: boolean }>({
 
 const currentSkill = ref('')
 
+// Watch calendar changes and update state
+watch(startDateValue, (newValue) => {
+  if (newValue) {
+    state.startDate = newValue.toString()
+  } else {
+    state.startDate = ''
+  }
+})
+
+watch(endDateValue, (newValue) => {
+  if (newValue) {
+    state.endDate = newValue.toString()
+  } else {
+    state.endDate = ''
+  }
+})
+
 // Watch currentlyWorking to clear endDate when checked
 watch(
   () => state.currentlyWorking,
   (isCurrentlyWorking) => {
     if (isCurrentlyWorking) {
       state.endDate = ''
+      endDateValue.value = null
     }
   }
 )

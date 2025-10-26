@@ -25,7 +25,14 @@
         <!-- Published Date and Paper Link -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
           <UFormField name="publishedDate" label="Published Date">
-            <UInput type="date" v-model="state.publishedDate" />
+            <UPopover>
+              <UButton color="neutral" variant="subtle" icon="i-lucide-calendar" class="w-full justify-start">
+                {{ publishedDateValue ? df.format(publishedDateValue.toDate(getLocalTimeZone())) : 'Select published date' }}
+              </UButton>
+              <template #content>
+                <UCalendar v-model="publishedDateValue" class="p-2" />
+              </template>
+            </UPopover>
           </UFormField>
 
           <UFormField name="paperLink" label="Paper Link">
@@ -79,8 +86,9 @@
 <script setup lang="ts">
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch, shallowRef } from 'vue'
 import { useUserStore } from '../../../stores/user'
+import { CalendarDate, DateFormatter, getLocalTimeZone } from '@internationalized/date'
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
 const ACCEPTED_FILE_TYPES = ['application/pdf']
@@ -125,6 +133,9 @@ const loading = ref(false)
 const error = ref<string | null>(null)
 const toast = useToast()
 
+const df = new DateFormatter('en-US', { dateStyle: 'medium' })
+const publishedDateValue = shallowRef<CalendarDate | null>(null)
+
 const state = reactive<Schema>({
   paperName: '',
   conferenceName: '',
@@ -132,6 +143,15 @@ const state = reactive<Schema>({
   publishedDate: '',
   paperPdf: undefined,
   paperLink: ''
+})
+
+// Watch calendar changes and update state
+watch(publishedDateValue, (newValue) => {
+  if (newValue) {
+    state.publishedDate = newValue.toString()
+  } else {
+    state.publishedDate = ''
+  }
 })
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {

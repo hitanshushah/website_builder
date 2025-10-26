@@ -25,16 +25,45 @@
         <!-- Start Date and End Date -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
           <UFormField name="startDate" label="Issue Date">
-            <UInput type="date" v-model="state.startDate" />
+            <UPopover>
+              <UButton color="neutral" variant="subtle" icon="i-lucide-calendar" class="w-full justify-start">
+                {{ startDateValue ? df.format(startDateValue.toDate(getLocalTimeZone())) : 'Select issue date' }}
+              </UButton>
+              <template #content>
+                <UCalendar v-model="startDateValue" class="p-2" />
+              </template>
+            </UPopover>
           </UFormField>
 
           <UFormField name="endDate" label="Expiry Date">
-            <UInput type="date" v-model="state.endDate" :min="state.startDate" />
+            <UPopover :disabled="state.noExpiry">
+              <UButton 
+                color="neutral" 
+                variant="subtle" 
+                icon="i-lucide-calendar" 
+                class="w-full justify-start"
+                :disabled="state.noExpiry"
+              >
+                {{ endDateValue ? df.format(endDateValue.toDate(getLocalTimeZone())) : 'Select expiry date' }}
+              </UButton>
+              <template #content>
+                <UCalendar 
+                  v-model="endDateValue" 
+                  class="p-2"
+                  :min-value="startDateValue || undefined"
+                />
+              </template>
+            </UPopover>
           </UFormField>
 
           <!-- Empty column for consistency -->
           <div></div>
         </div>
+
+        <!-- No Expiry Checkbox -->
+        <UFormField name="noExpiry" class="w-fit">
+          <UCheckbox v-model="state.noExpiry" label="This certification does not expire" />
+        </UFormField>
 
         <!-- Description (Full Width) -->
         <UFormField name="description" label="Description" class="w-full">
@@ -79,8 +108,9 @@
 <script setup lang="ts">
 import * as z from 'zod'
 import type { FormSubmitEvent } from '@nuxt/ui'
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref, watch, shallowRef } from 'vue'
 import { useUserStore } from '../../../stores/user'
+import { CalendarDate, DateFormatter, getLocalTimeZone } from '@internationalized/date'
 
 const MAX_PDF_SIZE = 10 * 1024 * 1024 // 10MB for PDFs
 const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB for images
@@ -108,6 +138,7 @@ const schema = z.object({
   description: z.string().optional(),
   startDate: z.string().optional(),
   endDate: z.string().optional(),
+  noExpiry: z.boolean().optional(),
   certificatePdf: z
     .instanceof(File, {
       message: 'Please select a file.'
@@ -141,20 +172,53 @@ const loading = ref(false)
 const error = ref<string | null>(null)
 const toast = useToast()
 
+const df = new DateFormatter('en-US', { dateStyle: 'medium' })
+const startDateValue = shallowRef<CalendarDate | null>(null)
+const endDateValue = shallowRef<CalendarDate | null>(null)
+
 const state = reactive<Schema>({
   name: '',
   instituteName: '',
   description: '',
   startDate: '',
   endDate: '',
+  noExpiry: false,
   certificatePdf: undefined
 })
 
-// Watch to enforce endDate >= startDate
+// Watch calendar changes and update state
+watch(startDateValue, (newValue) => {
+  if (newValue) {
+    state.startDate = newValue.toString()
+  } else {
+    state.startDate = ''
+  }
+})
+
+watch(endDateValue, (newValue) => {
+  if (newValue) {
+    state.endDate = newValue.toString()
+  } else {
+    state.endDate = ''
+  }
+})
+
+// Watch noExpiry to clear endDate when checked
 watch(
-  () => state.startDate,
-  (newStart) => {
-    if (newStart && state.endDate && state.endDate < newStart) {
+  () => state.noExpiry,
+  (isNoExpiry) => {
+    if (isNoExpiry) {
+      state.endDate = ''
+      endDateValue.value = null
+    }
+  }
+)
+
+// Watch to enforce endDate >= startDate when not no expiry
+watch(
+  [() => state.startDate, () => state.endDate, () => state.noExpiry],
+  ([newStart, newEnd, noExpiry]) => {
+    if (!noExpiry && newStart && newEnd && newEnd < newStart) {
       state.endDate = newStart
     }
   }
@@ -196,7 +260,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         name: state.name,
         description: state.description || null,
         start_date: state.startDate || null,
-        end_date: state.endDate || null,
+        end_date: state.noExpiry ? null : (state.endDate || null),
         institute_name: state.instituteName || null,
         certificate_pdf: certificateUrl
       }]

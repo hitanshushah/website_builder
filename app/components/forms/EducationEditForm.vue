@@ -26,16 +26,35 @@
         <!-- Start Date, End Date, and CGPA/Percentage -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
           <UFormField label="Start Date" required>
-            <UInput type="date" v-model="state.startDate" />
+            <UPopover>
+              <UButton color="neutral" variant="subtle" icon="i-lucide-calendar" class="w-full justify-start">
+                {{ startDateValue ? df.format(startDateValue.toDate(getLocalTimeZone())) : 'Select start date' }}
+              </UButton>
+              <template #content>
+                <UCalendar v-model="startDateValue" class="p-2" />
+              </template>
+            </UPopover>
           </UFormField>
 
           <UFormField label="End Date" :required="!state.currentlyPursuing">
-            <UInput 
-              type="date" 
-              v-model="state.endDate" 
-              :min="state.startDate"
-              :disabled="state.currentlyPursuing"
-            />
+            <UPopover :disabled="state.currentlyPursuing">
+              <UButton 
+                color="neutral" 
+                variant="subtle" 
+                icon="i-lucide-calendar" 
+                class="w-full justify-start"
+                :disabled="state.currentlyPursuing"
+              >
+                {{ endDateValue ? df.format(endDateValue.toDate(getLocalTimeZone())) : 'Select end date' }}
+              </UButton>
+              <template #content>
+                <UCalendar 
+                  v-model="endDateValue" 
+                  class="p-2"
+                  :min-value="startDateValue || undefined"
+                />
+              </template>
+            </UPopover>
           </UFormField>
 
           <UFormField :label="state.gradeType === 'cgpa' ? 'CGPA (0-10)' : 'Percentage (1-100)'">
@@ -73,7 +92,7 @@
         </div>
 
         <!-- Currently Pursuing Checkbox -->
-        <UFormField name="currentlyPursuing">
+        <UFormField name="currentlyPursuing" class="w-fit">
           <UCheckbox v-model="state.currentlyPursuing" label="I am currently pursuing this degree" />
         </UFormField>
 
@@ -95,8 +114,9 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch, ref } from 'vue'
+import { reactive, watch, ref, shallowRef } from 'vue'
 import type { Education } from '@/types'
+import { CalendarDate, DateFormatter, getLocalTimeZone, parseDate } from '@internationalized/date'
 
 const props = defineProps<{
   education: Education
@@ -111,6 +131,27 @@ const loading = ref(false)
 const error = ref<string | null>(null)
 const toast = useToast()
 
+const df = new DateFormatter('en-US', { dateStyle: 'medium' })
+const startDateValue = shallowRef<CalendarDate | null>(null)
+const endDateValue = shallowRef<CalendarDate | null>(null)
+
+// Initialize calendar values from existing education dates
+if (props.education.from_date) {
+  try {
+    startDateValue.value = parseDate(props.education.from_date)
+  } catch (e) {
+    console.error('Error parsing start date:', e)
+  }
+}
+
+if (props.education.end_date) {
+  try {
+    endDateValue.value = parseDate(props.education.end_date)
+  } catch (e) {
+    console.error('Error parsing end date:', e)
+  }
+}
+
 // Reactive state for UForm
 const state = reactive({
   university: props.education.university_name || '',
@@ -124,22 +165,47 @@ const state = reactive({
   gradeValue: props.education.cgpa || null
 })
 
+// Watch calendar changes and update state
+watch(startDateValue, (newValue) => {
+  if (newValue) {
+    state.startDate = newValue.toString()
+  } else {
+    state.startDate = ''
+  }
+})
+
+watch(endDateValue, (newValue) => {
+  if (newValue) {
+    state.endDate = newValue.toString()
+  } else {
+    state.endDate = ''
+  }
+})
+
 // Watch currentlyPursuing to clear endDate when checked
 watch(
   () => state.currentlyPursuing,
   (isCurrentlyPursuing) => {
     if (isCurrentlyPursuing) {
       state.endDate = ''
+      endDateValue.value = null
     }
   }
 )
 
 // Watch to enforce endDate >= startDate
 watch(
-  () => state.startDate,
-  (newStart) => {
-    if (state.endDate && state.endDate < newStart) {
+  [() => state.startDate, () => state.endDate, () => state.currentlyPursuing],
+  ([newStart, newEnd, currentlyPursuing]) => {
+    if (!currentlyPursuing && newEnd && newStart && newEnd < newStart) {
       state.endDate = newStart
+      if (newStart) {
+        try {
+          endDateValue.value = parseDate(newStart)
+        } catch (e) {
+          console.error('Error parsing date:', e)
+        }
+      }
     }
   }
 )

@@ -26,35 +26,77 @@
         <!-- Start Date and End Date -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
           <UFormField label="Start Date">
-            <UInput type="date" v-model="state.startDate" />
+            <UPopover>
+              <UButton color="neutral" variant="subtle" icon="i-lucide-calendar" class="w-full justify-start">
+                {{ startDateValue ? df.format(startDateValue.toDate(getLocalTimeZone())) : 'Select start date' }}
+              </UButton>
+              <template #content>
+                <UCalendar v-model="startDateValue" class="p-2" />
+              </template>
+            </UPopover>
           </UFormField>
 
           <UFormField label="End Date">
-            <UInput type="date" v-model="state.endDate" :min="state.startDate" />
+            <UPopover :disabled="state.currentlyWorking">
+              <UButton 
+                color="neutral" 
+                variant="subtle" 
+                icon="i-lucide-calendar" 
+                class="w-full justify-start"
+                :disabled="state.currentlyWorking"
+              >
+                {{ endDateValue ? df.format(endDateValue.toDate(getLocalTimeZone())) : 'Select end date' }}
+              </UButton>
+              <template #content>
+                <UCalendar 
+                  v-model="endDateValue" 
+                  class="p-2"
+                  :min-value="startDateValue || undefined"
+                />
+              </template>
+            </UPopover>
           </UFormField>
 
           <!-- Empty column for consistency -->
           <div></div>
         </div>
 
+        <!-- Currently Working Checkbox -->
+        <UFormField class="w-fit">
+          <UCheckbox v-model="state.currentlyWorking" label="I am currently working here" />
+        </UFormField>
+
         <!-- Skills -->
         <UFormField label="Skills Used">
-          <UInput 
-            v-model="skillsInput" 
-            placeholder="e.g., React, Node.js, Python, Machine Learning"
-            @blur="updateSkills"
-          />
-          <div class="text-xs text-gray-500 mt-1">
-            Enter skills separated by commas
-          </div>
-          <div v-if="state.skills.length > 0" class="flex flex-wrap gap-2 mt-2">
-            <span 
-              v-for="skill in state.skills" 
-              :key="skill"
-              class="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 text-xs rounded-full"
-            >
-              {{ skill }}
-            </span>
+          <div class="space-y-2">
+            <div class="flex gap-2">
+              <UInput
+                v-model="currentSkill"
+                placeholder="Enter a skill and press Enter"
+                @keyup.enter="addSkill"
+                class="flex-1"
+              />
+              <UButton 
+                type="button"
+                color="primary" 
+                icon="i-lucide-plus"
+                @click="addSkill"
+              >
+                Add
+              </UButton>
+            </div>
+            <div v-if="state.skills.length" class="flex flex-wrap gap-2">
+              <UBadge
+                v-for="(skill, index) in state.skills"
+                :key="index"
+                color="primary"
+                variant="soft"
+                class="cursor-pointer"
+                @click="removeSkill(index)"
+              >
+                {{ skill }} ×
+              </UBadge>
+            </div>
           </div>
         </UFormField>
 
@@ -102,9 +144,10 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch, ref } from 'vue'
+import { reactive, watch, ref, shallowRef } from 'vue'
 import { useUserStore } from '../../../stores/user'
 import type { Experience } from '@/types'
+import { CalendarDate, DateFormatter, getLocalTimeZone, parseDate } from '@internationalized/date'
 
 const props = defineProps<{
   experience: Experience
@@ -119,6 +162,27 @@ const loading = ref(false)
 const error = ref<string | null>(null)
 const toast = useToast()
 
+const df = new DateFormatter('en-US', { dateStyle: 'medium' })
+const startDateValue = shallowRef<CalendarDate | null>(null)
+const endDateValue = shallowRef<CalendarDate | null>(null)
+
+// Initialize calendar values from existing experience dates
+if (props.experience.start_date) {
+  try {
+    startDateValue.value = parseDate(props.experience.start_date)
+  } catch (e) {
+    console.error('Error parsing start date:', e)
+  }
+}
+
+if (props.experience.end_date) {
+  try {
+    endDateValue.value = parseDate(props.experience.end_date)
+  } catch (e) {
+    console.error('Error parsing end date:', e)
+  }
+}
+
 // Reactive state for UForm
 const state = reactive({
   role: props.experience.role || '',
@@ -128,35 +192,71 @@ const state = reactive({
   location: props.experience.location || '',
   description: props.experience.description || '',
   skills: props.experience.skills || [],
-  companyLogo: undefined
+  companyLogo: undefined,
+  currentlyWorking: !props.experience.end_date // If no end_date, assume currently working
 })
 
 // Skills input handling
-const skillsInput = ref(props.experience.skills?.join(', ') || '')
+const currentSkill = ref('')
 
-const updateSkills = () => {
-  if (skillsInput.value.trim()) {
-    state.skills = skillsInput.value
-      .split(',')
-      .map(skill => skill.trim())
-      .filter(skill => skill.length > 0)
-  } else {
-    state.skills = []
-  }
+const addSkill = () => {
+  const trimmed = currentSkill.value.trim()
+  if (!trimmed || state.skills.includes(trimmed)) return
+  state.skills.push(trimmed)
+  currentSkill.value = ''
 }
 
-// Watch to enforce endDate >= startDate
+const removeSkill = (index: number) => {
+  state.skills.splice(index, 1)
+}
+
+// Watch calendar changes and update state
+watch(startDateValue, (newValue) => {
+  if (newValue) {
+    state.startDate = newValue.toString()
+  } else {
+    state.startDate = ''
+  }
+})
+
+watch(endDateValue, (newValue) => {
+  if (newValue) {
+    state.endDate = newValue.toString()
+  } else {
+    state.endDate = ''
+  }
+})
+
+// Watch currentlyWorking to clear endDate when checked
 watch(
-  () => state.startDate,
-  (newStart) => {
-    if (state.endDate && state.endDate < newStart) {
+  () => state.currentlyWorking,
+  (isCurrentlyWorking) => {
+    if (isCurrentlyWorking) {
+      state.endDate = ''
+      endDateValue.value = null
+    }
+  }
+)
+
+// Watch to enforce endDate >= startDate when not currently working
+watch(
+  [() => state.startDate, () => state.endDate, () => state.currentlyWorking],
+  ([newStart, newEnd, currentlyWorking]) => {
+    if (!currentlyWorking && newEnd && newStart && newEnd < newStart) {
       state.endDate = newStart
+      if (newStart) {
+        try {
+          endDateValue.value = parseDate(newStart)
+        } catch (e) {
+          console.error('Error parsing date:', e)
+        }
+      }
     }
   }
 )
 
 const submitForm = async () => {
-  if (state.endDate && state.startDate && state.endDate < state.startDate) {
+  if (!state.currentlyWorking && state.endDate && state.startDate && state.endDate < state.startDate) {
     error.value = 'End date cannot be earlier than start date'
     return
   }
@@ -191,7 +291,7 @@ const submitForm = async () => {
       role: state.role,
       company_name: state.company,
       start_date: state.startDate,
-      end_date: state.endDate,
+      end_date: state.currentlyWorking ? null : state.endDate,
       location: state.location,
       description: state.description,
       skills: state.skills,
