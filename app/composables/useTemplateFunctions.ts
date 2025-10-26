@@ -70,7 +70,7 @@ export const useTemplateFunctions = (data: Ref<ProcessedTemplateData | null>) =>
 
   // Format date range (e.g., "Jan 2020 - Present" or "2020 - 2023")
   const formatDateRange = (startDate: string | null, endDate: string | null): string => {
-    if (!startDate) return 'N/A'
+    if (!startDate) return ''
     
     const start = new Date(startDate)
     const startYear = start.getFullYear()
@@ -93,7 +93,7 @@ export const useTemplateFunctions = (data: Ref<ProcessedTemplateData | null>) =>
 
   // Format single date (e.g., "Jan 2020")
   const formatDate = (date: string | null): string => {
-    if (!date) return 'N/A'
+    if (!date) return ''
     
     const d = new Date(date)
     const year = d.getFullYear()
@@ -104,7 +104,7 @@ export const useTemplateFunctions = (data: Ref<ProcessedTemplateData | null>) =>
 
   // Format year only
   const formatYear = (date: string | null): string => {
-    if (!date) return 'N/A'
+    if (!date) return ''
     return new Date(date).getFullYear().toString()
   }
 

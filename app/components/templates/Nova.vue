@@ -430,7 +430,7 @@ onMounted(() => {
                 <div class="p-4">
                   <h3 class="text-[var(--fourth-color)] text-lg font-semibold mb-1">{{ project.name }}</h3>
                   <p v-if="project.category" class="text-xs font-semibold mb-2 uppercase text-[var(--fourth-color)] opacity-70">{{ project.category }}</p>
-                  <p class="text-[var(--fourth-color)] text-sm leading-relaxed mb-3">{{ project.description || 'No description available' }}</p>
+                  <p class="text-[var(--fourth-color)] text-sm leading-relaxed mb-3">{{ project.description }}</p>
                   
                   <!-- Technologies -->
                   <div v-if="project.technologies?.length" class="flex flex-wrap gap-1.5 mb-3">
@@ -503,7 +503,7 @@ onMounted(() => {
                 <div class="p-4">
                   <h3 class="text-[var(--fourth-color)] text-lg font-semibold mb-1">{{ cert.name }}</h3>
                   <p v-if="cert.institute_name" class="text-sm font-semibold mb-2 uppercase text-[var(--fourth-color)] opacity-70">{{ cert.institute_name }}</p>
-                  <p class="text-[var(--fourth-color)] text-sm leading-relaxed mb-3">{{ cert.description || 'No description available' }}</p>
+                  <p class="text-[var(--fourth-color)] text-sm leading-relaxed mb-3">{{ cert.description }}</p>
                   
                   <div class="flex items-center justify-between">
                     <span class="text-xs text-[var(--fourth-color)]">{{ formatYear(cert.start_date) }}</span>
@@ -543,7 +543,7 @@ onMounted(() => {
                 <div class="p-4">
                   <h3 class="text-[var(--fourth-color)] text-lg font-semibold mb-1">{{ pub.paper_name }}</h3>
                   <p v-if="pub.conference_name" class="text-sm font-semibold mb-2 uppercase text-[var(--fourth-color)] opacity-70">{{ pub.conference_name }}</p>
-                  <p class="text-[var(--fourth-color)] text-sm leading-relaxed mb-3">{{ pub.description || 'No description available' }}</p>
+                  <p class="text-[var(--fourth-color)] text-sm leading-relaxed mb-3">{{ pub.description }}</p>
                   
                   <div class="flex items-center justify-between">
                     <span class="text-xs text-[var(--fourth-color)]">{{ formatYear(pub.published_date) }}</span>

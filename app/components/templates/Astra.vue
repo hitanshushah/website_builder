@@ -466,7 +466,7 @@ onUnmounted(() => {
                             </div>
                             <span v-if="project.category" class="px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm self-start" style="background-color: var(--background-color); color: var(--primary-color); border: 1px solid var(--primary-color)">{{ project.category }}</span>
                         </div>
-                        <p class="mb-4 text-sm sm:text-base break-words" style="color: var(--fourth-color)">{{ project.description || 'No description available' }}</p>
+                        <p class="mb-4 text-sm sm:text-base break-words" style="color: var(--fourth-color)">{{ project.description }}</p>
                         <div v-if="project.technologies?.length" class="flex flex-wrap gap-2 mb-4">
                             <span 
                                 v-for="tech in project.technologies" 
