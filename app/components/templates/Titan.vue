@@ -289,7 +289,7 @@ onUnmounted(() => {
       <div class="container mx-auto max-w-6xl">
         <div class="flex flex-col md:flex-row ml-0 md:ml-12 rounded-lg overflow-hidden bg-transparent">
           <!-- Left Side - Profile Image -->
-          <div class="md:w-2/5 bg-[var(--color-primary)] p-8 flex flex-col items-center text-center min-h-[600px] md:min-h-[700px]">
+          <div class="md:w-2/5 bg-[var(--color-secondary)] p-8 flex flex-col items-center text-center min-h-[600px] md:min-h-[700px]">
             <img 
               v-if="data.userProfile.profile_photo_url"
               :src="data.userProfile.profile_photo_url" 
@@ -302,9 +302,9 @@ onUnmounted(() => {
             >
               <span class="text-6xl font-bold text-[var(--color-background)]">{{ getInitials(data.userProfile.name) }}</span>
             </div>
-            <h2 class="text-4xl font-bold text-[var(--color-fourth)] mb-2">{{ data.userProfile.name }}</h2>
-            <div class="w-24 h-1 bg-[var(--color-secondary)] my-6"></div>
-            <p v-if="data.userProfile.designation" class="text-xl text-[var(--color-fourth)] mb-1">{{ data.userProfile.designation }}</p>
+            <h2 class="text-4xl font-bold text-[var(--color-background)] mb-2">{{ data.userProfile.name }}</h2>
+            <div class="w-24 h-1 bg-[var(--color-background)] my-6"></div>
+            <p v-if="data.userProfile.designation" class="text-xl text-[var(--color-background)] mb-1">{{ data.userProfile.designation }}</p>
             
             <!-- Social Links -->
             <div v-if="data.userProfile.links?.length" class="flex flex-wrap gap-3 bg-[var(--color-background)] p-4 rounded-lg mt-10 justify-center">
@@ -986,12 +986,12 @@ onUnmounted(() => {
 <style scoped>
 /* Gradient Section */
 .gradient-section {
-  background: linear-gradient(to top, var(--color-secondary) 40%, var(--color-background) 40%);
+  background: linear-gradient(to top, var(--color-primary) 40%, var(--color-background) 40%);
 }
 
 @media (min-width: 768px) {
   .gradient-section {
-    background: linear-gradient(to right, var(--color-secondary) 40%, var(--color-background) 40%);
+    background: linear-gradient(to right, var(--color-primary) 40%, var(--color-background) 40%);
   }
 }
 
