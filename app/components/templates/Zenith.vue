@@ -502,7 +502,7 @@ const colorVars = computed(() => ({
             <div class="box">
               <div class="text"><h3>{{ edu.degree }}</h3></div>
               <p v-if="edu.university_name">{{ edu.university_name }}</p>
-              <p v-if="edu.cgpa">CGPA: {{ edu.cgpa }} -- {{ formatYear(edu.end_date || edu.from_date) }}</p>
+              <p v-if="edu.cgpa">Grade: {{ edu.cgpa }} -- {{ formatYear(edu.end_date || edu.from_date) }}</p>
               <p v-else-if="edu.from_date">{{ formatDateRange(edu.from_date, edu.end_date) }}</p>
             </div>
           </div>

@@ -21,7 +21,7 @@
           </UFormField>
         </div>
 
-        <!-- Start Date, End Date, and CGPA/Percentage -->
+        <!-- Start Date, End Date, and Grade/Percentage -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
           <UFormField label="Start Date" required>
             <UPopover>
@@ -55,35 +55,11 @@
             </UPopover>
           </UFormField>
 
-          <UFormField :label="state.gradeType === 'cgpa' ? 'CGPA (0-10)' : 'Percentage (1-100)'">
+          <UFormField label="Grade">
             <div class="space-y-2">
-              <div class="flex gap-4">
-                <label class="flex items-center gap-2 cursor-pointer">
-                  <input 
-                    type="radio" 
-                    v-model="state.gradeType" 
-                    value="cgpa"
-                    class="w-4 h-4 text-primary-600 focus:ring-primary-500"
-                  />
-                  <span class="text-sm">CGPA</span>
-                </label>
-                <label class="flex items-center gap-2 cursor-pointer">
-                  <input 
-                    type="radio" 
-                    v-model="state.gradeType" 
-                    value="percentage"
-                    class="w-4 h-4 text-primary-600 focus:ring-primary-500"
-                  />
-                  <span class="text-sm">Percentage</span>
-                </label>
-              </div>
-              <UInput 
-                type="number" 
-                step="0.01" 
-                :min="state.gradeType === 'cgpa' ? 0 : 1" 
-                :max="state.gradeType === 'cgpa' ? 10 : 100" 
+              <UInput
                 v-model="state.gradeValue" 
-                :placeholder="state.gradeType === 'cgpa' ? 'e.g., 8.5' : 'e.g., 85'"
+                placeholder="8.5/10 or 85%"
               />
             </div>
           </UFormField>
@@ -247,7 +223,7 @@ const submitForm = async () => {
       error.value = 'User profile not found. Please try logging in again.'
     } else if (err.statusCode === 500) {
       if (err.data?.message?.includes('numeric field overflow')) {
-        error.value = 'CGPA value is too large. Please enter a value between 0 and 10.'
+        error.value = 'Grade value is too large. Please enter a value between 0 and 10.'
       } else {
         error.value = 'Server error. Please try again later.'
       }

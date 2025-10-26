@@ -350,7 +350,7 @@ onMounted(() => {
                       <div v-if="edu.location" class="flex items-center gap-1 text-gray-600 text-sm mb-2">
                         <span class="text-[var(--fourth-color)]">{{ edu.location }}</span>
                       </div>
-                      <p v-if="edu.cgpa" class="text-[var(--fourth-color)] text-sm">CGPA: {{ edu.cgpa }}</p>
+                      <p v-if="edu.cgpa" class="text-[var(--fourth-color)] text-sm">Grade: {{ edu.cgpa }}</p>
                     </div>
                   </div>
                 </div>
@@ -384,7 +384,7 @@ onMounted(() => {
                     <div v-if="edu.location" class="flex items-center gap-1 text-gray-600 text-sm mb-2">
                       <span class="text-[var(--fourth-color)]">{{ edu.location }}</span>
                     </div>
-                    <p v-if="edu.cgpa" class="text-[var(--fourth-color)] text-sm">CGPA: {{ edu.cgpa }}</p>
+                    <p v-if="edu.cgpa" class="text-[var(--fourth-color)] text-sm">Grade: {{ edu.cgpa }}</p>
                   </div>
                 </div>
               </div>

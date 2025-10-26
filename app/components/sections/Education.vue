@@ -25,9 +25,9 @@
           <span>{{ formatDateRange(edu.from_date, edu.end_date) }}</span>
         </div>
 
-        <!-- CGPA -->
+        <!-- Grade -->
         <p v-if="edu.cgpa" class="text-sm text-gray-600 dark:text-gray-400">
-          CGPA: {{ edu.cgpa }}
+          Grade: {{ edu.cgpa }}
         </p>
       </div>
 

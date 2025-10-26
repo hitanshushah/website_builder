@@ -625,7 +625,7 @@ onUnmounted(() => {
             </div>
             <div class="space-y-2 text-center">
               <div v-if="edu.cgpa" class="text-sm" :style="{ color: fourth }">
-                <span class="font-semibold">CGPA:</span> {{ edu.cgpa }}
+                <span class="font-semibold">Grade:</span> {{ edu.cgpa }}
               </div>
               <div v-if="edu.location" class="text-sm flex items-center justify-center gap-1" :style="{ color: fourth }">
                 <i class="fas fa-map-marker-alt" :style="{ color: primary }"></i> {{ edu.location }}

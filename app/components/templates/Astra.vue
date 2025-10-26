@@ -551,7 +551,7 @@ onUnmounted(() => {
                     <p class="font-semibold mb-2 text-sm sm:text-base" style="color: var(--primary-color)">{{ edu.university_name }}</p>
                     <p v-if="edu.location" class="mb-2 text-sm sm:text-base" style="color: var(--fourth-color)">{{ edu.location }}</p>
                     <p class="mb-2 text-sm sm:text-base" style="color: var(--fourth-color)">{{ formatDateRange(edu.from_date, edu.end_date) }}</p>
-                    <p v-if="edu.cgpa" class="font-semibold text-sm sm:text-base" style="color: var(--fourth-color)">CGPA: {{ edu.cgpa }}</p>
+                    <p v-if="edu.cgpa" class="font-semibold text-sm sm:text-base" style="color: var(--fourth-color)">Grade: {{ edu.cgpa }}</p>
                 </div>
             </div>
         </div>

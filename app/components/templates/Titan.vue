@@ -472,7 +472,7 @@ onUnmounted(() => {
                 <div class="ml-16">
                   <h3 class="text-lg font-bold text-[var(--color-background)] mb-2">{{ edu.degree }}</h3>
                   <p class="text-sm text-[var(--color-background)] mb-1">{{ edu.university_name }}</p>
-                  <p v-if="edu.cgpa" class="text-xs text-[var(--color-background)] mb-1">CGPA: {{ edu.cgpa }}/10</p>
+                  <p v-if="edu.cgpa" class="text-xs text-[var(--color-background)] mb-1">Grade: {{ edu.cgpa }}/10</p>
                   <p v-if="edu.location" class="text-xs text-[var(--color-background)] mb-2">{{ edu.location }}</p>
                   <p class="text-xs font-semibold text-[var(--color-background)]">{{ formatDateRange(edu.from_date, edu.end_date) }}</p>
                 </div>
@@ -502,7 +502,7 @@ onUnmounted(() => {
               <div class="text-center px-2 max-w-[200px]">
                 <h3 class="text-lg font-bold text-[var(--color-background)] mb-2">{{ edu.degree }}</h3>
                 <p class="text-sm text-[var(--color-background)] mb-1">{{ edu.university_name }}</p>
-                <p v-if="edu.cgpa" class="text-xs text-[var(--color-background)] mb-1">CGPA: {{ edu.cgpa }}/10</p>
+                <p v-if="edu.cgpa" class="text-xs text-[var(--color-background)] mb-1">Grade: {{ edu.cgpa }}/10</p>
                 <p v-if="edu.location" class="text-xs text-[var(--color-background)] mb-2">{{ edu.location }}</p>
                 <p class="text-xs font-semibold text-[var(--color-background)]">{{ formatDateRange(edu.from_date, edu.end_date) }}</p>
               </div>

@@ -823,7 +823,7 @@ const fourth = computed(() => props.fourth || '#10b981')
                 :style="{ backgroundColor: `${fourth}`, color: background }"
                 class="inline-block px-4 py-2 rounded-full font-semibold"
               >
-                CGPA: {{ edu.cgpa }}
+                Grade: {{ edu.cgpa }}
               </div>
             </div>
           </div>
