@@ -421,6 +421,11 @@ const colorVars = computed(() => ({
               </div>
             </div>
           </div>
+          <div v-if="data?.userProfile.projects_board_url" class="flex justify-center items-center mt-16!">
+            <a :href="`https://${data.userProfile.projects_board_url}`" target="_blank" class="text-lg shadow-lg hover:underline! break-all px-4! py-2! rounded-lg transition-all duration-300" :style="{ color: primary, backgroundColor: background }">
+              View all projects
+            </a>
+          </div>
         </div>
       </div>
     </section>

@@ -659,6 +659,11 @@ const fourth = computed(() => props.fourth || '#10b981')
       <div class="h-full flex items-center justify-center px-8" :style="{ background: `linear-gradient(135deg, ${fourth} 0%, ${secondary}80 100%)` }">
         <div class="section-content max-w-6xl w-full py-12 overflow-y-auto">
           <h2 v-if="projects?.length > 0" class="text-5xl font-bold mb-12 text-center" :style="{ color: background }">Projects</h2>
+          <div v-if="data?.userProfile.projects_board_url" class="flex justify-center items-center mb-12">
+            <a :href="`https://${data.userProfile.projects_board_url}`" target="_blank" class="text-lg shadow-lg hover:underline break-all px-4 py-2 rounded-lg transition-all duration-300" :style="{ color: background, backgroundColor: secondary }">
+              View all projects
+            </a>
+          </div>
           <div class="grid md:grid-cols-2 gap-8">
             <div 
               v-if="projects?.length > 0"

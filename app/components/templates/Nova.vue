@@ -458,6 +458,11 @@ onMounted(() => {
                 </div>
               </div>
             </div>
+            <div v-if="data?.userProfile.projects_board_url" class="flex justify-center items-center mt-4">
+                <a :href="`https://${data.userProfile.projects_board_url}`" target="_blank" class="text-lg shadow-lg hover:underline break-all px-4 py-2 rounded-lg transition-all duration-300 border-2" :style="{ color: primary, backgroundColor: background, borderColor: primary }">
+                  View all projects
+                </a>
+              </div>
           </section>
 
           <!-- Skills -->

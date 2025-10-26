@@ -304,13 +304,13 @@ onUnmounted(() => {
                         </a>
                     </div>
                     <div class="mb-6 flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start">
-                        <div>
+                        <div v-if="data.userProfile.website_url">
                             <a v-if="data.userProfile.website_url" :href="data.userProfile.website_url.startsWith('http') ? data.userProfile.website_url : `https://${data.userProfile.website_url}`" target="_blank" class="md:text-lg text-sm">
                                 <strong style="color: var(--primary-color)">Website:</strong> 
                                 <span class="ml-1 text-[var(--color-fourth)] hover:underline" style="color: var(--fourth-color)">{{ data.userProfile.website_url.replace(/^https?:\/\//, '') }}</span>
                             </a>
                         </div>
-                        <div>
+                        <div v-if="data.userProfile.projects_board_url">
                             <a v-if="data.userProfile.projects_board_url" :href="data.userProfile.projects_board_url.startsWith('http') ? data.userProfile.projects_board_url : `https://${data.userProfile.projects_board_url}`" target="_blank" class="md:text-lg text-sm">
                                 <strong style="color: var(--primary-color)">Projects Board:</strong> 
                                 <span class="ml-1 text-[var(--color-fourth)] hover:underline" style="color: var(--fourth-color)">{{ data.userProfile.projects_board_url.replace(/^https?:\/\//, '') }}</span>
@@ -491,6 +491,10 @@ onUnmounted(() => {
                         </div>
                     </div>
                 </div>
+            </div>
+            <div v-if="data.userProfile.projects_board_url" class="mt-16 justify-center text-center">
+                <a :href="data.userProfile.projects_board_url.startsWith('http') ? data.userProfile.projects_board_url : `https://${data.userProfile.projects_board_url}`" target="_blank" class="text-sm px-4 py-2 rounded-lg transition-all duration-300 hover:underline"
+                style="background-color: var(--background-color); color: var(--primary-color);">View all projects</a>
             </div>
         </div>
     </section>
@@ -839,7 +843,6 @@ onUnmounted(() => {
         <!-- Modal Header -->
         <div class="mb-4 sm:mb-6 pr-10 sm:pr-12">
           <h3 class="text-xl sm:text-2xl font-bold" style="color: var(--fourth-color)">{{ activeProject.name }}</h3>
-          <p v-if="activeProject.description" class="mt-2 text-sm sm:text-base" style="color: var(--fourth-color)">{{ activeProject.description }}</p>
         </div>
 
         <!-- Carousel -->

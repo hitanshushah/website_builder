@@ -49,6 +49,7 @@ const openLink = (url: string) => {
 }
 
 const showProjectModal = ref(false)
+const activeFilter = ref('all')
 
 // Contact form
 const contactForm = ref({
@@ -146,6 +147,19 @@ const formatFullDateRange = (startDate: string | null | undefined, endDate: stri
 const getYear = (date: string | null | undefined): string => {
   return formatYear(date || null)
 }
+
+// Computed properties for project filtering
+const filteredProjects = computed(() => {
+  if (!props.data?.projects) return []
+  return activeFilter.value === 'all' 
+    ? props.data.projects 
+    : props.data.projects.filter(p => p.category === activeFilter.value)
+})
+
+const projectCategories = computed(() => {
+  if (!props.data?.projects) return []
+  return [...new Set(props.data.projects.map(p => p.category))]
+})
 
 const greetings = [
   'HELLO',
@@ -505,9 +519,46 @@ onUnmounted(() => {
           <div class="w-3 h-3 bg-[var(--color-primary)] mr-3"></div>
           <h2 class="text-4xl font-light text-[var(--color-fourth)]">Projects</h2>
         </div>
-        <div class="pt-8">
+        
+        <!-- Category Filter Buttons -->
+        <div class="flex justify-center gap-3 mb-12 flex-wrap pt-8">
+          <button 
+            @click="activeFilter = 'all'"
+            class="px-6 py-2 rounded-full font-medium transition-all border-2 cursor-pointer"
+            :style="activeFilter === 'all' ? { 
+              backgroundColor: 'var(--color-primary)', 
+              color: 'var(--color-background)', 
+              borderColor: 'transparent' 
+            } : { 
+              color: 'var(--color-primary)', 
+              borderColor: 'var(--color-primary)', 
+              backgroundColor: 'transparent' 
+            }"
+          >
+            All
+          </button>
+          <button 
+            v-for="category in projectCategories"
+            :key="category"
+            @click="activeFilter = category"
+            class="px-6 py-2 rounded-full font-medium transition-all border-2 cursor-pointer"
+            :style="activeFilter === category ? { 
+              backgroundColor: 'var(--color-primary)', 
+              color: 'var(--color-background)', 
+              borderColor: 'transparent' 
+            } : { 
+              color: 'var(--color-primary)', 
+              borderColor: 'var(--color-primary)', 
+              backgroundColor: 'transparent' 
+            }"
+          >
+            {{ category }}
+          </button>
+        </div>
+        
+        <div class="pt-0">
           <div class="flex flex-wrap gap-8 justify-evenly">
-            <div v-for="project in data.projects" :key="project.id" class="rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition w-md bg-[var(--color-background)]">
+            <div v-for="project in filteredProjects" :key="project.id" class="rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition w-md bg-[var(--color-background)]">
               <div v-if="getProjectImages(project.assets).length" class="relative h-64 bg-[var(--color-background)] cursor-pointer" @click="openProjectModal(project)">
                 <img 
                   :src="getProjectImages(project.assets)[0]?.url" 
@@ -555,6 +606,9 @@ onUnmounted(() => {
               </div>
             </div>
           </div>
+          <div v-if="data.userProfile.projects_board_url" class="mt-16 justify-center text-center">
+              <a :href="data.userProfile.projects_board_url.startsWith('http') ? data.userProfile.projects_board_url : `https://${data.userProfile.projects_board_url}`" target="_blank" class="text-sm text-[var(--color-fourth)] px-4 py-2 rounded-lg border-4 border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-[var(--color-background)] transition-all duration-300">View all projects</a>
+            </div>
         </div>
       </div>
     </section>

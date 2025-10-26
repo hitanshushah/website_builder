@@ -761,6 +761,11 @@ onUnmounted(() => {
             </div>
           </div>
         </div>
+        <div v-if="data?.userProfile.projects_board_url" class="flex justify-center items-center mt-16">
+                <a :href="`https://${data.userProfile.projects_board_url}`" target="_blank" class="text-lg shadow-lg hover:underline break-all px-4 py-2 rounded-lg transition-all duration-300 border-2" :style="{ color: primary, backgroundColor: background, borderColor: primary }">
+                  View all projects
+                </a>
+              </div>
       </div>      
       <!-- Background Wave Pattern -->
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" class="absolute bottom-0 w-full">
