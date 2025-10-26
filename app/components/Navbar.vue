@@ -36,7 +36,7 @@
           @click="navigateTo('/settings')"
         >
           <UIcon name="i-heroicons-cog-6-tooth" class="w-4 h-4 mr-2" />
-          Website Settings
+          Template Settings
         </UButton>
 
         <UButton 
@@ -47,7 +47,7 @@
           @click="navigateTo('/website')"
         >
           <UIcon name="i-heroicons-globe-alt" class="w-4 h-4 mr-2" />
-          Live Website
+          Domain Settings
         </UButton>
 
         <UButton 
@@ -129,8 +129,8 @@ const dropdownItems = computed(() => {
     return [
       [
         { label: 'Dashboard', icon: 'i-heroicons-home', to: '/' },
-        { label: 'Website Settings', icon: 'i-heroicons-cog-6-tooth', to: '/settings' },
-        { label: 'Live Website', icon: 'i-heroicons-globe-alt', to: '/website' },
+        { label: 'Template Settings', icon: 'i-heroicons-cog-6-tooth', to: '/settings' },
+        { label: 'Domain Settings', icon: 'i-heroicons-globe-alt', to: '/website' },
         { label: 'Pricing Plans', icon: 'i-heroicons-credit-card', to: '/pricing' }
       ],
       [
