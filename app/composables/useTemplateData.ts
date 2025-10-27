@@ -109,6 +109,28 @@ function processTemplateData(data: ProjectsBoardData | null): ProcessedTemplateD
     processedUserProfile.email = data.userProfile.secondary_email
   }
 
+  // Add domain suffix to website_url and projects_board_url
+  const config = useRuntimeConfig()
+  const domain = config.public.projectsboardDomain
+  
+  // Create full URLs with domain suffix
+  const fullWebsiteUrl = data.userProfile.website_url ? `${data.userProfile.website_url}.${domain}` : null
+  const fullProjectsBoardUrl = data.userProfile.projects_board_url ? `${data.userProfile.projects_board_url}.${domain}` : null
+
+  // Handle website URL based on sharing preferences
+  if (data.userProfile.share_website && data.userProfile.share_personal_website) {
+    processedUserProfile.website_url = fullWebsiteUrl
+  } else if (data.userProfile.share_personal_website) {
+    processedUserProfile.website_url = data.userProfile.personal_website_url
+  } else if (data.userProfile.share_website) {
+    processedUserProfile.website_url = fullWebsiteUrl
+  } else {
+    processedUserProfile.website_url = undefined
+  }
+
+  // Set the projects_board_url with domain suffix
+  processedUserProfile.projects_board_url = fullProjectsBoardUrl
+
   if (skillsByCategory.length > 1) {
     skillsByCategory = skillsByCategory.sort(([a], [b]) => {
       if (a === 'Other Skills') return 1

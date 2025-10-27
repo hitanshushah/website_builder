@@ -75,7 +75,9 @@ export default defineNuxtConfig({
       ddns: process.env.DDNS,
       brandUrl: process.env.BRAND_URL,
       baseUrl: process.env.BASE_URL,
-      allowedHosts: process.env.VITE_ALLOWED_HOSTS || ''
+      allowedHosts: process.env.VITE_ALLOWED_HOSTS || '',
+      projectsboardDomain: process.env.PROJECTS_BOARD_DOMAIN,
+      webbstyleDomain: process.env.WEBBSTYLE_DOMAIN
     }
   }
 })
