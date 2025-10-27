@@ -582,7 +582,7 @@ onUnmounted(() => {
                   <span class="inline-block px-3 py- border-4 border-[var(--color-primary)] bg-[var(--color-background)] text-[var(--color-fourth)] text-sm font-semibold rounded-full">{{ project.category }}</span>
                 </div>
                 <h3 class="text-2xl font-bold text-[var(--color-fourth)] mb-2">{{ project.name }}</h3>
-                <p v-if="project.description" class="text-[var(--color-fourth)] mb-4">{{ project.description }}</p>
+                <p v-if="project.description" class="text-[var(--color-fourth)] mb-4 whitespace-pre-wrap">{{ project.description }}</p>
                 <div v-if="project.technologies?.length" class="mb-4">
                   <p class="text-sm text-[var(--color-fourth)] mb-2"><strong>Technologies:</strong></p>
                   <div class="flex flex-wrap gap-2">
@@ -680,7 +680,7 @@ onUnmounted(() => {
                   <h3 class="text-lg font-bold text-[var(--color-background)] mb-2">
                     {{ cert.name }}<span v-if="cert.institute_name" class="font-normal text-[var(--color-background)]">,</span> <span v-if="cert.institute_name" class="font-normal text-[var(--color-background)]">{{ cert.institute_name }}</span>
                   </h3>
-                  <p v-if="cert.description" class="text-[var(--color-background)] mb-3 text-sm">{{ cert.description }}</p>
+                  <p v-if="cert.description" class="text-[var(--color-background)] mb-3 text-sm whitespace-pre-wrap">{{ cert.description }}</p>
                   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <p class="text-xs text-[var(--color-background)]">{{ formatDateRange(cert.start_date, cert.end_date) }}</p>
                     <a 
@@ -706,7 +706,7 @@ onUnmounted(() => {
           </div>
           <div class="pt-1 ml-8">
             <ul class="list-disc list-inside space-y-2">
-              <li v-for="achievement in data.achievements" :key="achievement.id" class="text-[var(--color-fourth)]">
+              <li v-for="achievement in data.achievements" :key="achievement.id" class="text-[var(--color-fourth)] whitespace-pre-wrap">
                 {{ achievement.description }}
               </li>
             </ul>
@@ -726,7 +726,7 @@ onUnmounted(() => {
                   <h3 class="text-lg font-bold text-[var(--color-background)] mb-2">
                     {{ pub.paper_name }}<span v-if="pub.conference_name" class="font-normal text-[var(--color-background)]">,</span> <span v-if="pub.conference_name" class="font-normal text-[var(--color-background)]">{{ pub.conference_name }}</span>
                   </h3>
-                  <p v-if="pub.description" class="text-[var(--color-background)] mb-3 text-sm">{{ pub.description }}</p>
+                  <p v-if="pub.description" class="text-[var(--color-background)] mb-3 text-sm whitespace-pre-wrap">{{ pub.description }}</p>
                   <div class="flex flex-col gap-2">
                     <p v-if="pub.published_date" class="text-xs text-[var(--color-background)]">Published: {{ formatDate(pub.published_date) }}</p>
                     <div class="flex flex-wrap gap-2 mt-2">

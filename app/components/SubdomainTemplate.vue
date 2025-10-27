@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { defineAsyncComponent } from 'vue'
+import { processTemplateData } from '../composables/useTemplateData'
 
 const subdomainData = useState('subdomainAccess', () => {
   if (process.server) {
@@ -9,7 +10,10 @@ const subdomainData = useState('subdomainAccess', () => {
   return null
 })
 
-const templateData = computed(() => subdomainData.value?.websiteData)
+const templateData = computed(() => {
+  const rawData = subdomainData.value?.websiteData
+  return rawData ? processTemplateData(rawData) : null
+})
 const selectedColors = computed(() => subdomainData.value?.colors)
 const isPremiumUser = computed(() => subdomainData.value?.isPremiumUser || false)
 const config = useRuntimeConfig()
@@ -35,7 +39,7 @@ const templateProps = computed(() => ({
 }))
 
 useHead(() => ({
-  title: subdomainData.value?.websiteData?.profile?.name || 'Portfolio',
+  title: subdomainData.value?.websiteData?.userProfile?.name || 'Portfolio',
   meta: [
     { name: 'description', content: 'Personal portfolio website' }
   ]

@@ -735,7 +735,7 @@ const fourth = computed(() => props.fourth || '#10b981')
                     See More Images →
                 </a>
                 </div>
-                <p class="mb-4" :style="{ color: `${background}` }">{{ project.description }}</p>
+                <p class="mb-4 whitespace-pre-wrap" :style="{ color: `${background}` }">{{ project.description }}</p>
                 <div v-if="project.technologies?.length" class="flex flex-wrap gap-2 mb-4">
                   <span 
                     v-for="tech in project.technologies" 
@@ -850,7 +850,7 @@ const fourth = computed(() => props.fourth || '#10b981')
                   <div class="flex-1">
                     <h3 class="text-3xl font-bold mb-2" :style="{ color: background }">{{ cert.name }}</h3>
                     <p v-if="cert.institute_name" class="text-xl font-semibold mb-2" :style="{ color: background }">{{ cert.institute_name }}</p>
-                    <p v-if="cert.description" class="mb-4 leading-relaxed" :style="{ color: `${background}` }">{{ cert.description }}</p>
+                    <p v-if="cert.description" class="mb-4 leading-relaxed whitespace-pre-wrap" :style="{ color: `${background}` }">{{ cert.description }}</p>
                     <div v-if="cert.start_date || cert.end_date" class="text-sm mb-4" :style="{ color: `${background}` }">
                       {{ formatDateRange(cert.start_date || null, cert.end_date || null) }}
                     </div>
@@ -888,7 +888,7 @@ const fourth = computed(() => props.fourth || '#10b981')
               >
                 <div class="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-1" :style="{ backgroundColor: background }">
                 </div>
-                <p class="text-xl leading-relaxed font-bold" :style="{ color: background }">{{ achievement.description }}</p>
+                <p class="text-xl leading-relaxed font-bold whitespace-pre-wrap" :style="{ color: background }">{{ achievement.description }}</p>
               </li>
             </ul>
           </div>
@@ -915,7 +915,7 @@ const fourth = computed(() => props.fourth || '#10b981')
                   <div class="flex-1">
                     <h3 class="text-3xl font-bold mb-2" :style="{ color: background }">{{ pub.paper_name }}</h3>
                     <p v-if="pub.conference_name" class="text-xl font-semibold mb-2" :style="{ color: background }">{{ pub.conference_name }}</p>
-                    <p v-if="pub.description" class="mb-4 leading-relaxed" :style="{ color: `${background}` }">{{ pub.description }}</p>
+                    <p v-if="pub.description" class="mb-4 leading-relaxed whitespace-pre-wrap" :style="{ color: `${background}` }">{{ pub.description }}</p>
                     <div v-if="pub.published_date" class="text-sm mb-4" :style="{ color: `${background}` }">
                       Published: {{ formatDate(pub.published_date || '') }}
                     </div>
@@ -1191,7 +1191,7 @@ const fourth = computed(() => props.fourth || '#10b981')
 
         <!-- Modal Footer -->
         <div class="p-6 border-t" :style="{ borderColor: `${background}20` }">
-          <p v-if="activeProject?.description" class="mb-4" :style="{ color: background }">{{ activeProject?.description }}</p>
+          <p v-if="activeProject?.description" class="mb-4 whitespace-pre-wrap" :style="{ color: background }">{{ activeProject?.description }}</p>
           <div v-if="activeProject?.links?.length" class="flex gap-4">
             <a 
               v-for="link in activeProject?.links" 

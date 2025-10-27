@@ -395,7 +395,7 @@ const colorVars = computed(() => ({
                 </div>
                 
                 <div class="text">{{ project.name }}</div>
-                <p v-if="project.description" class="project-desc break-words overflow-wrap-anywhere whitespace-pre-line">{{ project.description }}</p>
+                <p v-if="project.description" class="project-desc break-words overflow-wrap-anywhere whitespace-pre-line!">{{ project.description }}</p>
                 
                 <div v-if="project.technologies?.length" class="project-technologies">
                   <span 
@@ -453,7 +453,7 @@ const colorVars = computed(() => ({
                   <h4 class="red">{{ formatDateRange(exp.start_date, exp.end_date) }}</h4>
                 </div>
               </div>
-              <p v-if="exp.description" class="break-words overflow-wrap-anywhere whitespace-pre-line">{{ exp.description }}</p>
+              <p v-if="exp.description" class="break-words overflow-wrap-anywhere whitespace-pre-line!">{{ exp.description }}</p>
               <p v-if="exp.location" class="exp-location">
                 <i class="fas fa-map-marker-alt"></i> {{ exp.location }}
               </p>
@@ -478,7 +478,7 @@ const colorVars = computed(() => ({
                   <h4 class="red">{{ formatDateRange(exp.start_date, exp.end_date) }}</h4>
                 </div>
               </div>
-              <p v-if="exp.description" class="break-words overflow-wrap-anywhere whitespace-pre-line">{{ exp.description }}</p>
+              <p v-if="exp.description" class="break-words overflow-wrap-anywhere whitespace-pre-line!">{{ exp.description }}</p>
               <p v-if="exp.location" class="exp-location">
                 <i class="fas fa-map-marker-alt"></i> {{ exp.location }}
               </p>
@@ -542,7 +542,7 @@ const colorVars = computed(() => ({
             <div class="box">
               <div class="text"><h5>{{ cert.name }}</h5></div>
               <p v-if="cert.institute_name">{{ cert.institute_name }}</p>
-              <p v-if="cert.description">{{ cert.description }}</p>
+              <p v-if="cert.description" class="whitespace-pre-wrap!">{{ cert.description }}</p>
               <p v-if="cert.start_date">{{ formatDateRange(cert.start_date, cert.end_date) }}</p>
               <div v-if="cert.certificate_pdf" class="cert-links">
                 <a :href="cert.certificate_pdf" target="_blank" class="demo">View Certificate</a>
@@ -559,7 +559,7 @@ const colorVars = computed(() => ({
         <h2 class="title" style="color: var(--background-color);">Achievements</h2>
         <div class="achievements-content">
           <ul>
-            <li v-for="achievement in data.achievements" :key="achievement.id" style="color: var(--background-color);">
+            <li v-for="achievement in data.achievements" :key="achievement.id" class="whitespace-pre-wrap!" style="color: var(--background-color);">
               {{ achievement.description }}
             </li>
           </ul>
@@ -581,7 +581,7 @@ const colorVars = computed(() => ({
             <div class="box" style="background: var(--secondary-color);">
               <div class="text" style="color: var(--background-color);"><h5>{{ pub.paper_name }}</h5></div>
               <p v-if="pub.conference_name" style="color: var(--background-color);">{{ pub.conference_name }}</p>
-              <p v-if="pub.description" style="color: var(--background-color);">{{ pub.description }}</p>
+              <p v-if="pub.description" class="whitespace-pre-wrap!" style="color: var(--background-color);">{{ pub.description }}</p>
               <p v-if="pub.published_date" style="color: var(--background-color);">{{ formatDate(pub.published_date) }}</p>
               <div v-if="pub.paper_pdf || pub.paper_link" class="pub-links">
                 <a v-if="pub.paper_pdf" :href="pub.paper_pdf" target="_blank" class="demo" style="color: var(--secondary-color); background: var(--background-color);">View PDF</a>

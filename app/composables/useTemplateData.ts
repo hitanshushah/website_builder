@@ -61,6 +61,9 @@ export function useFetchTemplateData(userId: number | undefined) {
   }
 }
 
+// Export the processTemplateData function for use in other components
+export { processTemplateData }
+
 function processTemplateData(data: ProjectsBoardData | null): ProcessedTemplateData | null {
   if (!data) return null
 
@@ -96,8 +99,8 @@ function processTemplateData(data: ProjectsBoardData | null): ProcessedTemplateD
     skillsGrouped.get(groupKey)!.push(skill)
   })
 
-  let skillsByCategory = Array.from(skillsGrouped.entries()).map(([key, value]) => [
-    key || null,
+  let skillsByCategory: Array<[string, Skill[]]> = Array.from(skillsGrouped.entries()).map(([key, value]) => [
+    key || '',
     value
   ])
 

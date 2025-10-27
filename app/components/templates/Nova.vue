@@ -430,7 +430,7 @@ onMounted(() => {
                 <div class="p-4">
                   <h3 class="text-[var(--fourth-color)] text-lg font-semibold mb-1">{{ project.name }}</h3>
                   <p v-if="project.category" class="text-xs font-semibold mb-2 uppercase text-[var(--fourth-color)] opacity-70">{{ project.category }}</p>
-                  <p class="text-[var(--fourth-color)] text-sm leading-relaxed mb-3">{{ project.description }}</p>
+                  <p class="text-[var(--fourth-color)] text-sm whitespace-pre-wrap leading-relaxed mb-3">{{ project.description }}</p>
                   
                   <!-- Technologies -->
                   <div v-if="project.technologies?.length" class="flex flex-wrap gap-1.5 mb-3">
@@ -503,7 +503,7 @@ onMounted(() => {
                 <div class="p-4">
                   <h3 class="text-[var(--fourth-color)] text-lg font-semibold mb-1">{{ cert.name }}</h3>
                   <p v-if="cert.institute_name" class="text-sm font-semibold mb-2 uppercase text-[var(--fourth-color)] opacity-70">{{ cert.institute_name }}</p>
-                  <p class="text-[var(--fourth-color)] text-sm leading-relaxed mb-3">{{ cert.description }}</p>
+                  <p class="text-[var(--fourth-color)] whitespace-pre-wrap text-sm leading-relaxed mb-3">{{ cert.description }}</p>
                   
                   <div class="flex items-center justify-between">
                     <span class="text-xs text-[var(--fourth-color)]">{{ formatYear(cert.start_date) }}</span>
@@ -525,7 +525,7 @@ onMounted(() => {
           <section v-if="data.achievements?.length" class="my-8 flex flex-col items-center justify-center min-h-fit mx-8 lg:mx-12 max-w-full break-words pt-0 lg:pt-0" id="achievements">
             <h1 class="text-4xl leading-[4rem] text-[var(--secondary-color)] self-start">Achievements</h1>
             <ul class="list-disc list-inside text-[var(--fourth-color)] mt-4 pl-4 w-full">
-              <li v-for="achievement in data.achievements" :key="achievement.id" class="mb-3 leading-6">
+              <li v-for="achievement in data.achievements" :key="achievement.id" class="mb-3 leading-6 whitespace-pre-wrap">
                 {{ achievement.description }}
               </li>
             </ul>

@@ -167,6 +167,7 @@ export async function getProjectsBoardData(userId: number): Promise<ProjectsBoar
             LEFT JOIN status s ON pr.status_id = s.id
             WHERE pr.user_id = $1
               AND pr.is_public = TRUE
+              AND pr.hide_on_website = FALSE
               AND pr.deleted_at IS NULL
         ),
 
@@ -187,6 +188,7 @@ export async function getProjectsBoardData(userId: number): Promise<ProjectsBoar
             JOIN profiles p ON c.profile_id = p.id
             WHERE p.user_id = $1
               AND c.deleted_at IS NULL
+              AND c.hide_on_website = FALSE
         ),
 
         'achievements', (
@@ -201,6 +203,7 @@ export async function getProjectsBoardData(userId: number): Promise<ProjectsBoar
             JOIN profiles p ON a.profile_id = p.id
             WHERE p.user_id = $1
               AND a.deleted_at IS NULL
+              AND a.hide_on_website = FALSE
         ),
 
         'experiences', (
@@ -222,6 +225,7 @@ export async function getProjectsBoardData(userId: number): Promise<ProjectsBoar
             JOIN profiles p ON e.profile_id = p.id
             WHERE p.user_id = $1
               AND e.deleted_at IS NULL
+              AND e.hide_on_website = FALSE
         ),
 
         'publications', (
@@ -241,6 +245,7 @@ export async function getProjectsBoardData(userId: number): Promise<ProjectsBoar
             JOIN profiles p ON pub.profile_id = p.id
             WHERE p.user_id = $1
               AND pub.deleted_at IS NULL
+              AND pub.hide_on_website = FALSE
         ),
 
         'skills', (
@@ -263,6 +268,7 @@ export async function getProjectsBoardData(userId: number): Promise<ProjectsBoar
             JOIN profiles p ON s.profile_id = p.id
             LEFT JOIN skill_categories c ON s.category_id = c.id
             WHERE p.user_id = $1
+              AND s.hide_on_website = FALSE
         ),
 
         'education', (
@@ -282,6 +288,7 @@ export async function getProjectsBoardData(userId: number): Promise<ProjectsBoar
             JOIN profiles p ON e.profile_id = p.id
             WHERE p.user_id = $1
               AND e.deleted_at IS NULL
+              AND e.hide_on_website = FALSE
         ),
 
         'categories', (

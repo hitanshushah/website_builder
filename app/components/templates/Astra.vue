@@ -397,7 +397,7 @@ onUnmounted(() => {
                             <h3 class="text-xl sm:text-2xl font-bold mb-2 break-words" style="color: var(--background-color)">{{ exp.role }}</h3>
                             <p class="font-semibold mb-2 text-sm sm:text-base break-words" style="color: var(--background-color)">{{ exp.company_name }}</p>
                             <p class="mb-3 sm:mb-4 text-sm sm:text-base" style="color: var(--background-color)">{{ exp.location || '' }} | {{ formatDateRange(exp.start_date, exp.end_date) }}</p>
-                            <p v-if="exp.description" class="mb-3 sm:mb-4 text-sm sm:text-base leading-relaxed break-words" style="color: var(--background-color)">{{ exp.description }}</p>
+                            <p v-if="exp.description" class="mb-3 sm:mb-4 text-sm sm:text-base leading-relaxed break-words whitespace-pre-wrap" style="color: var(--background-color)">{{ exp.description }}</p>
                             <div v-if="exp.skills?.length" class="flex flex-wrap gap-2">
                                 <span 
                                     v-for="skill in exp.skills" 
@@ -466,7 +466,7 @@ onUnmounted(() => {
                             </div>
                             <span v-if="project.category" class="px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm self-start" style="background-color: var(--background-color); color: var(--primary-color); border: 1px solid var(--primary-color)">{{ project.category }}</span>
                         </div>
-                        <p class="mb-4 text-sm sm:text-base break-words" style="color: var(--fourth-color)">{{ project.description }}</p>
+                        <p class="mb-4 text-sm sm:text-base break-words whitespace-pre-wrap" style="color: var(--fourth-color)">{{ project.description }}</p>
                         <div v-if="project.technologies?.length" class="flex flex-wrap gap-2 mb-4">
                             <span 
                                 v-for="tech in project.technologies" 
@@ -571,7 +571,7 @@ onUnmounted(() => {
                         <div class="flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center mt-1" style="background-color: var(--primary-color)">
                             <span class="text-xs sm:text-sm font-bold" style="color: var(--background-color)"></span>
                         </div>
-                        <p class="text-base sm:text-lg leading-relaxed break-words" style="color: var(--fourth-color)">{{ achievement.description }}</p>
+                        <p class="text-base sm:text-lg leading-relaxed break-words whitespace-pre-wrap" style="color: var(--fourth-color)">{{ achievement.description }}</p>
                     </li>
                 </ul>
             </div>
@@ -595,7 +595,7 @@ onUnmounted(() => {
                             <p v-if="cert.institute_name" class="text-base sm:text-lg font-semibold mb-3" style="color: var(--primary-color)">{{ cert.institute_name }}</p>
                         </div>
                     </div>
-                    <p v-if="cert.description" class="mb-4 text-sm sm:text-base break-words" style="color: var(--fourth-color)">{{ cert.description }}</p>
+                    <p v-if="cert.description" class="mb-4 text-sm sm:text-base break-words whitespace-pre-wrap" style="color: var(--fourth-color)">{{ cert.description }}</p>
                     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
                         <span class="text-xs sm:text-sm" style="color: var(--fourth-color)">{{ formatYear(cert.start_date) }}</span>
                         <a 
@@ -630,7 +630,7 @@ onUnmounted(() => {
                             <p v-if="pub.conference_name" class="text-base sm:text-lg font-semibold mb-2 uppercase" style="color: var(--background-color)">{{ pub.conference_name }}</p>
                         </div>
                     </div>
-                    <p v-if="pub.description" class="mb-4 text-sm sm:text-base break-words" style="color: var(--background-color)">{{ pub.description }}</p>
+                    <p v-if="pub.description" class="mb-4 text-sm sm:text-base break-words whitespace-pre-wrap" style="color: var(--background-color)">{{ pub.description }}</p>
                     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
                         <div class="flex items-center gap-2">
                             <span class="text-xs sm:text-sm" style="color: var(--background-color)">{{ formatYear(pub.published_date) }}</span>

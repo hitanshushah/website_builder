@@ -555,7 +555,7 @@ onUnmounted(() => {
                     </p>
                   </div>
                 </div>
-                <p v-if="exp.description" class="mb-4 break-all overflow-hidden" :style="{ color: fourth, wordBreak: 'break-all', overflowWrap: 'anywhere', hyphens: 'auto' }">{{ exp.description }}</p>
+                <p v-if="exp.description" class="mb-4 break-all overflow-hidden whitespace-pre-wrap" :style="{ color: fourth, wordBreak: 'break-all', overflowWrap: 'anywhere', hyphens: 'auto' }">{{ exp.description }}</p>
                 <div v-if="exp.skills?.length" class="flex flex-wrap gap-2">
                   <span 
                     v-for="skill in exp.skills"
@@ -720,7 +720,7 @@ onUnmounted(() => {
             <div class="p-6">
               <h4 class="text-2xl font-bold mb-2" :style="{ color: fourth }">{{ project.name }}</h4>
               <p class="text-sm mb-3 opacity-60" :style="{ color: fourth }">{{ project.category }}</p>
-              <p v-if="project.description" class="mb-4 break-all overflow-hidden" :style="{ color: fourth, wordBreak: 'break-all', overflowWrap: 'anywhere', hyphens: 'auto' }">{{ project.description }}</p>
+              <p v-if="project.description" class="mb-4 break-all overflow-hidden whitespace-pre-wrap" :style="{ color: fourth, wordBreak: 'break-all', overflowWrap: 'anywhere', hyphens: 'auto' }">{{ project.description }}</p>
               <div v-if="project.technologies?.length" class="flex flex-wrap gap-2 mb-4">
                 <span 
                   v-for="tech in project.technologies.slice(0, 3)"
@@ -948,7 +948,7 @@ onUnmounted(() => {
                   <h4 class="text-lg opacity-70 mb-3" :style="{ color: fourth }">{{ cert.institute_name }}</h4>
                 </div>
               </div>
-              <p v-if="cert.description" class="mb-4" :style="{ color: fourth }">{{ cert.description }}</p>
+              <p v-if="cert.description" class="mb-4 whitespace-pre-wrap" :style="{ color: fourth }">{{ cert.description }}</p>
               <div class="flex justify-between items-center">
                 <span class="text-sm opacity-60" :style="{ color: fourth }">{{ formatDate(cert.start_date) }}</span>
                 <a 
@@ -974,7 +974,7 @@ onUnmounted(() => {
                  <div class="flex-shrink-0 mt-1">
                    <i class="fas fa-trophy text-lg" :style="{ color: primary }"></i>
                  </div>
-                 <p class="text-lg leading-relaxed" :style="{ color: fourth }">{{ achievement.description }}</p>
+                 <p class="text-lg leading-relaxed whitespace-pre-wrap" :style="{ color: fourth }">{{ achievement.description }}</p>
                </li>
              </ul>
            </div>
@@ -1007,7 +1007,7 @@ onUnmounted(() => {
               <div class="flex-1">
                 <h3 class="text-2xl font-bold mb-2" :style="{ color: fourth }">{{ pub.paper_name }}</h3>
                 <p v-if="pub.conference_name" class="text-lg mb-2 font-semibold uppercase opacity-70" :style="{ color: primary }">{{ pub.conference_name }}</p>
-                <p v-if="pub.description" class="text-sm leading-relaxed mb-3" :style="{ color: fourth }">{{ pub.description }}</p>
+                <p v-if="pub.description" class="text-sm leading-relaxed mb-3 whitespace-pre-wrap" :style="{ color: fourth }">{{ pub.description }}</p>
               </div>
             </div>
             
