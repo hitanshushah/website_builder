@@ -112,9 +112,10 @@ function processTemplateData(data: ProjectsBoardData | null): ProcessedTemplateD
   // Add domain suffix to website_url and projects_board_url
   const config = useRuntimeConfig()
   const domain = config.public.projectsboardDomain
+  const webbstyleDomain = config.public.webbstyleDomain
   
   // Create full URLs with domain suffix
-  const fullWebsiteUrl = data.userProfile.website_url ? `${data.userProfile.website_url}.${domain}` : null
+  const fullWebsiteUrl = data.userProfile.website_url ? `${data.userProfile.website_url}.${webbstyleDomain}` : null
   const fullProjectsBoardUrl = data.userProfile.projects_board_url ? `${data.userProfile.projects_board_url}.${domain}` : null
 
   // Handle website URL based on sharing preferences
