@@ -65,11 +65,12 @@ export async function handleSubdomainAccess(event: H3Event, headers: Record<stri
 
     // Get user's premium plan info
     const userQuery = await query(
-      'SELECT premium_plan_id FROM users WHERE id = $1',
+      'SELECT premium_plan_id, is_lifetime_plan FROM users WHERE id = $1',
       [userId]
     )
     const user = userQuery[0]
     const isPremiumUser = user?.premium_plan_id > 2
+    const isLifetimePlan = user?.is_lifetime_plan === true
 
     if (event.context) {
       event.context.subdomainAccess = {
@@ -83,6 +84,7 @@ export async function handleSubdomainAccess(event: H3Event, headers: Record<stri
         isSubdomainAccess: true,
         websiteData: websiteData,
         isPremiumUser: isPremiumUser,
+        isLifetimePlan: isLifetimePlan,
         colors: {
           primary: selectedColor.primary_color,
           secondary: selectedColor.secondary_color,

@@ -16,6 +16,7 @@ const templateData = computed(() => {
 })
 const selectedColors = computed(() => subdomainData.value?.colors)
 const isPremiumUser = computed(() => subdomainData.value?.isPremiumUser || false)
+const isLifetimePlan = computed(() => subdomainData.value?.isLifetimePlan || false)
 const config = useRuntimeConfig()
 const brandName = config.public.brandName
 const brandUrl = config.public.brandUrl
@@ -34,6 +35,7 @@ const templateProps = computed(() => ({
   background: selectedColors.value?.background,
   fourth: selectedColors.value?.fourth,
   isPremiumUser: isPremiumUser.value,
+  isLifetimePlan: isLifetimePlan.value,
   brandName: brandName,
   brandUrl: brandUrl
 }))

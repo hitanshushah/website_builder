@@ -12,6 +12,7 @@ interface Props {
   background?: string
   fourth?: string
   isPremiumUser?: boolean | false
+  isLifetimePlan?: boolean | false
   brandName?: string
   brandUrl?: string
 }
@@ -899,6 +900,7 @@ onUnmounted(() => {
         <div class="container mx-auto px-4">
           <p class="text-center text-[var(--color-fourth)] text-sm">&copy; {{ new Date().getFullYear() }} - Developed by {{ data.userProfile.name }}</p>
           <p class="text-center text-[var(--color-fourth)] text-sm" v-if="!isPremiumUser">Powered by <a :href="brandUrl" target="_blank" class="hover:underline">{{ brandName }}</a></p>
+          <p class="text-center text-[var(--color-fourth)] text-sm" v-if="isLifetimePlan">Powered by <a :href="brandUrl" target="_blank" class="hover:underline">{{ brandName }}</a></p>
         </div>
       </div>
     </footer>

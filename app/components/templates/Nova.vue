@@ -11,6 +11,7 @@ interface Props {
   background?: string
   fourth?: string
   isPremiumUser?: boolean | false
+  isLifetimePlan?: boolean | false
   brandName?: string
   brandUrl?: string
 }
@@ -644,6 +645,7 @@ onMounted(() => {
           © {{ new Date().getFullYear() }} {{ data.userProfile.name }}. All rights reserved.
         </p>
         <p v-if="!isPremiumUser">Powered by <a :href="brandUrl" target="_blank" class="hover:underline">{{ brandName }}</a></p>
+        <p v-if="isLifetimePlan">Powered by <a :href="brandUrl" target="_blank" class="hover:underline">{{ brandName }}</a></p>
       </footer>
     </div>
   </div>

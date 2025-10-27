@@ -13,6 +13,7 @@ interface Props {
   isPremiumUser?: boolean | false
   brandName?: string
   brandUrl?: string
+  isLifetimePlan?: boolean | false
 }
 
 const props = defineProps<Props>()
@@ -825,6 +826,7 @@ onUnmounted(() => {
         <div class="max-w-7xl mx-auto text-center">
             <p class="text-sm sm:text-base">&copy; {{ new Date().getFullYear() }} {{ data.userProfile.name }}. All rights reserved.</p>
             <p v-if="!isPremiumUser">Powered by <a :href=brandUrl target="_blank" class="hover:underline">{{ brandName }}</a></p>
+            <p v-if="isLifetimePlan">Powered by <a :href=brandUrl target="_blank" class="hover:underline">{{ brandName }}</a></p>
         </div>
     </footer>
 

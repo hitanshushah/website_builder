@@ -102,6 +102,10 @@ const isPremiumUser = computed(() => {
   return false
 })
 
+const isLifetimePlan = computed(() => {
+  return userStore.user?.is_lifetime_plan === true
+})
+
 const config = useRuntimeConfig()
 const brandName = config.public.brandName
 const brandUrl = config.public.brandUrl
@@ -114,6 +118,7 @@ const templatePreviewProps = computed(() => ({
   background: colorsStore.selectedColors.background,
   fourth: colorsStore.selectedColors.fourth,
   isPremiumUser: isPremiumUser.value,
+  isLifetimePlan: isLifetimePlan.value,
   brandName: brandName,
   brandUrl: brandUrl
 }))
