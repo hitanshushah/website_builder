@@ -327,7 +327,7 @@ onUnmounted(() => {
             <h1 class="text-4xl font-bold text-[var(--color-fourth)] mb-6 min-h-[5rem] flex items-center">
               {{ typedText }}<span v-show="showCursor" class="animate-pulse">|</span>
             </h1>
-            <p v-if="data.userProfile.bio" class="text-2xl text-[var(--color-fourth)] mb-8 break-words overflow-wrap-anywhere">{{ data.userProfile.bio }}</p>
+            <p v-if="data.userProfile.bio" class="text-lg lg:text-xl text-[var(--color-fourth)] mb-8 break-words overflow-wrap-anywhere">{{ data.userProfile.bio }}</p>
             
             <div class="space-y-6 text-[var(--color-fourth)]">
               <p v-if="data.userProfile.introduction && !data.userProfile.hide_introduction_on_website" class="text-lg leading-relaxed whitespace-pre-line break-words overflow-wrap-anywhere">{{ data.userProfile.introduction }}</p>
