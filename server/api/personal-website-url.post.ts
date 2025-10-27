@@ -5,12 +5,21 @@ import { getBaseDomain } from '../utils/domainUtils'
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
-    const { userId, personalWebsiteUrl } = body
+    let { userId, personalWebsiteUrl } = body
 
     if (!userId || !personalWebsiteUrl) {
       throw createError({
         statusCode: 400,
         statusMessage: 'User ID and personal website URL are required'
+      })
+    }
+
+    personalWebsiteUrl = personalWebsiteUrl.trim()
+
+    if (/\s/.test(personalWebsiteUrl)) {
+      throw createError({
+        statusCode: 422,
+        statusMessage: 'Website URL cannot contain spaces'
       })
     }
 

@@ -420,10 +420,10 @@ onUnmounted(() => {
             
             <!-- Bio and Introduction -->
             <div class="space-y-4 mb-6">
-              <p v-if="data?.userProfile.bio" class="text-lg leading-relaxed break-all overflow-hidden" :style="{ color: fourth, wordBreak: 'break-all', overflowWrap: 'anywhere', hyphens: 'auto' }">
+              <p v-if="data?.userProfile.bio" class="text-lg leading-relaxed overflow-hidden" :style="{ color: fourth, overflowWrap: 'anywhere', hyphens: 'auto' }">
                 {{ data.userProfile.bio }}
               </p>
-              <p v-if="data?.userProfile.introduction" class="text-lg leading-relaxed break-all overflow-hidden" :style="{ color: fourth, wordBreak: 'break-all', overflowWrap: 'anywhere', hyphens: 'auto' }">
+              <p v-if="data?.userProfile.introduction" class="text-lg leading-relaxed overflow-hidden" :style="{ color: fourth, overflowWrap: 'anywhere', hyphens: 'auto' }">
                 {{ data.userProfile.introduction }}
               </p>
             </div>
@@ -453,7 +453,7 @@ onUnmounted(() => {
               </div>
               <div v-if="data?.userProfile.email" class="flex items-center gap-3">
                 <i class="fas fa-envelope text-xl" :style="{ color: primary }"></i>
-                <a :href="`mailto:${data.userProfile.email}`" class="text-lg hover:underline break-all" :style="{ color: fourth }">
+                <a :href="`mailto:${data.userProfile.email}`" class="text-lg hover:underline" :style="{ color: fourth }">
                   {{ data.userProfile.email }}
                 </a>
               </div>
@@ -465,13 +465,13 @@ onUnmounted(() => {
               </div>
               <div v-if="data?.userProfile.website_url" class="flex items-center gap-3">
                 <i class="fas fa-globe text-xl" :style="{ color: primary }"></i>
-                <a :href="`https://${data.userProfile.website_url}`" target="_blank" class="text-lg hover:underline break-all" :style="{ color: fourth }">
+                <a :href="`https://${data.userProfile.website_url}`" target="_blank" class="text-lg hover:underline" :style="{ color: fourth }">
                   {{ data.userProfile.website_url.replace(/^https?:\/\//, '') }}
                 </a>
               </div>
               <div v-if="data?.userProfile.projects_board_url" class="flex items-center gap-3">
                 <i class="fas fa-globe text-xl" :style="{ color: primary }"></i>
-                <a :href="`https://${data.userProfile.projects_board_url}`" target="_blank" class="text-lg hover:underline break-all" :style="{ color: fourth }">
+                <a :href="`https://${data.userProfile.projects_board_url}`" target="_blank" class="text-lg hover:underline" :style="{ color: fourth }">
                   {{ data.userProfile.projects_board_url.replace(/^https?:\/\//, '') }}
                 </a>
               </div>
@@ -555,7 +555,7 @@ onUnmounted(() => {
                     </p>
                   </div>
                 </div>
-                <p v-if="exp.description" class="mb-4 break-all overflow-hidden whitespace-pre-wrap" :style="{ color: fourth, wordBreak: 'break-all', overflowWrap: 'anywhere', hyphens: 'auto' }">{{ exp.description }}</p>
+                <p v-if="exp.description" class="mb-4 overflow-hidden whitespace-pre-wrap" :style="{ color: fourth, overflowWrap: 'anywhere', hyphens: 'auto' }">{{ exp.description }}</p>
                 <div v-if="exp.skills?.length" class="flex flex-wrap gap-2">
                   <span 
                     v-for="skill in exp.skills"
@@ -720,7 +720,7 @@ onUnmounted(() => {
             <div class="p-6">
               <h4 class="text-2xl font-bold mb-2" :style="{ color: fourth }">{{ project.name }}</h4>
               <p class="text-sm mb-3 opacity-60" :style="{ color: fourth }">{{ project.category }}</p>
-              <p v-if="project.description" class="mb-4 break-all overflow-hidden whitespace-pre-wrap" :style="{ color: fourth, wordBreak: 'break-all', overflowWrap: 'anywhere', hyphens: 'auto' }">{{ project.description }}</p>
+              <p v-if="project.description" class="mb-4 overflow-hidden whitespace-pre-wrap" :style="{ color: fourth, overflowWrap: 'anywhere', hyphens: 'auto' }">{{ project.description }}</p>
               <div v-if="project.technologies?.length" class="flex flex-wrap gap-2 mb-4">
                 <span 
                   v-for="tech in project.technologies.slice(0, 3)"
@@ -762,7 +762,7 @@ onUnmounted(() => {
           </div>
         </div>
         <div v-if="data?.userProfile.projects_board_url" class="flex justify-center items-center mt-16">
-                <a :href="`https://${data.userProfile.projects_board_url}`" target="_blank" class="text-lg shadow-lg hover:underline break-all px-4 py-2 rounded-lg transition-all duration-300 border-2" :style="{ color: primary, backgroundColor: background, borderColor: primary }">
+                <a :href="`https://${data.userProfile.projects_board_url}`" target="_blank" class="text-lg shadow-lg hover:underline px-4 py-2 rounded-lg transition-all duration-300 border-2" :style="{ color: primary, backgroundColor: background, borderColor: primary }">
                   View all projects
                 </a>
               </div>

@@ -3,12 +3,21 @@ import { saveWebsiteUrl } from '../db/websiteUrl'
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
-    const { userId, websiteUrl } = body
+    let { userId, websiteUrl } = body
 
     if (!userId || !websiteUrl) {
       throw createError({
         statusCode: 400,
         statusMessage: 'User ID and website URL are required'
+      })
+    }
+
+    websiteUrl = websiteUrl.trim()
+
+    if (/\s/.test(websiteUrl)) {
+      throw createError({
+        statusCode: 422,
+        statusMessage: 'Website URL cannot contain spaces'
       })
     }
 

@@ -202,6 +202,14 @@ const savePersonalWebsiteUrl = async () => {
   
   personalUrlError.value = ''
   savingPersonal.value = true
+
+  customPersonalUrl.value = customPersonalUrl.value.trim()
+
+  if (/\s/.test(customPersonalUrl.value)) {
+    personalUrlError.value = 'Website URL cannot contain spaces'
+    savingPersonal.value = false
+    return
+  }
   
   try {
     const response = await $fetch('/api/personal-website-url', {

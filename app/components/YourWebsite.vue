@@ -213,7 +213,7 @@ const activeWebsiteUrl = computed(() => {
   let url = null
   
   if (userProfile.value.share_website === true && userProfile.value.website_url) {
-    url = userProfile.value.website_url + (domainUrl ? `.${domainUrl}` : '')
+    url = userProfile.value.website_url
   } else if (userProfile.value.share_personal_website === true && userProfile.value.personal_website_url) {
     url = userProfile.value.personal_website_url
   }

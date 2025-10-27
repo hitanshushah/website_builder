@@ -217,6 +217,14 @@ const saveWebsiteUrl = async () => {
   urlError.value = ''
   saving.value = true
 
+  customUrl.value = customUrl.value.trim()
+
+  if (/\s/.test(customUrl.value)) {
+    urlError.value = 'Website URL cannot contain spaces'
+    saving.value = false
+    return
+  }
+
   if (customUrl.value === 'admin' || customUrl.value === 'prod' || customUrl.value === 'stripe') {
     urlError.value = 'The subdomain is reserved and cannot be used'
     saving.value = false
