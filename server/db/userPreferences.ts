@@ -55,3 +55,29 @@ export async function getUserPreferences(userId: number): Promise<any> {
   const result = await query(queryString, [userId])
   return result.length > 0 ? result[0] : null
 }
+
+export async function ensureUserTemplateExists(userId: number): Promise<void> {
+  const existingQuery = `
+    SELECT id FROM user_templates 
+    WHERE user_id = $1 AND is_active = true AND deleted_at IS NULL
+  `
+  
+  const existing = await query(existingQuery, [userId])
+  
+  if (existing.length > 0) {
+    return
+  }
+  
+  const { getDefaultTemplateId } = await import('./templates')
+  const { getDefaultColorId } = await import('./colors')
+  
+  const defaultTemplateId = await getDefaultTemplateId()
+  const defaultColorId = await getDefaultColorId()
+  
+  const insertQuery = `
+    INSERT INTO user_templates (user_id, template_id, color_id, is_active, created_at, updated_at)
+    VALUES ($1, $2, $3, true, NOW(), NOW())
+  `
+  
+  await query(insertQuery, [userId, defaultTemplateId, defaultColorId])
+}

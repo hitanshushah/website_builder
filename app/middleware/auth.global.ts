@@ -55,12 +55,15 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   try {
     const { UserModel, ProfileModel } = await import('../../server/db/models')
+    const { ensureUserTemplateExists } = await import('../../server/db/userPreferences')
     
     const userDb = await UserModel.firstOrCreate(username, email)
     let profile = await ProfileModel.findByUserId(userDb.id)
     if (!profile) {
       profile = await ProfileModel.create(userDb.id, name || username)
     }
+
+    await ensureUserTemplateExists(userDb.id)
 
     const userStore = useUserStore()
     const user: User = {

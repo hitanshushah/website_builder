@@ -38,3 +38,18 @@ export async function getActiveTemplates(): Promise<Template[]> {
   const result = await query<Template>(sql)
   return result
 }
+
+export async function getDefaultTemplateId(): Promise<number> {
+  const sql = `
+    SELECT id FROM templates 
+    WHERE is_default = true 
+    AND deleted_at IS NULL 
+    AND is_active = true
+    LIMIT 1
+  `
+  const result = await query<{ id: number }>(sql, [])
+  if (!result.length) {
+    throw new Error('No default template found')
+  }
+  return result[0].id
+}
