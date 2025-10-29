@@ -7,6 +7,7 @@ export interface User {
   created_at?: Date;
   updated_at?: Date;
   is_lifetime_plan?: boolean;
+  is_super_admin?: boolean;
 }
 
 export interface Profile {

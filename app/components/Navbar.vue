@@ -61,6 +61,18 @@
         >
           Pricing Plans
         </UButton>
+
+        <UButton 
+          v-if="userStore.user?.is_super_admin"
+          :variant="currentRoute === '/admin' ? 'solid' : 'ghost'"
+          :color="currentRoute === '/admin' ? 'neutral' : 'gray'"
+          class="px-4 py-2 rounded-lg cursor-pointer"
+          :class="currentRoute === '/admin' ? 'text-white dark:text-black' : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'"
+          @click="navigateTo('/admin')"
+        >
+          <UIcon name="i-heroicons-shield-check" class="w-4 h-4 mr-2" />
+          Admin Panel
+        </UButton>
       </div>
 
       <!-- Profile Dropdown (visible on all screens) -->
@@ -126,17 +138,25 @@ const dropdownItems = computed(() => {
   
   if (isMobile) {
     // On mobile, show all navigation items
-    return [
+    const items = [
       [
         { label: 'Dashboard', icon: 'i-heroicons-home', to: '/' },
         { label: 'Template Settings', icon: 'i-heroicons-cog-6-tooth', to: '/settings' },
         { label: 'Domain Settings', icon: 'i-heroicons-globe-alt', to: '/website' },
         { label: 'Pricing Plans', icon: 'i-heroicons-credit-card', to: '/pricing' }
-      ],
-      [
-        { label: 'Logout', icon: 'i-lucide-log-out', to: logoutUrl }
       ]
     ]
+    
+    // Add admin panel if user is super admin
+    if (userStore.user?.is_super_admin) {
+      items[0].push({ label: 'Admin Panel', icon: 'i-heroicons-shield-check', to: '/admin' })
+    }
+    
+    items.push([
+      { label: 'Logout', icon: 'i-lucide-log-out', to: logoutUrl }
+    ])
+    
+    return items
   } else {
     // On desktop, only show logout
     return [

@@ -23,7 +23,7 @@ export class UserModel {
 
   static async findById(id: number): Promise<User | null> {
     const users = await query<User>(
-      'SELECT id, username, email, premium_plan_id, is_lifetime_plan, created_at, updated_at FROM users WHERE id = $1',
+      'SELECT id, username, email, premium_plan_id, is_lifetime_plan, is_super_admin, created_at, updated_at FROM users WHERE id = $1',
       [id]
     );
     return users.length > 0 ? users[0] : null;
@@ -31,9 +31,63 @@ export class UserModel {
 
   static async getAllUsers(): Promise<User[]> {
     const users = await query<User>(
-      'SELECT id, username, email, premium_plan_id, is_lifetime_plan, created_at, updated_at FROM users ORDER BY created_at DESC'
+      'SELECT id, username, email, premium_plan_id, is_lifetime_plan, is_super_admin, created_at, updated_at FROM users ORDER BY created_at DESC'
     );
     return users;
+  }
+
+  static async updatePlan(userId: number, planId: number, adminUserId: number): Promise<User> {
+    // Verify admin user is super admin
+    const adminUser = await query<User>(
+      'SELECT is_super_admin FROM users WHERE id = $1',
+      [adminUserId]
+    );
+    
+    if (adminUser.length === 0 || !(adminUser[0] as any).is_super_admin) {
+      throw new Error('Unauthorized: Only super admins can update user plans');
+    }
+
+    const users = await query<User>(
+      'UPDATE users SET premium_plan_id = $2, updated_at = NOW() WHERE id = $1 RETURNING *',
+      [userId, planId]
+    );
+    return users[0];
+  }
+
+  static async updateLifetimePlan(userId: number, isLifetime: boolean, adminUserId: number): Promise<User> {
+    // Verify admin user is super admin
+    const adminUser = await query<User>(
+      'SELECT is_super_admin FROM users WHERE id = $1',
+      [adminUserId]
+    );
+    
+    if (adminUser.length === 0 || !(adminUser[0] as any).is_super_admin) {
+      throw new Error('Unauthorized: Only super admins can update lifetime plan status');
+    }
+
+    const users = await query<User>(
+      'UPDATE users SET is_lifetime_plan = $2, updated_at = NOW() WHERE id = $1 RETURNING *',
+      [userId, isLifetime]
+    );
+    return users[0];
+  }
+
+  static async updateSuperAdmin(userId: number, isSuperAdmin: boolean, adminUserId: number): Promise<User> {
+    // Verify admin user is super admin
+    const adminUser = await query<User>(
+      'SELECT is_super_admin FROM users WHERE id = $1',
+      [adminUserId]
+    );
+    
+    if (adminUser.length === 0 || !(adminUser[0] as any).is_super_admin) {
+      throw new Error('Unauthorized: Only super admins can update super admin status');
+    }
+
+    const users = await query<User>(
+      'UPDATE users SET is_super_admin = $2, updated_at = NOW() WHERE id = $1 RETURNING *',
+      [userId, isSuperAdmin]
+    );
+    return users[0];
   }
 }
 
