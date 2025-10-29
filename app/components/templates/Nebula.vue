@@ -940,7 +940,6 @@ onUnmounted(() => {
         
         <!-- Certifications -->
         <div v-if="data?.certifications?.length" class="mb-16">
-          <h2 class="text-4xl font-bold text-center mb-12" :style="{ color: fourth }">Certifications</h2>
           <div class="grid lg:grid-cols-2 gap-8">
             <div v-for="cert in data.certifications" :key="cert.id" class="rounded-xl shadow-lg p-8 hover:shadow-2xl transition-shadow" :style="{ backgroundColor: background }">
               <div class="flex items-start gap-4 mb-4">
