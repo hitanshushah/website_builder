@@ -2,7 +2,7 @@ ARG NODE_VERSION=20.19.0
 
 FROM node:${NODE_VERSION}-slim AS base
 
-ARG PORT=3000
+#ARG PORT=3000
 
 WORKDIR /src
 
@@ -10,7 +10,7 @@ WORKDIR /src
 FROM base AS build
 
 COPY package.json package-lock.json .env ./
-RUN npm install --production --ignore-scripts --no-optional
+RUN npm ci --omit=dev --ignore-scripts
 
 COPY . .
 RUN npm run build
@@ -27,6 +27,6 @@ COPY --from=build /src/.output /src/.output
 RUN rm -rf /root/.npm /tmp/*
 
 # Expose port
-EXPOSE 9006
+EXPOSE 9001
 
 CMD [ "node", ".output/server/index.mjs" ]

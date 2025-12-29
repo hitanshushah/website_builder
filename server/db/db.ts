@@ -1,19 +1,27 @@
 // server/db.ts
 import pkg from 'pg';
-import { User } from '../../types'
+import { User } from '../../app/types'
 
 const { Pool } = pkg;
 
-const pool = new Pool({
-  user: process.env.DB_USERNAME,
-  host: process.env.DB_HOST,
-  database: process.env.DB_DATABASE,
-  password: process.env.DB_PASSWORD,
-  port: Number(process.env.DB_PORT),
-});
+let pool: Pool | null = null;
+
+function getPool() {
+  if (!pool) {
+    const config = useRuntimeConfig(); // ✅ only called at runtime
+    pool = new Pool({
+      user: config.dbUsername,
+      host: config.dbHost,
+      database: config.dbDatabase,
+      password: config.dbPassword,
+      port: Number(config.dbPort),
+    });
+  }
+  return pool;
+}
 
 export const query = async <T>(text: string, params?: any[]): Promise<T[]> => {
-  const client = await pool.connect();
+  const client = await getPool().connect();
   try {
     const res = await client.query(text, params);
     return res.rows;
@@ -23,3 +31,4 @@ export const query = async <T>(text: string, params?: any[]): Promise<T[]> => {
 };
 
 export type { User };
+

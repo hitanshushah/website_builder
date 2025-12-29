@@ -17,21 +17,28 @@
   },
   "dependencies": {
     "@nuxt/eslint": "^1.9.0",
-    "@nuxt/ui": "^3.3.3",
-    "@primeuix/themes": "^1.2.3",
+    "@nuxt/ui": "^4.0.1",
+    "@pinia/nuxt": "^0.11.2",
     "@tailwindcss/vite": "^4.1.13",
+    "@types/minio": "^7.1.0",
+    "@unlok-co/nuxt-stripe": "^5.0.0",
     "eslint": "^9.35.0",
+    "minio": "^8.0.6",
     "nuxt": "^4.1.1",
     "pg": "^8.16.3",
-    "primevue": "^4.3.9",
+    "pinia": "^3.0.3",
     "tailwindcss": "^4.1.13",
     "typescript": "^5.9.2",
     "vue": "^3.5.21",
-    "vue-router": "^4.5.1"
+    "vue-router": "^4.5.1",
+    "zod": "^4.1.11",
+    "nodemailer": "^6.10.1",
+    "nuxt-nodemailer": "^1.1.2"
   },
   "devDependencies": {
-    "@primevue/nuxt-module": "^4.3.9",
+    "@iconify-json/heroicons": "^1.2.3",
     "@types/node": "^24.3.3",
-    "@types/pg": "^8.15.5"
+    "@types/pg": "^8.15.5",
+    "dbmate": "^2.21.0"
   }
 }
